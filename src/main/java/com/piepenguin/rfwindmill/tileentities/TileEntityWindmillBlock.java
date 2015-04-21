@@ -28,8 +28,8 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     public void updateEntity() {
         super.updateEntity();
         if(!worldObj.isRemote) {
-            storage.modifyEnergyStored(4);
-            if(storage.getEnergyStored() > 100) {
+            storage.modifyEnergyStored(maximumEnergyGeneration);
+            if(storage.getEnergyStored() > 0) {
                 transferEnergy();
             }
         }
@@ -64,7 +64,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
 
     @Override
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-        if(from != ForgeDirection.NORTH) {
+        if(from != ForgeDirection.NORTH && from != ForgeDirection.SOUTH) {
             return storage.extractEnergy(maxExtract, simulate);
         }
         else {
@@ -84,6 +84,6 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
 
     @Override
     public boolean canConnectEnergy(ForgeDirection from) {
-        return from != ForgeDirection.NORTH;
+        return from != ForgeDirection.NORTH && from != ForgeDirection.SOUTH;
     }
 }
