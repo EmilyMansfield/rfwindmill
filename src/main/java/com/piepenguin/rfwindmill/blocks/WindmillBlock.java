@@ -12,16 +12,16 @@ import net.minecraft.world.World;
 
 public class WindmillBlock extends Block implements ITileEntityProvider {
 
-    private int maxmimumEnergyGeneration;
-    private int maxmimumEnergyTransfer;
+    private int maximumEnergyGeneration;
+    private int maximumEnergyTransfer;
     private int capacity;
 
     private String name;
 
     public WindmillBlock(String pName, int pMaximumEnergyGeneration, int pCapacity) {
         super(Material.rock);
-        maxmimumEnergyGeneration = pMaximumEnergyGeneration;
-        maxmimumEnergyTransfer = pMaximumEnergyGeneration * 8;
+        maximumEnergyGeneration = pMaximumEnergyGeneration;
+        maximumEnergyTransfer = pMaximumEnergyGeneration * 8;
         capacity = pCapacity;
         name = pName;
         this.setBlockName(Constants.MODID + "_" + name);
@@ -32,7 +32,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
 
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {
-        return new TileEntityWindmillBlock(maxmimumEnergyGeneration, maxmimumEnergyTransfer, capacity);
+        return new TileEntityWindmillBlock(maximumEnergyGeneration, maximumEnergyTransfer, capacity);
     }
 
     @Override
