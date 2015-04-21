@@ -3,6 +3,9 @@ package com.piepenguin.rfwindmill.tileentities;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
+import net.minecraft.block.material.Material;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -11,6 +14,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
 
     private EnergyStorage storage;
     private int maximumEnergyGeneration;
+    private static final int tunnelRange = 10;
 
     public static final String publicName = "tileEntityWindmillBlock";
     private String name = "tileEntityWindmillBlock";
@@ -28,7 +32,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     public void updateEntity() {
         super.updateEntity();
         if(!worldObj.isRemote) {
-            storage.modifyEnergyStored(maximumEnergyGeneration);
+            storage.modifyEnergyStored(maximumEnergyGeneration * getTunnelLength());
             if(storage.getEnergyStored() > 0) {
                 transferEnergy();
             }
@@ -46,6 +50,25 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         storage.writeToNBT(nbt);
+    }
+
+    private int getTunnelLength() {
+        int northRange = tunnelRange;
+        int southRange = tunnelRange;
+        // North/South is default facing (z axis)
+        for(int i = -1; i >= -tunnelRange; --i) {
+            if(worldObj.getBlock(xCoord, yCoord, zCoord + i).getMaterial() != Material.air) {
+                northRange = -i-1;
+                break;
+            }
+        }
+        for(int i = 1; i <= tunnelRange; ++i) {
+            if(worldObj.getBlock(xCoord, yCoord, zCoord + i).getMaterial() != Material.air) {
+                southRange = i-1;
+                break;
+            }
+        }
+        return Math.min(northRange, southRange);
     }
 
     private void transferEnergy() {
