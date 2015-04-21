@@ -15,6 +15,9 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     private EnergyStorage storage;
     private int maximumEnergyGeneration;
     private static final int tunnelRange = 10;
+    private static final int minHeight = 60;
+    private static final int maxHeight = 100;
+    private float fractionalRF = 0.0f;
 
     public static final String publicName = "tileEntityWindmillBlock";
     private String name = "tileEntityWindmillBlock";
@@ -32,7 +35,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     public void updateEntity() {
         super.updateEntity();
         if(!worldObj.isRemote) {
-            storage.modifyEnergyStored(maximumEnergyGeneration * getTunnelLength());
+            generateEnergy();
             if(storage.getEnergyStored() > 0) {
                 transferEnergy();
             }
@@ -50,6 +53,26 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         storage.writeToNBT(nbt);
+    }
+
+    private void generateEnergy() {
+        int deltaHeight = maxHeight - minHeight;
+        if(deltaHeight <= 0) deltaHeight = 1;
+
+        float heightModifier = (float)Math.min(Math.max(yCoord - minHeight, 0), deltaHeight) / (float)deltaHeight;
+        float energyProduced = maximumEnergyGeneration * getTunnelLength() * heightModifier;
+
+        // Dodgy floating point RF handling to smooth out height effect
+        fractionalRF += energyProduced - (int)energyProduced;
+        if(fractionalRF >= 1.0f)
+        {
+            fractionalRF -= 1.0f;
+            energyProduced += 1.0f;
+        }
+
+        storage.modifyEnergyStored((int)energyProduced);
+
+        return;
     }
 
     private int getTunnelLength() {
