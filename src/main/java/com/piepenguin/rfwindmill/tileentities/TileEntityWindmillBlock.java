@@ -3,8 +3,6 @@ package com.piepenguin.rfwindmill.tileentities;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -13,14 +11,19 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvider {
 
     private EnergyStorage storage;
-    private int maximumEnergyGeneration;
     private static final int tunnelRange = 10;
     private static final int minHeight = 60;
     private static final int maxHeight = 100;
+    private static final String NBT_MAXIMUM_ENERGY_GENERATION = "RFWMaximumEnergyGeneration";
+    private int maximumEnergyGeneration;
     private float fractionalRF = 0.0f;
 
     public static final String publicName = "tileEntityWindmillBlock";
     private String name = "tileEntityWindmillBlock";
+
+    public TileEntityWindmillBlock() {
+        this(0,0,0);
+    }
 
     public TileEntityWindmillBlock(int pMaximumEnergyGeneration, int pMaximumEnergyTransfer, int pCapacity) {
         storage = new EnergyStorage(pCapacity, pMaximumEnergyTransfer);
@@ -46,12 +49,14 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
+        maximumEnergyGeneration = nbt.getInteger(NBT_MAXIMUM_ENERGY_GENERATION);
         storage.readFromNBT(nbt);
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
+        nbt.setInteger(NBT_MAXIMUM_ENERGY_GENERATION, maximumEnergyGeneration);
         storage.writeToNBT(nbt);
     }
 
