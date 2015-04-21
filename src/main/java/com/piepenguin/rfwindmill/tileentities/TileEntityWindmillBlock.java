@@ -56,7 +56,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
                     zCoord + direction.offsetZ);
             if(tile instanceof IEnergyReceiver) {
                 IEnergyReceiver receiver = (IEnergyReceiver)tile;
-                extractEnergy(direction.getOpposite(), receiver.receiveEnergy(direction.getOpposite(), storage.getMaxExtract(), false), false);
+                receiver.receiveEnergy(direction.getOpposite(), extractEnergy(direction.getOpposite(), storage.getMaxExtract(), false), false);
             }
         }
         return;
