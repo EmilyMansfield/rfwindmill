@@ -7,12 +7,18 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityWindmillBlock1 extends TileEntity implements IEnergyProvider {
+public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvider {
 
-    private EnergyStorage storage = new EnergyStorage(12000, 1);
+    private EnergyStorage storage;
+    private int maximumEnergyGeneration;
 
-    public static final String publicName = "tileEntityWindmillBlock1";
-    private String name = "tileEntityWindmillBlock1";
+    public static final String publicName = "tileEntityWindmillBlock";
+    private String name = "tileEntityWindmillBlock";
+
+    public TileEntityWindmillBlock(int pMaximumEnergyGeneration, int pMaximumEnergyTransfer, int pCapacity) {
+        storage = new EnergyStorage(pCapacity, pMaximumEnergyTransfer);
+        maximumEnergyGeneration = pMaximumEnergyGeneration;
+    }
 
     public String getName() {
         return name;

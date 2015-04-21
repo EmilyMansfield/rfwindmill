@@ -7,6 +7,6 @@ public class ModBlocks {
     public static Block windmillBlock1;
 
     public static void init() {
-        windmillBlock1 = new WindmillBlock1();
+        windmillBlock1 = new WindmillBlock("windmillBlock1", 2, 16000);
     }
 }
