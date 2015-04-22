@@ -83,15 +83,31 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
         int southRange = tunnelRange;
         // North/South is default facing (z axis)
         for(int i = -1; i >= -tunnelRange; --i) {
-            if(worldObj.getBlock(xCoord, yCoord, zCoord + i).getMaterial() != Material.air) {
-                northRange = -i-1;
-                break;
+            if(blockMetadata == 0 || blockMetadata == 2) {
+                if(worldObj.getBlock(xCoord, yCoord, zCoord + i).getMaterial() != Material.air) {
+                    northRange = -i - 1;
+                    break;
+                }
+            }
+            else {
+                if(worldObj.getBlock(xCoord + i, yCoord, zCoord).getMaterial() != Material.air) {
+                    northRange = -i - 1;
+                    break;
+                }
             }
         }
         for(int i = 1; i <= tunnelRange; ++i) {
-            if(worldObj.getBlock(xCoord, yCoord, zCoord + i).getMaterial() != Material.air) {
-                southRange = i-1;
-                break;
+            if(blockMetadata == 0 || blockMetadata == 2) {
+                if(worldObj.getBlock(xCoord, yCoord, zCoord + i).getMaterial() != Material.air) {
+                    southRange = i-1;
+                    break;
+                }
+            }
+            else {
+                if(worldObj.getBlock(xCoord + i, yCoord, zCoord).getMaterial() != Material.air) {
+                    southRange = i-1;
+                    break;
+                }
             }
         }
         return Math.min(northRange, southRange);
@@ -111,9 +127,24 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
         return;
     }
 
+    private ForgeDirection metadataToDirection() {
+        switch(blockMetadata) {
+            case 0:
+                return ForgeDirection.NORTH;
+            case 1:
+                return ForgeDirection.EAST;
+            case 2:
+                return ForgeDirection.SOUTH;
+            case 3:
+                return ForgeDirection.WEST;
+            default:
+                return ForgeDirection.NORTH;
+        }
+    }
+
     @Override
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-        if(from != ForgeDirection.NORTH && from != ForgeDirection.SOUTH) {
+        if(from != metadataToDirection() && from != metadataToDirection().getOpposite()) {
             return storage.extractEnergy(maxExtract, simulate);
         }
         else {
@@ -133,6 +164,6 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
 
     @Override
     public boolean canConnectEnergy(ForgeDirection from) {
-        return from != ForgeDirection.NORTH && from != ForgeDirection.SOUTH;
+        return from != metadataToDirection() && from != metadataToDirection().getOpposite();
     }
 }
