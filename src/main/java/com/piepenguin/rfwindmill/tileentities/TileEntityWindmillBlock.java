@@ -65,7 +65,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
         if(deltaHeight <= 0) deltaHeight = 1;
 
         float heightModifier = (float)Math.min(Math.max(yCoord - minHeight, 0), deltaHeight) / (float)deltaHeight;
-        float energyProduced = maximumEnergyGeneration * getTunnelLength() * heightModifier;
+        float energyProduced = maximumEnergyGeneration * getTunnelLength() * heightModifier * 0.5f;
 
         // Dodgy floating point RF handling to smooth out height effect
         fractionalRF += energyProduced - (int)energyProduced;
