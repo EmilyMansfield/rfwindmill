@@ -8,9 +8,13 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class WindmillBlock extends Block implements ITileEntityProvider {
 
@@ -44,7 +48,22 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
 
     @Override
     public IIcon getIcon(int side, int meta) {
-        return icons[side];
+        switch(side) {
+            case 0:
+                return icons[0];
+            case 1:
+                return icons[1];
+            case 2:
+                return icons[(meta == 0 || meta == 2) ? 2 : 4];
+            case 3:
+                return icons[(meta == 0 || meta == 2) ? 2 : 4];
+            case 4:
+                return icons[(meta == 1 || meta == 3) ? 2 : 4];
+            case 5:
+                return icons[(meta == 1 || meta == 3) ? 2 : 4];
+            default:
+                return icons[0];
+        }
     }
 
     @Override
@@ -55,5 +74,13 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     @Override
     public boolean hasTileEntity(int metadata) {
         return true;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack) {
+//        int direction = MathHelper.floor_double((double)(entityLivingBase.rotationYaw * 4.0f / 360.0f) + 2.5) & 3;
+        int direction = MathHelper.floor_double((double) (entityLivingBase.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
+
+        world.setBlockMetadataWithNotify(x, y, z, direction, 2);
     }
 }
