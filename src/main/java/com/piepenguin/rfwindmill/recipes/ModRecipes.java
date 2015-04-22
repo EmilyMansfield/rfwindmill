@@ -26,7 +26,7 @@ public class ModRecipes {
     }
 
     public static void registerVanillaRecipes() {
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock1, " x ", "ibi", " r ", 'x', ModItems.rotor1, 'i', "ingotIron", 'r', "dustRedstone"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock1, " x ", "ibi", " r ", 'x', ModItems.rotor1, 'i', "ingotIron", 'r', "dustRedstone", 'b', "blockIron"));
     }
 
     public static void registerThermalExpansionRecipes() {
