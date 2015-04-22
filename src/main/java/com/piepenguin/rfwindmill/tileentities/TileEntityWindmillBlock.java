@@ -21,9 +21,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     public static final String publicName = "tileEntityWindmillBlock";
     private String name = "tileEntityWindmillBlock";
 
-    public TileEntityWindmillBlock() {
-        this(0,0,0);
-    }
+    public TileEntityWindmillBlock() { }
 
     public TileEntityWindmillBlock(int pMaximumEnergyGeneration, int pMaximumEnergyTransfer, int pCapacity) {
         storage = new EnergyStorage(pCapacity, pMaximumEnergyTransfer);
