@@ -81,11 +81,12 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     }
 
     private int getTunnelLength() {
+        int meta = getBlockMetadata();
         int northRange = tunnelRange;
         int southRange = tunnelRange;
         // North/South is default facing (z axis)
         for(int i = -1; i >= -tunnelRange; --i) {
-            if(blockMetadata == 0 || blockMetadata == 2) {
+            if(meta == 0 || meta == 2) {
                 if(worldObj.getBlock(xCoord, yCoord, zCoord + i).getMaterial() != Material.air) {
                     northRange = -i - 1;
                     break;
@@ -99,7 +100,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
             }
         }
         for(int i = 1; i <= tunnelRange; ++i) {
-            if(blockMetadata == 0 || blockMetadata == 2) {
+            if(meta == 0 || meta == 2) {
                 if(worldObj.getBlock(xCoord, yCoord, zCoord + i).getMaterial() != Material.air) {
                     southRange = i-1;
                     break;
@@ -130,7 +131,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     }
 
     private ForgeDirection metadataToDirection() {
-        switch(blockMetadata) {
+        switch(getBlockMetadata()) {
             case 0:
                 return ForgeDirection.NORTH;
             case 1:
@@ -146,7 +147,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
 
     @Override
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-        if(from != metadataToDirection() && from != metadataToDirection().getOpposite()) {
+        if(canConnectEnergy(from)) {
             return storage.extractEnergy(maxExtract, simulate);
         }
         else {

@@ -5,6 +5,8 @@ import com.piepenguin.rfwindmill.lib.EnergyStorage;
 import com.piepenguin.rfwindmill.lib.Lang;
 import com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -52,7 +54,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         icons[5] = iconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
     }
 
-    @Override
+    @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         switch(side) {
             case 0:
