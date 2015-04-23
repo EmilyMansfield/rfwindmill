@@ -73,7 +73,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
             energyProduced += 1.0f;
         }
 
-        storage.modifyEnergyStored((int) energyProduced);
+        storage.modifyEnergyStored((int)energyProduced);
 
         return;
     }
@@ -159,6 +159,10 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
 
     public int getEnergyStored() {
         return getEnergyStored(ForgeDirection.NORTH);
+    }
+
+    public void setEnergyStored(int pEnergy) {
+        storage.setEnergyStored(pEnergy);
     }
 
     @Override

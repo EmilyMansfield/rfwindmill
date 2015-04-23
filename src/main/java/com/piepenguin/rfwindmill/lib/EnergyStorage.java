@@ -10,10 +10,10 @@ public class EnergyStorage implements IEnergyStorage {
     protected int maxReceive;
     protected int maxExtract;
 
-    private static final String NBT_ENERGY = "ESEnergy";
-    private static final String NBT_CAPACITY = "ESCapacity";
-    private static final String NBT_MAX_RECEIVE = "ESMaxReceive";
-    private static final String NBT_MAX_EXTRACT = "ESMaxExtract";
+    public static final String NBT_ENERGY = "ESEnergy";
+    public static final String NBT_CAPACITY = "ESCapacity";
+    public static final String NBT_MAX_RECEIVE = "ESMaxReceive";
+    public static final String NBT_MAX_EXTRACT = "ESMaxExtract";
 
     public EnergyStorage(int pCapacity, int pMaxReceive, int pMaxExtract) {
         capacity = pCapacity;
