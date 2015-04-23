@@ -7,7 +7,7 @@ Compatible with Minecraft version 1.7.10. Uses Thermal Expansion's materials for
 if installed, otherwise will fall back to (less interesting) vanilla versions.
 See NEI for specifics.
 
-THIS MOD IS IN PRE-RELEASE (v0.1). It is functional, but has bugs.
+THIS MOD IS IN PRE-RELEASE (v0.2). It is functional, but has bugs (probably?).
 
 ###Development
 
