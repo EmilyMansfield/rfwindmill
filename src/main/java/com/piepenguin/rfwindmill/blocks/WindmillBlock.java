@@ -21,9 +21,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class WindmillBlock extends Block implements ITileEntityProvider {
 
-    private int maximumEnergyGeneration;
-    private int maximumEnergyTransfer;
-    private int capacity;
+    protected final int maximumEnergyGeneration;
+    protected final int maximumEnergyTransfer;
+    protected final int capacity;
 
     private String name;
     private IIcon[] icons = new IIcon[6];

@@ -5,10 +5,10 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class EnergyStorage implements IEnergyStorage {
 
-    private int energy;
-    private int capacity;
-    private int maxReceive;
-    private int maxExtract;
+    protected int energy;
+    protected int capacity;
+    protected int maxReceive;
+    protected int maxExtract;
 
     private static final String NBT_ENERGY = "ESEnergy";
     private static final String NBT_CAPACITY = "ESCapacity";
@@ -30,20 +30,20 @@ public class EnergyStorage implements IEnergyStorage {
     }
 
     public void readFromNBT(NBTTagCompound nbt) {
-        setEnergyStored(nbt.getInteger(NBT_ENERGY));
         setMaxEnergyStored(nbt.getInteger(NBT_CAPACITY));
         setMaxReceive(nbt.getInteger(NBT_MAX_RECEIVE));
         setMaxExtract(nbt.getInteger(NBT_MAX_EXTRACT));
+        setEnergyStored(nbt.getInteger(NBT_ENERGY));
     }
 
     public void writeToNBT(NBTTagCompound nbt) {
         if(energy < 0) {
             energy = 0;
         }
-        nbt.setInteger(NBT_ENERGY, getEnergyStored());
         nbt.setInteger(NBT_CAPACITY, getMaxEnergyStored());
         nbt.setInteger(NBT_MAX_RECEIVE, getMaxReceive());
         nbt.setInteger(NBT_MAX_EXTRACT, getMaxExtract());
+        nbt.setInteger(NBT_ENERGY, getEnergyStored());
     }
 
     @Override
