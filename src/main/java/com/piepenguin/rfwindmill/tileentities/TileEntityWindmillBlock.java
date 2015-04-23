@@ -1,8 +1,8 @@
 package com.piepenguin.rfwindmill.tileentities;
 
-import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import com.piepenguin.rfwindmill.lib.EnergyStorage;
 import net.minecraft.block.material.Material;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -73,7 +73,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
             energyProduced += 1.0f;
         }
 
-        storage.modifyEnergyStored((int)energyProduced);
+        storage.modifyEnergyStored((int) energyProduced);
 
         return;
     }
