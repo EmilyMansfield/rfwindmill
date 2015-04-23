@@ -35,6 +35,8 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
 
     public WindmillBlock(String pName, int pMaximumEnergyGeneration, int pCapacity) {
         super(Material.rock);
+        setHardness(3.5f);
+        setStepSound(Block.soundTypeMetal);
         maximumEnergyGeneration = pMaximumEnergyGeneration;
         maximumEnergyTransfer = pMaximumEnergyGeneration * 8;
         capacity = pCapacity;
