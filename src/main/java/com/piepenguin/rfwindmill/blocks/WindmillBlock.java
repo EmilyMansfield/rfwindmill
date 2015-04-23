@@ -1,6 +1,7 @@
 package com.piepenguin.rfwindmill.blocks;
 
 import com.piepenguin.rfwindmill.lib.Constants;
+import com.piepenguin.rfwindmill.lib.Lang;
 import com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
@@ -9,8 +10,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -82,5 +85,23 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         int direction = MathHelper.floor_double((double) (entityLivingBase.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
 
         world.setBlockMetadataWithNotify(x, y, z, direction, 2);
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float dx, float dy, float dz) {
+        if(!world.isRemote && player.isSneaking()) {
+            printChatInfo(world, x, y, z, player);
+            return true;
+        }
+        return false;
+    }
+
+    private void printChatInfo(World world, int x, int y, int z, EntityPlayer player) {
+        TileEntityWindmillBlock entity = (TileEntityWindmillBlock)world.getTileEntity(x, y, z);
+        String msg = String.format("%s: %d/%d RF",
+                Lang.localise("energy.stored"),
+                entity.getEnergyStored(),
+                entity.getMaxEnergyStored());
+        player.addChatMessage(new ChatComponentText(msg));
     }
 }

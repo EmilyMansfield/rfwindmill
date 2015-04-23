@@ -1,2 +1,4 @@
 tile.rfwindmill_windmillBlock1.name=Flux Windmill
 item.rfwindmill_rotor1.name=Iron Rotor
+
+info.rfwindmill.energy.stored=Stored

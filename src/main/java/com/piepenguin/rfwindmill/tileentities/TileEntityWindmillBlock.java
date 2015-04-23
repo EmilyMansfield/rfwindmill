@@ -157,9 +157,17 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
         return storage.getEnergyStored();
     }
 
+    public int getEnergyStored() {
+        return getEnergyStored(ForgeDirection.NORTH);
+    }
+
     @Override
     public int getMaxEnergyStored(ForgeDirection from) {
         return storage.getMaxEnergyStored();
+    }
+
+    public int getMaxEnergyStored() {
+        return getMaxEnergyStored(ForgeDirection.NORTH);
     }
 
     @Override
