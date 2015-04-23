@@ -1,0 +1,26 @@
+# Mac
+.DS_Store
+
+# Gradle
+gradle
+gradlew
+gradlew.bat
+.gradle
+
+# Build
+/bin/
+/build/
+/run/
+
+# Eclipse
+eclipse
+.classpath
+.project
+.settings/
+.checkstyle
+
+# IntelliJ
+.idea/
+*.ipr
+*.iml
+*.iws
