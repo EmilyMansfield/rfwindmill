@@ -1,9 +1,12 @@
 package com.piepenguin.rfwindmill.blocks;
 
+import buildcraft.api.tools.IToolWrench;
 import com.piepenguin.rfwindmill.lib.Constants;
 import com.piepenguin.rfwindmill.lib.EnergyStorage;
 import com.piepenguin.rfwindmill.lib.Lang;
+import com.piepenguin.rfwindmill.lib.Util;
 import com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock;
+import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -99,9 +102,26 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float dx, float dy, float dz) {
-        if(!world.isRemote && player.isSneaking()) {
-            printChatInfo(world, x, y, z, player);
-            return true;
+        if(!world.isRemote) {
+            if(player.isSneaking()) {
+                // Dismantle block if player has a wrench
+                if(Util.hasWrench(player, x, y, z)) {
+                    dismantle(world, x, y, z);
+                    return true;
+                }
+                else {
+                    // Print energy information otherwise
+                    printChatInfo(world, x, y, z, player);
+                    return true;
+                }
+            }
+            else {
+                if(Util.hasWrench(player, x, y, z)) {
+                    // Orient the block to face the player
+                    int direction = MathHelper.floor_double((double) (player.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
+                    world.setBlockMetadataWithNotify(x, y, z, direction, 2);
+                }
+            }
         }
         return false;
     }
