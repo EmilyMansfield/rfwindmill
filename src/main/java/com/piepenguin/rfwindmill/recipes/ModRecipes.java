@@ -35,7 +35,7 @@ public class ModRecipes {
     public static void registerThermalExpansionRecipes() {
         ItemStack powerCoilSilver = Preconditions.checkNotNull(GameRegistry.findItemStack(Constants.THERMAL_EXPANSION_MOD_ID, "powerCoilSilver", 1));
         ItemStack machineFrameBasic = Preconditions.checkNotNull(GameRegistry.findItemStack(Constants.THERMAL_EXPANSION_MOD_ID, "frameMachineBasic", 1));
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock1, " x ", "gmg", " c ", 'x', ModItems.rotor1, 'g', "gearTin", 'm', machineFrameBasic, 'c', powerCoilSilver));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock1, " x ", "imi", " c ", 'x', ModItems.rotor1, 'i', "ingotTin", 'm', machineFrameBasic, 'c', powerCoilSilver));
     }
 
     public static String getOreWithFallback(String ore, String fallback) {
