@@ -1,4 +1,14 @@
-tile.rfwindmill_windmillBlock1.name=Flux Windmill
-item.rfwindmill_rotor1.name=Iron Rotor
+tile.rfwindmill_windmillBlock1.name=Basic Flux Windmill
+tile.rfwindmill_windmillBlock2.name=Hardened Flux Windmill
+tile.rfwindmill_windmillBlock3.name=Reinforced Flux Windmill
+tile.rfwindmill_windmillBlock4.name=Resonant Flux Windmill
+
+item.rfwindmill_rotorIron.name=Iron Rotor
+item.rfwindmill_rotorElectrum.name=Electrum Rotor
+item.rfwindmill_rotorSignalum.name=Signalum Rotor
+item.rfwindmill_rotorEnderium.name=Enderium Rotor
+item.rfwindmill_rotorGold.name=Gold Rotor
+item.rfwindmill_rotorNether.name=Nether Rotor
+item.rfwindmill_rotorDiamond.name=Diamond Rotor
 
 info.rfwindmill.energy.stored=Stored
