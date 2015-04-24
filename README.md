@@ -22,7 +22,9 @@ depending on your IDE. e.g.
     gradlew setupDecompWorkspace idea --refresh-dependencies
     gradlew setupDecompWorkspace eclipse --refresh-dependencies
 
-Then add the api files source files to the project as per your ide and compile.
+Compilation should be as easy as
+
+    gradlew build
 
 Code is licensed under the GPL v3 so feel free to fork, fix, and include in
 modpacks without asking permission.
