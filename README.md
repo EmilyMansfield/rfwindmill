@@ -9,8 +9,8 @@ See NEI for specifics.
 
 ###Bugs
 
-This mod is still in beta (v0.3), but I don't know of any bugs so I've released
-it anyway. If you do find a bug, please report it on the issue tracker!
+This mod is still in beta (v0.4), so there are probably bugs. If you do find a
+bug, please report it on the issue tracker!
 
 ###Development
 
