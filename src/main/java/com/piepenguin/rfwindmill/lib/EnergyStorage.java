@@ -98,6 +98,10 @@ public class EnergyStorage implements IEnergyStorage {
         }
     }
 
+    public int getExtract() {
+        return Math.min(maxExtract, energy);
+    }
+
     @Override
     public int getMaxEnergyStored() {
         return capacity;
