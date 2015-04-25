@@ -34,7 +34,8 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     protected final int capacity;
 
     private String name;
-    private IIcon[] icons = new IIcon[6];
+    private IIcon frontIcon;
+    private IIcon sideIcon;
 
     public WindmillBlock(String pName, int pMaximumEnergyGeneration, int pCapacity) {
         super(Material.rock);
@@ -51,31 +52,21 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
 
     @Override
     public void registerBlockIcons(IIconRegister pIconRegister) {
-        icons[0] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
-        icons[1] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
-        icons[2] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Front");
-        icons[3] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Front");
-        icons[4] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
-        icons[5] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
+        sideIcon = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
+        frontIcon = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Front");
     }
 
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int pSide, int pMeta) {
         switch(pSide) {
-            case 0:
-                return icons[0];
-            case 1:
-                return icons[1];
-            case 2:
-                return icons[(pMeta == 0 || pMeta == 2) ? 2 : 4];
-            case 3:
-                return icons[(pMeta == 0 || pMeta == 2) ? 2 : 4];
-            case 4:
-                return icons[(pMeta == 1 || pMeta == 3) ? 2 : 4];
-            case 5:
-                return icons[(pMeta == 1 || pMeta == 3) ? 2 : 4];
+            case 0: case 1:
+                return sideIcon;
+            case 2: case 3:
+                return (pMeta == 0 || pMeta == 2) ? frontIcon : sideIcon;
+            case 4: case 5:
+                return (pMeta == 1 || pMeta == 3) ? frontIcon : sideIcon;
             default:
-                return icons[0];
+                return sideIcon;
         }
     }
 
