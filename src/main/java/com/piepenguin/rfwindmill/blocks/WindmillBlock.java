@@ -1,12 +1,10 @@
 package com.piepenguin.rfwindmill.blocks;
 
-import buildcraft.api.tools.IToolWrench;
 import com.piepenguin.rfwindmill.lib.Constants;
 import com.piepenguin.rfwindmill.lib.EnergyStorage;
 import com.piepenguin.rfwindmill.lib.Lang;
 import com.piepenguin.rfwindmill.lib.Util;
 import com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock;
-import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -25,7 +23,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class WindmillBlock extends Block implements ITileEntityProvider {
 
