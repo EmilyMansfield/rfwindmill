@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class EnergyStorage implements IEnergyStorage {
 
-    private int energy;
+    private float energy;
     private int capacity;
     private int maxReceive;
     private int maxExtract;
@@ -52,7 +52,7 @@ public class EnergyStorage implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int pMaxReceive, boolean pSimulate) {
-        int energyReceived = Math.min(capacity - energy, Math.min(maxReceive, pMaxReceive));
+        int energyReceived = Math.min(capacity - (int)energy, Math.min(maxReceive, pMaxReceive));
 
         if(!pSimulate) {
             energy += energyReceived;
@@ -63,7 +63,7 @@ public class EnergyStorage implements IEnergyStorage {
 
     @Override
     public int extractEnergy(int pMaxExtract, boolean pSimulate) {
-        int energyExtracted = Math.min(energy, Math.min(maxExtract, pMaxExtract));
+        int energyExtracted = Math.min((int)energy, Math.min(maxExtract, pMaxExtract));
 
         if(!pSimulate) {
             energy -= energyExtracted;
@@ -72,7 +72,7 @@ public class EnergyStorage implements IEnergyStorage {
         return energyExtracted;
     }
 
-    public void modifyEnergyStored(int pEnergy) {
+    public void modifyEnergyStored(float pEnergy) {
         energy += pEnergy;
 
         if(energy > capacity) {
@@ -85,7 +85,7 @@ public class EnergyStorage implements IEnergyStorage {
 
     @Override
     public int getEnergyStored() {
-        return energy;
+        return (int)energy;
     }
 
     public void setEnergyStored(int pEnergy) {
@@ -99,7 +99,7 @@ public class EnergyStorage implements IEnergyStorage {
     }
 
     public int getExtract() {
-        return Math.min(maxExtract, energy);
+        return Math.min(maxExtract, (int)energy);
     }
 
     @Override

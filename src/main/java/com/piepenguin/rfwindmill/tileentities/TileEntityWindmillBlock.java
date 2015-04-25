@@ -16,7 +16,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private static final int maxHeight = 100;
     private static final String NBT_MAXIMUM_ENERGY_GENERATION = "RFWMaximumEnergyGeneration";
     private int maximumEnergyGeneration;
-    private float fractionalRF = 0.0f;
 
     public static final String publicName = "tileEntityWindmillBlock";
     private static final String name = "tileEntityWindmillBlock";
@@ -66,15 +65,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         float heightModifier = (float)Math.min(Math.max(yCoord - minHeight, 0), deltaHeight) / (float)deltaHeight;
         float energyProduced = maximumEnergyGeneration * getTunnelLength() * heightModifier * 0.5f;
 
-        // Dodgy floating point RF handling to smooth out height effect
-        fractionalRF += energyProduced - (int)energyProduced;
-        if(fractionalRF >= 1.0f)
-        {
-            fractionalRF -= 1.0f;
-            energyProduced += 1.0f;
-        }
-
-        storage.modifyEnergyStored((int)energyProduced);
+        storage.modifyEnergyStored(energyProduced);
     }
 
     private int getTunnelOneSidedLength(ForgeDirection pDirection) {
