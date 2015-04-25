@@ -5,10 +5,10 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class EnergyStorage implements IEnergyStorage {
 
-    protected int energy;
-    protected int capacity;
-    protected int maxReceive;
-    protected int maxExtract;
+    private int energy;
+    private int capacity;
+    private int maxReceive;
+    private int maxExtract;
 
     public static final String NBT_ENERGY = "ESEnergy";
     public static final String NBT_CAPACITY = "ESCapacity";

@@ -24,12 +24,12 @@ public class ModRecipes {
         }
     }
 
-    public static void registerCommonRecipes() {
+    private static void registerCommonRecipes() {
         GameRegistry.addRecipe(new ShapedOreRecipe(ModItems.rotor1, "i  ", "iii", "  i", 'i', "ingotIron"));
 
     }
 
-    public static void registerVanillaRecipes() {
+    private static void registerVanillaRecipes() {
         String ingotTin = getOreWithFallback("ingotTin", "ingotIron");
 
         // No Thermal Expansion so use gold rotor, nether rotor, and diamond rotor
@@ -43,7 +43,7 @@ public class ModRecipes {
         GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock4, " x ", "dbd", "iri", 'x', ModItems.rotor4, 'd', "gemDiamond", 'i', "ingotGold", 'r', "dustRedstone", 'b', "blockIron"));
     }
 
-    public static void registerThermalExpansionRecipes() {
+    private static void registerThermalExpansionRecipes() {
         ItemStack powerCoilSilver = Preconditions.checkNotNull(GameRegistry.findItemStack(Constants.THERMAL_EXPANSION_MOD_ID, "powerCoilSilver", 1));
         ItemStack machineFrameBasic = Preconditions.checkNotNull(GameRegistry.findItemStack(Constants.THERMAL_EXPANSION_MOD_ID, "frameMachineBasic", 1));
         ItemStack machineFrameHardened = Preconditions.checkNotNull(GameRegistry.findItemStack(Constants.THERMAL_EXPANSION_MOD_ID, "frameMachineHardened", 1));

@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvider {
+public final class TileEntityWindmillBlock extends TileEntity implements IEnergyProvider {
 
     private EnergyStorage storage;
     private static final int tunnelRange = 10;
@@ -19,7 +19,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     private float fractionalRF = 0.0f;
 
     public static final String publicName = "tileEntityWindmillBlock";
-    private String name = "tileEntityWindmillBlock";
+    private static final String name = "tileEntityWindmillBlock";
 
     public TileEntityWindmillBlock() {
         this(0, 0, 0);
