@@ -18,19 +18,19 @@ public class RFWindmill {
     public static CommonProxy proxy;
 
     @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent pEvent) {
         ModBlocks.init();
         ModItems.init();
     }
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void init(FMLInitializationEvent pEvent) {
         proxy.registerTileEntities();
         ModRecipes.init();
     }
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
+    public void postInit(FMLPostInitializationEvent pEvent) {
 
     }
 }

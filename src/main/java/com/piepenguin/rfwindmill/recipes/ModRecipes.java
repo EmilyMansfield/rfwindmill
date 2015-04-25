@@ -61,10 +61,10 @@ public class ModRecipes {
         GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock4, " x ", "imi", " c ", 'x', ModItems.rotor4, 'i', "ingotPlatinum", 'm', machineFrameResonant, 'c', powerCoilSilver));
     }
 
-    public static String getOreWithFallback(String ore, String fallback) {
-        if(OreDictionary.getOres(ore).isEmpty()) {
-            return fallback;
+    public static String getOreWithFallback(String pOre, String pFallback) {
+        if(OreDictionary.getOres(pOre).isEmpty()) {
+            return pFallback;
         }
-        return ore;
+        return pOre;
     }
 }

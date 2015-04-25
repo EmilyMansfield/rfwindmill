@@ -33,21 +33,21 @@ public class EnergyStorage implements IEnergyStorage {
         this(pCapacity, pCapacity, pCapacity);
     }
 
-    public void readFromNBT(NBTTagCompound nbt) {
-        setMaxEnergyStored(nbt.getInteger(NBT_CAPACITY));
-        setMaxReceive(nbt.getInteger(NBT_MAX_RECEIVE));
-        setMaxExtract(nbt.getInteger(NBT_MAX_EXTRACT));
-        setEnergyStored(nbt.getInteger(NBT_ENERGY));
+    public void readFromNBT(NBTTagCompound pNbt) {
+        setMaxEnergyStored(pNbt.getInteger(NBT_CAPACITY));
+        setMaxReceive(pNbt.getInteger(NBT_MAX_RECEIVE));
+        setMaxExtract(pNbt.getInteger(NBT_MAX_EXTRACT));
+        setEnergyStored(pNbt.getInteger(NBT_ENERGY));
     }
 
-    public void writeToNBT(NBTTagCompound nbt) {
+    public void writeToNBT(NBTTagCompound pNbt) {
         if(energy < 0) {
             energy = 0;
         }
-        nbt.setInteger(NBT_CAPACITY, getMaxEnergyStored());
-        nbt.setInteger(NBT_MAX_RECEIVE, getMaxReceive());
-        nbt.setInteger(NBT_MAX_EXTRACT, getMaxExtract());
-        nbt.setInteger(NBT_ENERGY, getEnergyStored());
+        pNbt.setInteger(NBT_CAPACITY, getMaxEnergyStored());
+        pNbt.setInteger(NBT_MAX_RECEIVE, getMaxReceive());
+        pNbt.setInteger(NBT_MAX_EXTRACT, getMaxExtract());
+        pNbt.setInteger(NBT_ENERGY, getEnergyStored());
     }
 
     @Override

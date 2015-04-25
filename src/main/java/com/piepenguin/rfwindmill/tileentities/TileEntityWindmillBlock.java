@@ -43,21 +43,20 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
                 transferEnergy();
             }
         }
-        return;
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        super.readFromNBT(nbt);
-        maximumEnergyGeneration = nbt.getInteger(NBT_MAXIMUM_ENERGY_GENERATION);
-        storage.readFromNBT(nbt);
+    public void readFromNBT(NBTTagCompound pNbt) {
+        super.readFromNBT(pNbt);
+        maximumEnergyGeneration = pNbt.getInteger(NBT_MAXIMUM_ENERGY_GENERATION);
+        storage.readFromNBT(pNbt);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
-        super.writeToNBT(nbt);
-        nbt.setInteger(NBT_MAXIMUM_ENERGY_GENERATION, maximumEnergyGeneration);
-        storage.writeToNBT(nbt);
+    public void writeToNBT(NBTTagCompound pNbt) {
+        super.writeToNBT(pNbt);
+        pNbt.setInteger(NBT_MAXIMUM_ENERGY_GENERATION, maximumEnergyGeneration);
+        storage.writeToNBT(pNbt);
     }
 
     private void generateEnergy() {
@@ -76,8 +75,6 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
         }
 
         storage.modifyEnergyStored((int)energyProduced);
-
-        return;
     }
 
     private int getTunnelLength() {
@@ -127,7 +124,6 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
                 extractEnergy(direction.getOpposite(), receiver.receiveEnergy(direction.getOpposite(), storage.getExtract(), false), false);
             }
         }
-        return;
     }
 
     private ForgeDirection metadataToDirection() {
@@ -146,9 +142,9 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     }
 
     @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-        if(canConnectEnergy(from)) {
-            return storage.extractEnergy(maxExtract, simulate);
+    public int extractEnergy(ForgeDirection pFrom, int pMaxExtract, boolean pSimulate) {
+        if(canConnectEnergy(pFrom)) {
+            return storage.extractEnergy(pMaxExtract, pSimulate);
         }
         else {
             return 0;
@@ -156,7 +152,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     }
 
     @Override
-    public int getEnergyStored(ForgeDirection from) {
+    public int getEnergyStored(ForgeDirection pFrom) {
         return storage.getEnergyStored();
     }
 
@@ -169,7 +165,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     }
 
     @Override
-    public int getMaxEnergyStored(ForgeDirection from) {
+    public int getMaxEnergyStored(ForgeDirection pFrom) {
         return storage.getMaxEnergyStored();
     }
 
@@ -178,7 +174,7 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
     }
 
     @Override
-    public boolean canConnectEnergy(ForgeDirection from) {
-        return from != metadataToDirection() && from != metadataToDirection().getOpposite();
+    public boolean canConnectEnergy(ForgeDirection pFrom) {
+        return pFrom != metadataToDirection() && pFrom != metadataToDirection().getOpposite();
     }
 }

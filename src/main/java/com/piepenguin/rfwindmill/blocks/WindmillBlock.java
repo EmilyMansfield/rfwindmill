@@ -50,76 +50,76 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        icons[0] = iconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
-        icons[1] = iconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
-        icons[2] = iconRegister.registerIcon(Constants.MODID + ":" + name + "Front");
-        icons[3] = iconRegister.registerIcon(Constants.MODID + ":" + name + "Front");
-        icons[4] = iconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
-        icons[5] = iconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
+    public void registerBlockIcons(IIconRegister pIconRegister) {
+        icons[0] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
+        icons[1] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
+        icons[2] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Front");
+        icons[3] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Front");
+        icons[4] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
+        icons[5] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta) {
-        switch(side) {
+    public IIcon getIcon(int pSide, int pMeta) {
+        switch(pSide) {
             case 0:
                 return icons[0];
             case 1:
                 return icons[1];
             case 2:
-                return icons[(meta == 0 || meta == 2) ? 2 : 4];
+                return icons[(pMeta == 0 || pMeta == 2) ? 2 : 4];
             case 3:
-                return icons[(meta == 0 || meta == 2) ? 2 : 4];
+                return icons[(pMeta == 0 || pMeta == 2) ? 2 : 4];
             case 4:
-                return icons[(meta == 1 || meta == 3) ? 2 : 4];
+                return icons[(pMeta == 1 || pMeta == 3) ? 2 : 4];
             case 5:
-                return icons[(meta == 1 || meta == 3) ? 2 : 4];
+                return icons[(pMeta == 1 || pMeta == 3) ? 2 : 4];
             default:
                 return icons[0];
         }
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int meta) {
+    public TileEntity createNewTileEntity(World pWorld, int pMeta) {
         return new TileEntityWindmillBlock(maximumEnergyGeneration, maximumEnergyTransfer, capacity);
     }
 
     @Override
-    public boolean hasTileEntity(int metadata) {
+    public boolean hasTileEntity(int pMetadata) {
         return true;
     }
 
     @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack) {
-        int direction = MathHelper.floor_double((double) (entityLivingBase.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
-        world.setBlockMetadataWithNotify(x, y, z, direction, 2);
-        if(itemStack.stackTagCompound != null) {
-            TileEntityWindmillBlock entity = (TileEntityWindmillBlock)world.getTileEntity(x, y, z);
-            entity.setEnergyStored(itemStack.stackTagCompound.getInteger(EnergyStorage.NBT_ENERGY));
+    public void onBlockPlacedBy(World pWorld, int pX, int pY, int pZ, EntityLivingBase pEntity, ItemStack pItemStack) {
+        int direction = MathHelper.floor_double((double) (pEntity.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
+        pWorld.setBlockMetadataWithNotify(pX, pY, pZ, direction, 2);
+        if(pItemStack.stackTagCompound != null) {
+            TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
+            entity.setEnergyStored(pItemStack.stackTagCompound.getInteger(EnergyStorage.NBT_ENERGY));
         }
-        super.onBlockPlacedBy(world, x, y, z, entityLivingBase, itemStack);
+        super.onBlockPlacedBy(pWorld, pX, pY, pZ, pEntity, pItemStack);
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float dx, float dy, float dz) {
-        if(!world.isRemote) {
-            if(player.isSneaking()) {
+    public boolean onBlockActivated(World pWorld, int pX, int pY, int pZ, EntityPlayer pPlayer, int pSide, float pDx, float pDy, float pDz) {
+        if(!pWorld.isRemote) {
+            if(pPlayer.isSneaking()) {
                 // Dismantle block if player has a wrench
-                if(Util.hasWrench(player, x, y, z)) {
-                    dismantle(world, x, y, z);
+                if(Util.hasWrench(pPlayer, pX, pY, pZ)) {
+                    dismantle(pWorld, pX, pY, pZ);
                     return true;
                 }
                 else {
                     // Print energy information otherwise
-                    printChatInfo(world, x, y, z, player);
+                    printChatInfo(pWorld, pX, pY, pZ, pPlayer);
                     return true;
                 }
             }
             else {
-                if(Util.hasWrench(player, x, y, z)) {
+                if(Util.hasWrench(pPlayer, pX, pY, pZ)) {
                     // Orient the block to face the player
-                    int direction = MathHelper.floor_double((double) (player.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
-                    world.setBlockMetadataWithNotify(x, y, z, direction, 2);
+                    int direction = MathHelper.floor_double((double) (pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
+                    pWorld.setBlockMetadataWithNotify(pX, pY, pZ, direction, 2);
                 }
             }
         }
@@ -151,12 +151,12 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         pWorld.spawnEntityInWorld(entityItem);
     }
 
-    private void printChatInfo(World world, int x, int y, int z, EntityPlayer player) {
-        TileEntityWindmillBlock entity = (TileEntityWindmillBlock)world.getTileEntity(x, y, z);
+    private void printChatInfo(World pWorld, int pX, int pY, int pZ, EntityPlayer pPlayer) {
+        TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
         String msg = String.format("%s: %d/%d RF",
                 Lang.localise("energy.stored"),
                 entity.getEnergyStored(),
                 entity.getMaxEnergyStored());
-        player.addChatMessage(new ChatComponentText(msg));
+        pPlayer.addChatMessage(new ChatComponentText(msg));
     }
 }
