@@ -111,6 +111,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                     // Orient the block to face the player
                     int direction = MathHelper.floor_double((double) (pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
                     pWorld.setBlockMetadataWithNotify(pX, pY, pZ, direction, 2);
+                    return true;
                 }
             }
         }
