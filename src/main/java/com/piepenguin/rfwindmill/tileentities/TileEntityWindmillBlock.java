@@ -77,40 +77,24 @@ public class TileEntityWindmillBlock extends TileEntity implements IEnergyProvid
         storage.modifyEnergyStored((int)energyProduced);
     }
 
-    private int getTunnelLength() {
-        int meta = getBlockMetadata();
-        int northRange = tunnelRange;
-        int southRange = tunnelRange;
-        // North/South is default facing (z axis)
-        for(int i = -1; i >= -tunnelRange; --i) {
-            if(meta == 0 || meta == 2) {
-                if(worldObj.getBlock(xCoord, yCoord, zCoord + i).getMaterial() != Material.air) {
-                    northRange = -i - 1;
-                    break;
-                }
-            }
-            else {
-                if(worldObj.getBlock(xCoord + i, yCoord, zCoord).getMaterial() != Material.air) {
-                    northRange = -i - 1;
-                    break;
-                }
-            }
-        }
+    private int getTunnelOneSidedLength(ForgeDirection pDirection) {
         for(int i = 1; i <= tunnelRange; ++i) {
-            if(meta == 0 || meta == 2) {
-                if(worldObj.getBlock(xCoord, yCoord, zCoord + i).getMaterial() != Material.air) {
-                    southRange = i-1;
-                    break;
-                }
-            }
-            else {
-                if(worldObj.getBlock(xCoord + i, yCoord, zCoord).getMaterial() != Material.air) {
-                    southRange = i-1;
-                    break;
-                }
+            if(worldObj.getBlock(
+                    xCoord + pDirection.offsetX * i,
+                    yCoord + pDirection.offsetY * i,
+                    zCoord + pDirection.offsetZ * i).getMaterial() != Material.air) {
+                return i-1;
             }
         }
-        return Math.min(northRange, southRange);
+
+        return tunnelRange;
+    }
+
+    private int getTunnelLength() {
+        int rangeA = getTunnelOneSidedLength(metadataToDirection());
+        int rangeB = getTunnelOneSidedLength(metadataToDirection().getOpposite());
+
+        return Math.min(rangeA, rangeB);
     }
 
     private void transferEnergy() {
