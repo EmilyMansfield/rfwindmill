@@ -12,3 +12,4 @@ item.rfwindmill_rotorNether.name=Nether Rotor
 item.rfwindmill_rotorDiamond.name=Diamond Rotor
 
 info.rfwindmill.energy.stored=Stored
+info.rfwindmill.energy.generating=Generating

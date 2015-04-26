@@ -142,10 +142,12 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
 
     private void printChatInfo(World pWorld, int pX, int pY, int pZ, EntityPlayer pPlayer) {
         TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
-        String msg = String.format("%s: %d/%d RF",
+        String msg = String.format("%s: %d/%d RF %s: %.2f RF/t",
                 Lang.localise("energy.stored"),
                 entity.getEnergyStored(),
-                entity.getMaxEnergyStored());
+                entity.getMaxEnergyStored(),
+                Lang.localise("energy.generating"),
+                entity.getEnergyGeneration());
         pPlayer.addChatMessage(new ChatComponentText(msg));
     }
 }

@@ -58,14 +58,17 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         storage.writeToNBT(pNbt);
     }
 
-    private void generateEnergy() {
+    public float getEnergyGeneration() {
         int deltaHeight = maxHeight - minHeight;
         if(deltaHeight <= 0) deltaHeight = 1;
 
         float heightModifier = (float)Math.min(Math.max(yCoord - minHeight, 0), deltaHeight) / (float)deltaHeight;
-        float energyProduced = maximumEnergyGeneration * getTunnelLength() * heightModifier * 0.5f;
 
-        storage.modifyEnergyStored(energyProduced);
+        return maximumEnergyGeneration * getTunnelLength() * heightModifier * 0.5f;
+    }
+
+    private void generateEnergy() {
+        storage.modifyEnergyStored(getEnergyGeneration());
     }
 
     private int getTunnelOneSidedLength(ForgeDirection pDirection) {
