@@ -9,7 +9,7 @@ See NEI for specifics.
 
 ###Bugs
 
-This mod is still in beta (v0.4), so there are probably bugs. If you do find a
+This mod is still in beta (v0.41), so there are probably bugs. If you do find a
 bug, please report it on the issue tracker!
 
 ###Development
