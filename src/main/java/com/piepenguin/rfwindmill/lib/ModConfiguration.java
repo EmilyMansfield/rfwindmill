@@ -60,19 +60,19 @@ public class ModConfiguration {
         }
     }
 
-    public boolean useVanillaRecipes() {
+    public static boolean useVanillaRecipes() {
         return forceVanillaRecipes;
     }
 
-    public int[] getWindmillEnergyGeneration() {
+    public static int[] getWindmillEnergyGeneration() {
         return windmillEnergyGeneration;
     }
 
-    public int[] getWindmillEnergyStorage() {
+    public static int[] getWindmillEnergyStorage() {
         return windmillEnergyStorage;
     }
 
-    public int getWindmillEnergyTransferMultiplier() {
+    public static int getWindmillEnergyTransferMultiplier() {
         return windmillEnergyTransferMultiplier;
     }
 }

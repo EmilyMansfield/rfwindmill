@@ -1,9 +1,6 @@
 package com.piepenguin.rfwindmill.blocks;
 
-import com.piepenguin.rfwindmill.lib.Constants;
-import com.piepenguin.rfwindmill.lib.EnergyStorage;
-import com.piepenguin.rfwindmill.lib.Lang;
-import com.piepenguin.rfwindmill.lib.Util;
+import com.piepenguin.rfwindmill.lib.*;
 import com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -39,7 +36,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         setHardness(3.5f);
         setStepSound(Block.soundTypeMetal);
         maximumEnergyGeneration = pMaximumEnergyGeneration;
-        maximumEnergyTransfer = pMaximumEnergyGeneration * 40;
+        maximumEnergyTransfer = pMaximumEnergyGeneration * ModConfiguration.getWindmillEnergyTransferMultiplier();
         capacity = pCapacity;
         name = pName;
         this.setBlockName(Constants.MODID + "_" + name);

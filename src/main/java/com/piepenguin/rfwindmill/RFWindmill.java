@@ -20,9 +20,9 @@ public class RFWindmill {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent pEvent) {
+        ModConfiguration.init(pEvent.getSuggestedConfigurationFile());
         ModBlocks.init();
         ModItems.init();
-        ModConfiguration.init(pEvent.getSuggestedConfigurationFile());
     }
 
     @Mod.EventHandler

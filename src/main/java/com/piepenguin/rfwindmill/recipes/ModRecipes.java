@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.piepenguin.rfwindmill.blocks.ModBlocks;
 import com.piepenguin.rfwindmill.items.ModItems;
 import com.piepenguin.rfwindmill.lib.Constants;
+import com.piepenguin.rfwindmill.lib.ModConfiguration;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
@@ -17,7 +18,7 @@ public class ModRecipes {
 
     public static void init() {
         registerCommonRecipes();
-        if (Loader.isModLoaded(Constants.THERMAL_EXPANSION_MOD_ID)) {
+        if (Loader.isModLoaded(Constants.THERMAL_EXPANSION_MOD_ID) && !ModConfiguration.useVanillaRecipes()) {
             registerThermalExpansionRecipes();
         } else {
             registerVanillaRecipes();
