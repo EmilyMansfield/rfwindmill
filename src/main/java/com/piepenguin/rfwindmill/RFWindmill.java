@@ -3,6 +3,7 @@ package com.piepenguin.rfwindmill;
 import com.piepenguin.rfwindmill.blocks.ModBlocks;
 import com.piepenguin.rfwindmill.items.ModItems;
 import com.piepenguin.rfwindmill.lib.Constants;
+import com.piepenguin.rfwindmill.lib.ModConfiguration;
 import com.piepenguin.rfwindmill.proxy.CommonProxy;
 import com.piepenguin.rfwindmill.recipes.ModRecipes;
 import cpw.mods.fml.common.Mod;
@@ -21,6 +22,7 @@ public class RFWindmill {
     public void preInit(FMLPreInitializationEvent pEvent) {
         ModBlocks.init();
         ModItems.init();
+        ModConfiguration.init(pEvent.getSuggestedConfigurationFile());
     }
 
     @Mod.EventHandler
