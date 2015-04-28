@@ -112,14 +112,16 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                 else {
                     ItemStack equippedItem = pPlayer.getCurrentEquippedItem();
                     if(equippedItem != null) {
-                        // Attach the rotor to the windmill
-                        if(equippedItem.getItem() == ModItems.rotor1) {
-                            int direction = MathHelper.floor_double((double)(pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
-                            ForgeDirection fDirection = Util.intToDirection(direction);
-                            pWorld.setBlock(pX + fDirection.offsetX,
-                                    pY + fDirection.offsetY,
-                                    pZ + fDirection.offsetZ,
-                                    ModBlocks.rotorBlock1);
+                        int direction = MathHelper.floor_double((double) (pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
+                        ForgeDirection fDirection = Util.intToDirection(direction);
+                        int dx = pX + fDirection.offsetX;
+                        int dy = pY + fDirection.offsetY;
+                        int dz = pZ + fDirection.offsetZ;
+                        if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection)) {
+                            // Attach the rotor to the windmill
+                            if(equippedItem.getItem() == ModItems.rotor1) {
+                                pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
+                            } // Brace cascade of shame
                         }
                     }
                 }
