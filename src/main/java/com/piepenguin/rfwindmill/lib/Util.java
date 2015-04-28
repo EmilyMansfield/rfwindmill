@@ -4,6 +4,7 @@ import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.ModAPIManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class Util {
 
@@ -16,5 +17,20 @@ public class Util {
 
         }
         return false;
+    }
+
+    public static ForgeDirection intToDirection(int pDir) {
+        switch(pDir) {
+            case 0:
+                return ForgeDirection.NORTH;
+            case 1:
+                return ForgeDirection.EAST;
+            case 2:
+                return ForgeDirection.SOUTH;
+            case 3:
+                return ForgeDirection.WEST;
+            default:
+                return ForgeDirection.NORTH;
+        }
     }
 }

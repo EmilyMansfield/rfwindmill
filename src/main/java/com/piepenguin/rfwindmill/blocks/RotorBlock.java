@@ -5,7 +5,6 @@ import com.piepenguin.rfwindmill.tileentities.TileEntityRotorBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -14,7 +13,6 @@ public class RotorBlock extends BlockContainer {
     public RotorBlock() {
         super(Material.iron);
         this.setBlockName(Constants.MODID + "_" + "rotor");
-        this.setCreativeTab(CreativeTabs.tabBlock);
         GameRegistry.registerBlock(this, "rotor");
     }
 

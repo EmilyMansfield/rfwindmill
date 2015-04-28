@@ -3,6 +3,7 @@ package com.piepenguin.rfwindmill.tileentities;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import com.piepenguin.rfwindmill.lib.EnergyStorage;
+import com.piepenguin.rfwindmill.lib.Util;
 import net.minecraft.block.material.Material;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -85,8 +86,8 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     }
 
     private int getTunnelLength() {
-        int rangeA = getTunnelOneSidedLength(metadataToDirection());
-        int rangeB = getTunnelOneSidedLength(metadataToDirection().getOpposite());
+        int rangeA = getTunnelOneSidedLength(Util.intToDirection(getBlockMetadata()));
+        int rangeB = getTunnelOneSidedLength(Util.intToDirection(getBlockMetadata()).getOpposite());
 
         return Math.min(rangeA, rangeB);
     }
@@ -101,21 +102,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 IEnergyReceiver receiver = (IEnergyReceiver)tile;
                 extractEnergy(direction.getOpposite(), receiver.receiveEnergy(direction.getOpposite(), storage.getExtract(), false), false);
             }
-        }
-    }
-
-    private ForgeDirection metadataToDirection() {
-        switch(getBlockMetadata()) {
-            case 0:
-                return ForgeDirection.NORTH;
-            case 1:
-                return ForgeDirection.EAST;
-            case 2:
-                return ForgeDirection.SOUTH;
-            case 3:
-                return ForgeDirection.WEST;
-            default:
-                return ForgeDirection.NORTH;
         }
     }
 
@@ -153,6 +139,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     @Override
     public boolean canConnectEnergy(ForgeDirection pFrom) {
-        return pFrom != metadataToDirection() && pFrom != metadataToDirection().getOpposite();
+        return pFrom != Util.intToDirection(getBlockMetadata()) && pFrom != Util.intToDirection(getBlockMetadata()).getOpposite();
     }
 }

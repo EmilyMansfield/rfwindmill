@@ -1,5 +1,6 @@
 package com.piepenguin.rfwindmill.blocks;
 
+import com.piepenguin.rfwindmill.items.ModItems;
 import com.piepenguin.rfwindmill.lib.*;
 import com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -20,6 +21,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class WindmillBlock extends Block implements ITileEntityProvider {
 
@@ -106,6 +108,20 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                     int direction = MathHelper.floor_double((double) (pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
                     pWorld.setBlockMetadataWithNotify(pX, pY, pZ, direction, 2);
                     return true;
+                }
+                else {
+                    ItemStack equippedItem = pPlayer.getCurrentEquippedItem();
+                    if(equippedItem != null) {
+                        // Attach the rotor to the windmill
+                        if(equippedItem.getItem() == ModItems.rotor1) {
+                            int direction = MathHelper.floor_double((double)(pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
+                            ForgeDirection fDirection = Util.intToDirection(direction);
+                            pWorld.setBlock(pX + fDirection.offsetX,
+                                    pY + fDirection.offsetY,
+                                    pZ + fDirection.offsetZ,
+                                    ModBlocks.rotorBlock1);
+                        }
+                    }
                 }
             }
         }
