@@ -8,6 +8,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class ClientProxy extends CommonProxy {
 
     public void registerTileEntities() {
+        super.registerTileEntities();
         GameRegistry.registerTileEntity(TileEntityRotorBlock.class, TileEntityRotorBlock.publicName);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRotorBlock.class, new RenderTileEntityRotorBlock());
     }
