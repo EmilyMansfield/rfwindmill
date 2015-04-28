@@ -10,13 +10,15 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
 
-    private ResourceLocation texture;
+    private static ResourceLocation[] textures = {
+            new ResourceLocation(Constants.MODID, "models/RotorBlockTexture.png")
+    };
+    private static String objectModelPath = "models/RotorBlockModel.obj";
     private ResourceLocation objModelLocation;
     private IModelCustom model;
 
     public RenderTileEntityRotorBlock() {
-        texture = new ResourceLocation(Constants.MODID, "textures/RotorBlockTexture.obj");
-        objModelLocation = new ResourceLocation(Constants.MODID, "models/RotorBlockModel.obj");
+        objModelLocation = new ResourceLocation(Constants.MODID, objectModelPath);
         model = AdvancedModelLoader.loadModel(objModelLocation);
     }
 
@@ -26,7 +28,7 @@ public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
         float rotation = entity.getRotation();
         float scale = entity.getScale();
 
-        bindTexture(texture);
+        bindTexture(textures[0]);
         GL11.glPushMatrix();
         GL11.glTranslated(pX, pY, pZ);
         GL11.glScalef(scale, scale, scale);
