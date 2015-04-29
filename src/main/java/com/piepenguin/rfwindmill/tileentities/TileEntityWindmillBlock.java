@@ -64,6 +64,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     }
 
     public float getEnergyGeneration() {
+        if(!hasRotor()) return 0;
         int deltaHeight = maxHeight - minHeight;
         if(deltaHeight <= 0) deltaHeight = 1;
 
