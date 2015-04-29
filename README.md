@@ -9,10 +9,9 @@ See NEI for specifics.
 
 ###Bugs
 
-This mod is still in beta (v0.41), so there are probably bugs. If you do find a
-bug, please report it on the issue tracker!
+If you find a bug, please report it on the [issue tracker!](https://github.com/Piepenguin1995/rfwindmill/issues)
 
-###Development
+###Contributing
 
 Gradle files are not included in the repo and must be downloaded from
 http://files.minecraftforge.net/ (the src version). Copy the `gradle` folder,
@@ -25,6 +24,9 @@ depending on your IDE. e.g.
 Compilation should be as easy as
 
     gradlew build
+
+New features and bug fixes (unless urgent) should be developed off of the main dev
+branch and not from master, which is for stable releases only.
 
 Code is licensed under the GPL v3 so feel free to fork, fix, and include in
 modpacks without asking permission.
