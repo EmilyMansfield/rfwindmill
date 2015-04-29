@@ -124,7 +124,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                                 pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
                                 pWorld.setBlockMetadataWithNotify(dx, dy, dz, direction, 2);
                                 // Tell windmill entity that it has a rotor attached
-                                entity.setRotor(true);
+                                entity.setRotor(true, fDirection);
                             } // Brace cascade of shame
                         }
                     }

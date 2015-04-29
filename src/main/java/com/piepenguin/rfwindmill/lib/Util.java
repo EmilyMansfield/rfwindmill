@@ -33,4 +33,17 @@ public class Util {
                 return ForgeDirection.NORTH;
         }
     }
+
+    public static int directionToInt(ForgeDirection pDir) {
+        if(pDir == ForgeDirection.NORTH)
+            return 0;
+        else if(pDir == ForgeDirection.EAST)
+            return 1;
+        else if(pDir == ForgeDirection.SOUTH)
+            return 2;
+        else if(pDir == ForgeDirection.WEST)
+            return 3;
+        else
+            return 0;
+    }
 }

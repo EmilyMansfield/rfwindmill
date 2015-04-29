@@ -55,7 +55,7 @@ public class RotorBlock extends BlockContainer {
         int parentY = pY + rotorDir.offsetY;
         int parentZ = pZ + rotorDir.offsetZ;
         TileEntityWindmillBlock windmillEntity = (TileEntityWindmillBlock)pWorld.getTileEntity(parentX, parentY, parentZ);
-        windmillEntity.setRotor(false);
+        windmillEntity.setRotor(false, ForgeDirection.NORTH);
         // Drop the item
         ItemStack itemStack = new ItemStack(ModItems.rotor1);
         pWorld.setBlockToAir(pX, pY, pZ);

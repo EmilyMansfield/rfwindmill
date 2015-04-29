@@ -2,8 +2,10 @@ package com.piepenguin.rfwindmill.tileentities;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import com.piepenguin.rfwindmill.blocks.RotorBlock;
 import com.piepenguin.rfwindmill.lib.EnergyStorage;
 import com.piepenguin.rfwindmill.lib.Util;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -17,8 +19,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private static final int maxHeight = 100;
     private static final String NBT_MAXIMUM_ENERGY_GENERATION = "RFWMaximumEnergyGeneration";
     private static final String NBT_HAS_ROTOR =  "RFWHasRotor";
+    private static final String NBT_ROTOR_DIR = "RFWRotorDir";
     private int maximumEnergyGeneration;
     private boolean hasRotor;
+    private ForgeDirection rotorDir;
 
     public static final String publicName = "tileEntityWindmillBlock";
     private static final String name = "tileEntityWindmillBlock";
@@ -31,6 +35,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         storage = new EnergyStorage(pCapacity, pMaximumEnergyTransfer);
         maximumEnergyGeneration = pMaximumEnergyGeneration;
         hasRotor = false;
+        rotorDir = ForgeDirection.NORTH;
     }
 
     public String getName() {
@@ -53,6 +58,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         super.readFromNBT(pNbt);
         maximumEnergyGeneration = pNbt.getInteger(NBT_MAXIMUM_ENERGY_GENERATION);
         hasRotor = pNbt.getBoolean(NBT_HAS_ROTOR);
+        rotorDir = Util.intToDirection(pNbt.getInteger(NBT_ROTOR_DIR));
         storage.readFromNBT(pNbt);
     }
 
@@ -61,6 +67,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         super.writeToNBT(pNbt);
         pNbt.setInteger(NBT_MAXIMUM_ENERGY_GENERATION, maximumEnergyGeneration);
         pNbt.setBoolean(NBT_HAS_ROTOR, hasRotor);
+        pNbt.setInteger(NBT_ROTOR_DIR, Util.directionToInt(rotorDir));
         storage.writeToNBT(pNbt);
     }
 
@@ -88,10 +95,11 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     private int getTunnelOneSidedLength(ForgeDirection pDirection) {
         for(int i = 1; i <= tunnelRange; ++i) {
-            if(worldObj.getBlock(
+            Block block = worldObj.getBlock(
                     xCoord + pDirection.offsetX * i,
                     yCoord + pDirection.offsetY * i,
-                    zCoord + pDirection.offsetZ * i).getMaterial() != Material.air) {
+                    zCoord + pDirection.offsetZ * i);
+            if(block == null || (block.getMaterial() != Material.air && !(block instanceof RotorBlock))) {
                 return i-1;
             }
         }
@@ -100,8 +108,8 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     }
 
     private int getTunnelLength() {
-        int rangeA = getTunnelOneSidedLength(Util.intToDirection(getBlockMetadata()));
-        int rangeB = getTunnelOneSidedLength(Util.intToDirection(getBlockMetadata()).getOpposite());
+        int rangeA = getTunnelOneSidedLength(rotorDir);
+        int rangeB = getTunnelOneSidedLength(rotorDir.getOpposite());
 
         return Math.min(rangeA, rangeB);
     }
@@ -160,7 +168,9 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return hasRotor;
     }
 
-    public void setRotor(boolean pHasRotor) {
+    // fDir points towards the rotor
+    public void setRotor(boolean pHasRotor, ForgeDirection fDir) {
         hasRotor = pHasRotor;
+        rotorDir = fDir;
     }
 }
