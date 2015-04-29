@@ -117,11 +117,14 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                         int dx = pX + fDirection.offsetX;
                         int dy = pY + fDirection.offsetY;
                         int dz = pZ + fDirection.offsetZ;
-                        if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection)) {
+                        TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
+                        if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection) && !entity.hasRotor()) {
                             // Attach the rotor to the windmill
                             if(equippedItem.getItem() == ModItems.rotor1) {
                                 pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
                                 pWorld.setBlockMetadataWithNotify(dx, dy, dz, direction, 2);
+                                // Tell windmill entity that it has a rotor attached
+                                entity.setRotor(true);
                             } // Brace cascade of shame
                         }
                     }

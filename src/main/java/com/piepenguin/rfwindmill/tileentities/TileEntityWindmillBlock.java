@@ -16,7 +16,9 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private static final int minHeight = 60;
     private static final int maxHeight = 100;
     private static final String NBT_MAXIMUM_ENERGY_GENERATION = "RFWMaximumEnergyGeneration";
+    private static final String NBT_HAS_ROTOR =  "RFWHasRotor";
     private int maximumEnergyGeneration;
+    private boolean hasRotor;
 
     public static final String publicName = "tileEntityWindmillBlock";
     private static final String name = "tileEntityWindmillBlock";
@@ -49,6 +51,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     public void readFromNBT(NBTTagCompound pNbt) {
         super.readFromNBT(pNbt);
         maximumEnergyGeneration = pNbt.getInteger(NBT_MAXIMUM_ENERGY_GENERATION);
+        hasRotor = pNbt.getBoolean(NBT_HAS_ROTOR);
         storage.readFromNBT(pNbt);
     }
 
@@ -56,6 +59,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     public void writeToNBT(NBTTagCompound pNbt) {
         super.writeToNBT(pNbt);
         pNbt.setInteger(NBT_MAXIMUM_ENERGY_GENERATION, maximumEnergyGeneration);
+        pNbt.setBoolean(NBT_HAS_ROTOR, hasRotor);
         storage.writeToNBT(pNbt);
     }
 
@@ -144,5 +148,13 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     @Override
     public boolean canConnectEnergy(ForgeDirection pFrom) {
         return pFrom != Util.intToDirection(getBlockMetadata()) && pFrom != Util.intToDirection(getBlockMetadata()).getOpposite();
+    }
+
+    public boolean hasRotor() {
+        return hasRotor;
+    }
+
+    public void setRotor(boolean pHasRotor) {
+        hasRotor = pHasRotor;
     }
 }
