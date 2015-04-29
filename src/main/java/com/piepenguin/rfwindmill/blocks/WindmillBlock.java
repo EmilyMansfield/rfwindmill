@@ -125,6 +125,13 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                                 pWorld.setBlockMetadataWithNotify(dx, dy, dz, direction, 2);
                                 // Tell windmill entity that it has a rotor attached
                                 entity.setRotor(true, fDirection);
+                                // Remove rotor from player's inventory
+                                if(equippedItem.stackSize > 1) {
+                                    equippedItem.stackSize -= 1;
+                                }
+                                else {
+                                    pPlayer.destroyCurrentEquippedItem();
+                                }
                             } // Brace cascade of shame
                         }
                     }
