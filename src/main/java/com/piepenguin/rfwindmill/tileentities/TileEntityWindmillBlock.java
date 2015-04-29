@@ -68,6 +68,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return maximumEnergyGeneration * getTunnelLength() * heightModifier * 0.5f;
     }
 
+    public int getMaximumEnergyGeneration() {
+        return maximumEnergyGeneration;
+    }
+
     private void generateEnergy() {
         storage.modifyEnergyStored(getEnergyGeneration());
     }
