@@ -21,7 +21,7 @@ public class TileEntityRotorBlock extends TileEntity {
             int parentZ = zCoord + rotorDir.offsetZ;
             TileEntityWindmillBlock entity = (TileEntityWindmillBlock)worldObj.getTileEntity(parentX, parentY, parentZ);
             if(entity != null) {
-                rotation += entity.getEnergyGeneration() / entity.getMaximumEnergyGeneration();
+                rotation += entity.getTheoreticalEnergyGeneration() / entity.getMaximumEnergyGeneration();
             }
             scale = 1.0f;
         }

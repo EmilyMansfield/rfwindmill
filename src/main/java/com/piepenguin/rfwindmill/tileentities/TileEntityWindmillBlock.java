@@ -30,6 +30,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     public TileEntityWindmillBlock(int pMaximumEnergyGeneration, int pMaximumEnergyTransfer, int pCapacity) {
         storage = new EnergyStorage(pCapacity, pMaximumEnergyTransfer);
         maximumEnergyGeneration = pMaximumEnergyGeneration;
+        hasRotor = false;
     }
 
     public String getName() {
@@ -65,6 +66,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     public float getEnergyGeneration() {
         if(!hasRotor()) return 0;
+        return getTheoreticalEnergyGeneration();
+    }
+
+    public float getTheoreticalEnergyGeneration() {
         int deltaHeight = maxHeight - minHeight;
         if(deltaHeight <= 0) deltaHeight = 1;
 
