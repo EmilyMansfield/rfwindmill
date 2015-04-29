@@ -121,6 +121,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                             // Attach the rotor to the windmill
                             if(equippedItem.getItem() == ModItems.rotor1) {
                                 pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
+                                pWorld.setBlockMetadataWithNotify(dx, dy, dz, direction, 2);
                             } // Brace cascade of shame
                         }
                     }
