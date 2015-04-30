@@ -32,7 +32,6 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     protected final int capacity;
 
     private String name;
-    private IIcon frontIcon;
     private IIcon sideIcon;
 
     public WindmillBlock(String pName, int pMaximumEnergyGeneration, int pCapacity) {
@@ -51,21 +50,11 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     @Override
     public void registerBlockIcons(IIconRegister pIconRegister) {
         sideIcon = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
-        frontIcon = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Front");
     }
 
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int pSide, int pMeta) {
-        switch(pSide) {
-            case 0: case 1:
-                return sideIcon;
-            case 2: case 3:
-                return (pMeta == 0 || pMeta == 2) ? frontIcon : sideIcon;
-            case 4: case 5:
-                return (pMeta == 1 || pMeta == 3) ? frontIcon : sideIcon;
-            default:
-                return sideIcon;
-        }
+        return sideIcon;
     }
 
     @Override
