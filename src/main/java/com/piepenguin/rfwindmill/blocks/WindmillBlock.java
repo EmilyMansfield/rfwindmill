@@ -105,38 +105,28 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                 }
             }
             else {
-                if(Util.hasWrench(pPlayer, pX, pY, pZ)) {
-                    // Orient the block to face the player
+                ItemStack equippedItem = pPlayer.getCurrentEquippedItem();
+                if(equippedItem != null && equippedItem.getItem() == ModItems.rotor1) {
                     int direction = MathHelper.floor_double((double) (pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
-                    pWorld.setBlockMetadataWithNotify(pX, pY, pZ, direction, 2);
-                    return true;
-                }
-                else {
-                    ItemStack equippedItem = pPlayer.getCurrentEquippedItem();
-                    if(equippedItem != null) {
-                        int direction = MathHelper.floor_double((double) (pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
-                        ForgeDirection fDirection = Util.intToDirection(direction);
-                        int dx = pX + fDirection.offsetX;
-                        int dy = pY + fDirection.offsetY;
-                        int dz = pZ + fDirection.offsetZ;
-                        TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
-                        if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection) && !entity.hasRotor()) {
-                            // Attach the rotor to the windmill
-                            if(equippedItem.getItem() == ModItems.rotor1) {
-                                pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
-                                pWorld.setBlockMetadataWithNotify(dx, dy, dz, direction, 2);
-                                // Tell windmill entity that it has a rotor attached
-                                entity.setRotor(true, fDirection);
-                                // Remove rotor from player's inventory
-                                if(equippedItem.stackSize > 1) {
-                                    equippedItem.stackSize -= 1;
-                                }
-                                else {
-                                    pPlayer.destroyCurrentEquippedItem();
-                                }
-                            } // Brace cascade of shame
+                    ForgeDirection fDirection = Util.intToDirection(direction);
+                    int dx = pX + fDirection.offsetX;
+                    int dy = pY + fDirection.offsetY;
+                    int dz = pZ + fDirection.offsetZ;
+                    TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
+                    if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection) && !entity.hasRotor()) {
+                        // Attach the rotor to the windmill
+                        pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
+                        pWorld.setBlockMetadataWithNotify(dx, dy, dz, direction, 2);
+                        // Tell windmill entity that it has a rotor attached
+                        entity.setRotor(true, fDirection);
+                        // Remove rotor from player's inventory
+                        if(equippedItem.stackSize > 1) {
+                            equippedItem.stackSize -= 1;
                         }
-                    }
+                        else {
+                            pPlayer.destroyCurrentEquippedItem();
+                        }
+                    } // Brace cascade of shame
                 }
             }
         }
