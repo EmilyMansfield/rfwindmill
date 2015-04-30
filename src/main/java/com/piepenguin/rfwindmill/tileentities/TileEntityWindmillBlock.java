@@ -161,7 +161,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     @Override
     public boolean canConnectEnergy(ForgeDirection pFrom) {
-        return pFrom != Util.intToDirection(getBlockMetadata()) && pFrom != Util.intToDirection(getBlockMetadata()).getOpposite();
+        return true;
     }
 
     public boolean hasRotor() {
