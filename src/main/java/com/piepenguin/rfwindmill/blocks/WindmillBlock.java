@@ -1,7 +1,9 @@
 package com.piepenguin.rfwindmill.blocks;
 
+import com.google.common.base.Preconditions;
 import com.piepenguin.rfwindmill.items.ModItems;
 import com.piepenguin.rfwindmill.lib.*;
+import com.piepenguin.rfwindmill.tileentities.TileEntityRotorBlock;
 import com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -149,9 +151,20 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     }
 
     private void dismantle(World pWorld, int pX, int pY, int pZ) {
-        ItemStack itemStack = new ItemStack(this);
-
+        // Remove the attached rotor, if there is one
         TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
+        Preconditions.checkNotNull(entity);
+        if(entity.hasRotor()) {
+            ForgeDirection dir = entity.getRotorDir();
+            RotorBlock rotor = (RotorBlock)pWorld.getBlock(
+                    pX + dir.offsetX,
+                    pY + dir.offsetY,
+                    pZ + dir.offsetZ);
+            rotor.dismantle(pWorld, pX + dir.offsetX, pY + dir.offsetY, pZ + dir.offsetZ);
+        }
+
+        // Remove the actual turbine and drop it
+        ItemStack itemStack = new ItemStack(this);
         int energy = entity.getEnergyStored();
         if(energy > 0) {
             if(itemStack.getTagCompound() == null) {

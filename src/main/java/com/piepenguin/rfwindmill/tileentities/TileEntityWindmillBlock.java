@@ -173,4 +173,8 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         hasRotor = pHasRotor;
         rotorDir = fDir;
     }
+
+    public ForgeDirection getRotorDir() {
+        return rotorDir;
+    }
 }
