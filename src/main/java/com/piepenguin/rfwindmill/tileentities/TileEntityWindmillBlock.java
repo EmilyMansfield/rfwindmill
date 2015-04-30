@@ -3,6 +3,7 @@ package com.piepenguin.rfwindmill.tileentities;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import com.piepenguin.rfwindmill.blocks.RotorBlock;
+import com.piepenguin.rfwindmill.blocks.WindmillBlock;
 import com.piepenguin.rfwindmill.lib.EnergyStorage;
 import com.piepenguin.rfwindmill.lib.Util;
 import net.minecraft.block.Block;
@@ -93,13 +94,20 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         storage.modifyEnergyStored(getEnergyGeneration());
     }
 
-    private int getTunnelOneSidedLength(ForgeDirection pDirection) {
+    private int getTunnelLengthSingleBlock(int pX, int pY, int pZ, ForgeDirection pDirection) {
         for(int i = 1; i <= tunnelRange; ++i) {
-            Block block = worldObj.getBlock(
-                    xCoord + pDirection.offsetX * i,
-                    yCoord + pDirection.offsetY * i,
-                    zCoord + pDirection.offsetZ * i);
-            if(block == null || (block.getMaterial() != Material.air && !(block instanceof RotorBlock))) {
+            int dx = pX + pDirection.offsetX * i;
+            int dy = pY + pDirection.offsetY * i;
+            int dz = pZ + pDirection.offsetZ * i;
+            // Ignore vertical middle column
+            if(dx == 0 && dz == 0) {
+                continue;
+            }
+            Block block = worldObj.getBlock(dx, dy, dz);
+            if(block == null || (block.getMaterial() != Material.air &&
+                    !(block instanceof RotorBlock) &&
+                    !(block instanceof WindmillBlock)
+            )) {
                 return i-1;
             }
         }
@@ -107,11 +115,39 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return tunnelRange;
     }
 
-    private int getTunnelLength() {
-        int rangeA = getTunnelOneSidedLength(rotorDir);
-        int rangeB = getTunnelOneSidedLength(rotorDir.getOpposite());
+    private int getTunnelLengthTwoSided(int pX, int pY, int pZ, ForgeDirection pDirection) {
+        int rangeA = getTunnelLengthSingleBlock(pX, pY, pZ, pDirection);
+        int rangeB = getTunnelLengthSingleBlock(pX, pY, pZ, pDirection.getOpposite());
 
         return Math.min(rangeA, rangeB);
+    }
+
+    private int getTunnelLength() {
+        int range = 10;
+        // If rotor dir is north or south then check xy plane
+        if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.SOUTH) {
+            for (int x = -1; x <= 1; ++x) {
+                for (int y = -1; y <= 1; ++y) {
+                    int r = getTunnelLengthTwoSided(xCoord + x, yCoord + y, zCoord, rotorDir);
+                    if (r < range) {
+                        range = r;
+                    }
+                }
+            }
+        }
+        // Terrible lack of code reuse, better way?
+        else {
+            // Check yz plane
+            for (int z = -1; z <= 1; ++z) {
+                for (int y = -1; y <= 1; ++y) {
+                    int r = getTunnelLengthTwoSided(xCoord, yCoord + y, zCoord + z, rotorDir);
+                    if (r < range) {
+                        range = r;
+                    }
+                }
+            }
+        }
+        return range;
     }
 
     private void transferEnergy() {
