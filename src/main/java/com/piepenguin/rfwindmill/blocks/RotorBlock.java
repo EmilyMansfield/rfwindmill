@@ -50,12 +50,14 @@ public class RotorBlock extends BlockContainer {
     public void onBlockHarvested(World pWorld, int pX, int pY, int pZ, int pSide, EntityPlayer pPlayer) {
         // Tell the parent windmill block that it no longer has a rotor
         TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock)pWorld.getTileEntity(pX, pY, pZ);
-        ForgeDirection rotorDir = Util.intToDirection(rotorEntity.getBlockMetadata()).getOpposite();
-        int parentX = pX + rotorDir.offsetX;
-        int parentY = pY + rotorDir.offsetY;
-        int parentZ = pZ + rotorDir.offsetZ;
-        TileEntityWindmillBlock windmillEntity = (TileEntityWindmillBlock)pWorld.getTileEntity(parentX, parentY, parentZ);
-        windmillEntity.setRotor(false, ForgeDirection.NORTH);
+        if(rotorEntity != null) {
+            ForgeDirection rotorDir = Util.intToDirection(rotorEntity.getBlockMetadata()).getOpposite();
+            int parentX = pX + rotorDir.offsetX;
+            int parentY = pY + rotorDir.offsetY;
+            int parentZ = pZ + rotorDir.offsetZ;
+            TileEntityWindmillBlock windmillEntity = (TileEntityWindmillBlock) pWorld.getTileEntity(parentX, parentY, parentZ);
+            windmillEntity.setRotor(false, ForgeDirection.NORTH);
+        }
         dismantle(pWorld, pX, pY, pZ);
     }
 
