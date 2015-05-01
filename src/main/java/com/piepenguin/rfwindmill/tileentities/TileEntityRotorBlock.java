@@ -15,13 +15,13 @@ public class TileEntityRotorBlock extends TileEntity {
     @Override
     public void updateEntity() {
         if(worldObj.isRemote) {
-            ForgeDirection rotorDir = Util.intToDirection(getBlockMetadata()).getOpposite();
-            int parentX = xCoord + rotorDir.offsetX;
-            int parentY = yCoord + rotorDir.offsetY;
-            int parentZ = zCoord + rotorDir.offsetZ;
+            ForgeDirection turbineDir = Util.intToDirection(getBlockMetadata()).getOpposite();
+            int parentX = xCoord + turbineDir.offsetX;
+            int parentY = yCoord + turbineDir.offsetY;
+            int parentZ = zCoord + turbineDir.offsetZ;
             TileEntityWindmillBlock entity = (TileEntityWindmillBlock)worldObj.getTileEntity(parentX, parentY, parentZ);
             if(entity != null) {
-                rotation += entity.getTheoreticalEnergyGeneration() / entity.getMaximumEnergyGeneration();
+                rotation += entity.getCurrentEnergyGeneration() / entity.getMaximumEnergyGeneration();
             }
             scale = 1.0f;
         }

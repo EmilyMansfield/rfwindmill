@@ -9,6 +9,9 @@ import com.piepenguin.rfwindmill.lib.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -21,7 +24,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private static final String NBT_MAXIMUM_ENERGY_GENERATION = "RFWMaximumEnergyGeneration";
     private static final String NBT_HAS_ROTOR =  "RFWHasRotor";
     private static final String NBT_ROTOR_DIR = "RFWRotorDir";
+    private static final String NBT_CURRENT_ENERGY_GENERATION = "RFWCurrentEnergyGeneration";
     private int maximumEnergyGeneration;
+    private float currentEnergyGeneration;
+    private float oldEnergyGeneration = 0.0f;
     private boolean hasRotor;
     private ForgeDirection rotorDir;
 
@@ -54,12 +60,21 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         }
     }
 
+    public void readSyncableDataFromNBT(NBTTagCompound pNbt) {
+        currentEnergyGeneration = pNbt.getFloat(NBT_CURRENT_ENERGY_GENERATION);
+    }
+
+    public void writeSyncableDataToNBT(NBTTagCompound pNbt) {
+        pNbt.setFloat(NBT_CURRENT_ENERGY_GENERATION, currentEnergyGeneration);
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound pNbt) {
         super.readFromNBT(pNbt);
         maximumEnergyGeneration = pNbt.getInteger(NBT_MAXIMUM_ENERGY_GENERATION);
         hasRotor = pNbt.getBoolean(NBT_HAS_ROTOR);
         rotorDir = Util.intToDirection(pNbt.getInteger(NBT_ROTOR_DIR));
+        readSyncableDataFromNBT(pNbt);
         storage.readFromNBT(pNbt);
     }
 
@@ -69,7 +84,21 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         pNbt.setInteger(NBT_MAXIMUM_ENERGY_GENERATION, maximumEnergyGeneration);
         pNbt.setBoolean(NBT_HAS_ROTOR, hasRotor);
         pNbt.setInteger(NBT_ROTOR_DIR, Util.directionToInt(rotorDir));
+        writeSyncableDataToNBT(pNbt);
         storage.writeToNBT(pNbt);
+    }
+
+    @Override
+    public Packet getDescriptionPacket() {
+        NBTTagCompound syncData = new NBTTagCompound();
+        writeSyncableDataToNBT(syncData);
+
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, syncData);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager pNet, S35PacketUpdateTileEntity pPacket) {
+        readSyncableDataFromNBT(pPacket.func_148857_g());
     }
 
     public float getEnergyGeneration() {
@@ -90,8 +119,19 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return maximumEnergyGeneration;
     }
 
+    public float getCurrentEnergyGeneration() {
+        return currentEnergyGeneration;
+    }
+
     private void generateEnergy() {
-        storage.modifyEnergyStored(getEnergyGeneration());
+        currentEnergyGeneration = getEnergyGeneration();
+        // Amount of energy generated has changed so sync with server
+        if((int)currentEnergyGeneration != (int)oldEnergyGeneration) {
+            oldEnergyGeneration = currentEnergyGeneration;
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            markDirty();
+        }
+        storage.modifyEnergyStored(currentEnergyGeneration);
     }
 
     private int getTunnelLengthSingleBlock(int pX, int pY, int pZ, ForgeDirection pDirection) {
@@ -99,10 +139,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             int dx = pX + pDirection.offsetX * i;
             int dy = pY + pDirection.offsetY * i;
             int dz = pZ + pDirection.offsetZ * i;
-            // Ignore vertical middle column
-            if(dx == 0 && dz == 0) {
-                continue;
-            }
             Block block = worldObj.getBlock(dx, dy, dz);
             if(block == null || (block.getMaterial() != Material.air &&
                     !(block instanceof RotorBlock) &&
@@ -123,13 +159,13 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     }
 
     private int getTunnelLength() {
-        int range = 10;
+        int range = tunnelRange;
         // If rotor dir is north or south then check xy plane
         if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.SOUTH) {
-            for (int x = -1; x <= 1; ++x) {
-                for (int y = -1; y <= 1; ++y) {
+            for(int x = -1; x <= 1; ++x) {
+                for(int y = -1; y <= 1; ++y) {
                     int r = getTunnelLengthTwoSided(xCoord + x, yCoord + y, zCoord, rotorDir);
-                    if (r < range) {
+                    if(r < range) {
                         range = r;
                     }
                 }
@@ -138,10 +174,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         // Terrible lack of code reuse, better way?
         else {
             // Check yz plane
-            for (int z = -1; z <= 1; ++z) {
-                for (int y = -1; y <= 1; ++y) {
+            for(int z = -1; z <= 1; ++z) {
+                for(int y = -1; y <= 1; ++y) {
                     int r = getTunnelLengthTwoSided(xCoord, yCoord + y, zCoord + z, rotorDir);
-                    if (r < range) {
+                    if(r < range) {
                         range = r;
                     }
                 }
