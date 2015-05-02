@@ -10,13 +10,9 @@ public class Util {
 
     public static boolean hasWrench(EntityPlayer pPlayer, int pX, int pY, int pZ) {
         ItemStack tool = pPlayer.getCurrentEquippedItem();
-        if(tool != null) {
-            return (ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") &&
+        return tool != null && (ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") &&
                     (tool.getItem() instanceof IToolWrench) &&
                     ((IToolWrench)tool.getItem()).canWrench(pPlayer, pX, pY, pZ));
-
-        }
-        return false;
     }
 
     public static ForgeDirection intToDirection(int pDir) {
