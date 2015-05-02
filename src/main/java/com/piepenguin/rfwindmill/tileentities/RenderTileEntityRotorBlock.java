@@ -13,7 +13,7 @@ public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
 
     private static ResourceLocation[] textures = {
             new ResourceLocation(Constants.MODID, "models/RotorBlockIronTexture.png"),
-            new ResourceLocation(Constants.MODID, "models/RotorBlockElectrumTexure.png"),
+            new ResourceLocation(Constants.MODID, "models/RotorBlockElectrumTexture.png"),
             new ResourceLocation(Constants.MODID, "models/RotorBlockSignalumTexture.png"),
             new ResourceLocation(Constants.MODID, "models/RotorBlockEnderiumTexture.png"),
             new ResourceLocation(Constants.MODID, "models/RotorBlockNetherTexture.png"),

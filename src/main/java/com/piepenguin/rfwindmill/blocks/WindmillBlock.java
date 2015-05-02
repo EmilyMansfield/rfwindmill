@@ -2,6 +2,7 @@ package com.piepenguin.rfwindmill.blocks;
 
 import com.google.common.base.Preconditions;
 import com.piepenguin.rfwindmill.items.ModItems;
+import com.piepenguin.rfwindmill.items.RFWItem;
 import com.piepenguin.rfwindmill.lib.*;
 import com.piepenguin.rfwindmill.tileentities.TileEntityRotorBlock;
 import com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock;
@@ -95,7 +96,10 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
             }
             else {
                 ItemStack equippedItem = pPlayer.getCurrentEquippedItem();
-                if(equippedItem != null && equippedItem.getItem() == ModItems.rotor1) {
+                if(equippedItem != null && (equippedItem.getItem() == ModItems.rotor1 ||
+                        equippedItem.getItem() == ModItems.rotor2 ||
+                        equippedItem.getItem() == ModItems.rotor3 ||
+                        equippedItem.getItem() == ModItems.rotor4)) {
                     int direction = MathHelper.floor_double((double) (pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
                     ForgeDirection fDirection = Util.intToDirection(direction);
                     int dx = pX + fDirection.offsetX;
@@ -104,10 +108,23 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                     TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
                     if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection) && !entity.hasRotor()) {
                         // Attach the rotor to the windmill
+                        RFWItem equippedRotor = (RFWItem)equippedItem.getItem();
                         pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
                         pWorld.setBlockMetadataWithNotify(dx, dy, dz, direction, 2);
                         TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock)pWorld.getTileEntity(dx, dy, dz);
-                        rotorEntity.setTexture(rotorEntity.getTexture());
+                        // No arbitrary switch statements :(
+                        if(equippedRotor == ModItems.rotor1) {
+                            rotorEntity.setTexture(0);
+                        }
+                        else if(equippedRotor == ModItems.rotor2) {
+                            rotorEntity.setTexture(1);
+                        }
+                        else if(equippedRotor == ModItems.rotor3) {
+                            rotorEntity.setTexture(Util.useThermalExpansion() ? 2 : 4);
+                        }
+                        else if(equippedRotor == ModItems.rotor4) {
+                            rotorEntity.setTexture(Util.useThermalExpansion() ? 3 : 5);
+                        }
                         // Tell windmill entity that it has a rotor attached
                         entity.setRotor(true, fDirection);
                         // Remove rotor from player's inventory

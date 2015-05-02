@@ -1,6 +1,7 @@
 package com.piepenguin.rfwindmill.lib;
 
 import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModAPIManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -45,5 +46,9 @@ public class Util {
             return 3;
         else
             return 0;
+    }
+
+    public static boolean useThermalExpansion() {
+        return Loader.isModLoaded(Constants.THERMAL_EXPANSION_MOD_ID) && !ModConfiguration.useVanillaRecipes();
     }
 }
