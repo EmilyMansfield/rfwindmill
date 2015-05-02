@@ -1,6 +1,9 @@
 package com.piepenguin.rfwindmill.blocks;
 
+import com.google.common.base.Preconditions;
+import com.piepenguin.rfwindmill.items.ModItems;
 import com.piepenguin.rfwindmill.lib.*;
+import com.piepenguin.rfwindmill.tileentities.TileEntityRotorBlock;
 import com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -20,6 +23,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class WindmillBlock extends Block implements ITileEntityProvider {
 
@@ -28,7 +32,6 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     protected final int capacity;
 
     private String name;
-    private IIcon frontIcon;
     private IIcon sideIcon;
 
     public WindmillBlock(String pName, int pMaximumEnergyGeneration, int pCapacity) {
@@ -47,21 +50,11 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     @Override
     public void registerBlockIcons(IIconRegister pIconRegister) {
         sideIcon = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
-        frontIcon = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Front");
     }
 
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int pSide, int pMeta) {
-        switch(pSide) {
-            case 0: case 1:
-                return sideIcon;
-            case 2: case 3:
-                return (pMeta == 0 || pMeta == 2) ? frontIcon : sideIcon;
-            case 4: case 5:
-                return (pMeta == 1 || pMeta == 3) ? frontIcon : sideIcon;
-            default:
-                return sideIcon;
-        }
+        return sideIcon;
     }
 
     @Override
@@ -101,11 +94,28 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                 }
             }
             else {
-                if(Util.hasWrench(pPlayer, pX, pY, pZ)) {
-                    // Orient the block to face the player
+                ItemStack equippedItem = pPlayer.getCurrentEquippedItem();
+                if(equippedItem != null && equippedItem.getItem() == ModItems.rotor1) {
                     int direction = MathHelper.floor_double((double) (pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
-                    pWorld.setBlockMetadataWithNotify(pX, pY, pZ, direction, 2);
-                    return true;
+                    ForgeDirection fDirection = Util.intToDirection(direction);
+                    int dx = pX + fDirection.offsetX;
+                    int dy = pY + fDirection.offsetY;
+                    int dz = pZ + fDirection.offsetZ;
+                    TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
+                    if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection) && !entity.hasRotor()) {
+                        // Attach the rotor to the windmill
+                        pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
+                        pWorld.setBlockMetadataWithNotify(dx, dy, dz, direction, 2);
+                        // Tell windmill entity that it has a rotor attached
+                        entity.setRotor(true, fDirection);
+                        // Remove rotor from player's inventory
+                        if(equippedItem.stackSize > 1) {
+                            equippedItem.stackSize -= 1;
+                        }
+                        else {
+                            pPlayer.destroyCurrentEquippedItem();
+                        }
+                    } // Brace cascade of shame
                 }
             }
         }
@@ -120,9 +130,20 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     }
 
     private void dismantle(World pWorld, int pX, int pY, int pZ) {
-        ItemStack itemStack = new ItemStack(this);
-
+        // Remove the attached rotor, if there is one
         TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
+        Preconditions.checkNotNull(entity);
+        if(entity.hasRotor()) {
+            ForgeDirection dir = entity.getRotorDir();
+            RotorBlock rotor = (RotorBlock)pWorld.getBlock(
+                    pX + dir.offsetX,
+                    pY + dir.offsetY,
+                    pZ + dir.offsetZ);
+            rotor.dismantle(pWorld, pX + dir.offsetX, pY + dir.offsetY, pZ + dir.offsetZ);
+        }
+
+        // Remove the actual turbine and drop it
+        ItemStack itemStack = new ItemStack(this);
         int energy = entity.getEnergyStored();
         if(energy > 0) {
             if(itemStack.getTagCompound() == null) {

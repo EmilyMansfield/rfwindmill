@@ -9,6 +9,7 @@ public class ModBlocks {
     public static Block windmillBlock2;
     public static Block windmillBlock3;
     public static Block windmillBlock4;
+    public static Block rotorBlock1;
 
     public static void init() {
         int[] energyGeneration = ModConfiguration.getWindmillEnergyGeneration();
@@ -17,5 +18,6 @@ public class ModBlocks {
         windmillBlock2 = new WindmillBlock("windmillBlock2", energyGeneration[1], energyStorage[1]);
         windmillBlock3 = new WindmillBlock("windmillBlock3", energyGeneration[2], energyStorage[2]);
         windmillBlock4 = new WindmillBlock("windmillBlock4", energyGeneration[3], energyStorage[3]);
+        rotorBlock1 = new RotorBlock();
     }
 }
