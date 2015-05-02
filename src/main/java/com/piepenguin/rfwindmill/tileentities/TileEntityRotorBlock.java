@@ -8,6 +8,7 @@ public class TileEntityRotorBlock extends TileEntity {
 
     private float rotation = 0.0f;
     private float scale = 0.0f;
+    private int texture = 0;
     public static String publicName = "tileEntityRotorBlock";
 
     @Override
@@ -31,5 +32,13 @@ public class TileEntityRotorBlock extends TileEntity {
 
     public float getScale() {
         return scale;
+    }
+
+    public int getTexture() {
+        return texture;
+    }
+
+    public void setTexture(int pTexture) {
+        texture = pTexture;
     }
 }

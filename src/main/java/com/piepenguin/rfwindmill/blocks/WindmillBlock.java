@@ -106,6 +106,8 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                         // Attach the rotor to the windmill
                         pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
                         pWorld.setBlockMetadataWithNotify(dx, dy, dz, direction, 2);
+                        TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock)pWorld.getTileEntity(dx, dy, dz);
+                        rotorEntity.setTexture(rotorEntity.getTexture());
                         // Tell windmill entity that it has a rotor attached
                         entity.setRotor(true, fDirection);
                         // Remove rotor from player's inventory
