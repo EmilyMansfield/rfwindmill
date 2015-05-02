@@ -1,7 +1,5 @@
 package com.piepenguin.rfwindmill.tileentities;
 
-import com.piepenguin.rfwindmill.blocks.RotorBlock;
-import com.piepenguin.rfwindmill.blocks.WindmillBlock;
 import com.piepenguin.rfwindmill.lib.Util;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
