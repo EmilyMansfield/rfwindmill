@@ -113,20 +113,22 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                         pWorld.setBlockMetadataWithNotify(dx, dy, dz, direction, 2);
                         TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock)pWorld.getTileEntity(dx, dy, dz);
                         // No arbitrary switch statements :(
+                        int rotorType = -1;
                         if(equippedRotor == ModItems.rotor1) {
-                            rotorEntity.setType(0);
+                            rotorType = 0;
                         }
                         else if(equippedRotor == ModItems.rotor2) {
-                            rotorEntity.setType(1);
+                            rotorType = 1;
                         }
                         else if(equippedRotor == ModItems.rotor3) {
-                            rotorEntity.setType(2);
+                            rotorType = 2;
                         }
                         else if(equippedRotor == ModItems.rotor4) {
-                            rotorEntity.setType(3);
+                            rotorType = 3;
                         }
-                        // Tell windmill entity that it has a rotor attached
-                        entity.setRotor(true, fDirection);
+                        // Tell entities the rotor type
+                        rotorEntity.setType(rotorType);
+                        entity.setRotor(rotorType, fDirection);
                         // Remove rotor from player's inventory
                         if(equippedItem.stackSize > 1) {
                             equippedItem.stackSize -= 1;

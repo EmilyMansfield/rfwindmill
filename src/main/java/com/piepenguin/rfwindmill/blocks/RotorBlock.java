@@ -52,7 +52,7 @@ public class RotorBlock extends BlockContainer {
             int parentY = pY + rotorDir.offsetY;
             int parentZ = pZ + rotorDir.offsetZ;
             TileEntityWindmillBlock windmillEntity = (TileEntityWindmillBlock)pWorld.getTileEntity(parentX, parentY, parentZ);
-            windmillEntity.setRotor(false, ForgeDirection.NORTH);
+            windmillEntity.setRotor(-1, ForgeDirection.NORTH);
         }
         dismantle(pWorld, pX, pY, pZ);
     }
