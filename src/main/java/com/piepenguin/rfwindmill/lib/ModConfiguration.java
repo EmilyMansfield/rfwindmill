@@ -13,6 +13,8 @@ public class ModConfiguration {
     private static int[] windmillEnergyGeneration = new int[4];
     private static int[] windmillEnergyStorage = new int[4];
     private static int windmillEnergyTransferMultiplier;
+    // Config has no getFloat()
+    private static double[] rotorEnergyMultiplier = new double[4];
 
     public static void init(File pConfigFile) {
         if(pConfigFile != null) {
@@ -55,6 +57,19 @@ public class ModConfiguration {
         windmillEnergyTransferMultiplier = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillEnergyTransferMultiplier",
                 40).getInt();
+        rotorEnergyMultiplier[0] = config.get(Configuration.CATEGORY_GENERAL,
+                "RotorBasicEnergyMultiplier",
+                0.75).getDouble();
+        rotorEnergyMultiplier[1] = config.get(Configuration.CATEGORY_GENERAL,
+                "RotorHardenedEnergyMultiplier",
+                1.00).getDouble();
+        rotorEnergyMultiplier[2] = config.get(Configuration.CATEGORY_GENERAL,
+                "RotorReinforcedEnergyMultiplier",
+                1.25).getDouble();
+        rotorEnergyMultiplier[3] = config.get(Configuration.CATEGORY_GENERAL,
+                "RotorResonantEnergyMultiplier",
+                1.50).getDouble();
+
         if(config.hasChanged()) {
             config.save();
         }
@@ -74,5 +89,9 @@ public class ModConfiguration {
 
     public static int getWindmillEnergyTransferMultiplier() {
         return windmillEnergyTransferMultiplier;
+    }
+
+    public static float getRotorEnergyMultiplier(int pType) {
+        return (float)rotorEnergyMultiplier[pType];
     }
 }

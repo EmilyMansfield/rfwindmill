@@ -2,14 +2,13 @@ package com.piepenguin.rfwindmill.items;
 
 import com.piepenguin.rfwindmill.lib.Constants;
 import cpw.mods.fml.common.Loader;
-import net.minecraft.item.Item;
 
 public final class ModItems {
 
-    public static Item rotor1;
-    public static Item rotor2;
-    public static Item rotor3;
-    public static Item rotor4;
+    public static RFWItem rotor1;
+    public static RFWItem rotor2;
+    public static RFWItem rotor3;
+    public static RFWItem rotor4;
 
     public static void init() {
         rotor1 = new RFWItem("rotorIron");

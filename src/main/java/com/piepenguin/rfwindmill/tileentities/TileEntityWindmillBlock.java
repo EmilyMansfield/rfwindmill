@@ -5,6 +5,7 @@ import cofh.api.energy.IEnergyReceiver;
 import com.piepenguin.rfwindmill.blocks.RotorBlock;
 import com.piepenguin.rfwindmill.blocks.WindmillBlock;
 import com.piepenguin.rfwindmill.lib.EnergyStorage;
+import com.piepenguin.rfwindmill.lib.ModConfiguration;
 import com.piepenguin.rfwindmill.lib.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -22,13 +23,13 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private static final int minHeight = 60;
     private static final int maxHeight = 100;
     private static final String NBT_MAXIMUM_ENERGY_GENERATION = "RFWMaximumEnergyGeneration";
-    private static final String NBT_HAS_ROTOR =  "RFWHasRotor";
+    private static final String NBT_ROTOR_TYPE =  "RFWRotorType";
     private static final String NBT_ROTOR_DIR = "RFWRotorDir";
     private static final String NBT_CURRENT_ENERGY_GENERATION = "RFWCurrentEnergyGeneration";
     private int maximumEnergyGeneration;
     private float currentEnergyGeneration;
     private float oldEnergyGeneration = 0.0f;
-    private boolean hasRotor;
+    private int rotorType; // -1 if no rotor
     private ForgeDirection rotorDir;
 
     public static final String publicName = "tileEntityWindmillBlock";
@@ -41,7 +42,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     public TileEntityWindmillBlock(int pMaximumEnergyGeneration, int pMaximumEnergyTransfer, int pCapacity) {
         storage = new EnergyStorage(pCapacity, pMaximumEnergyTransfer);
         maximumEnergyGeneration = pMaximumEnergyGeneration;
-        hasRotor = false;
+        rotorType = -1;
         rotorDir = ForgeDirection.NORTH;
     }
 
@@ -72,7 +73,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     public void readFromNBT(NBTTagCompound pNbt) {
         super.readFromNBT(pNbt);
         maximumEnergyGeneration = pNbt.getInteger(NBT_MAXIMUM_ENERGY_GENERATION);
-        hasRotor = pNbt.getBoolean(NBT_HAS_ROTOR);
+        rotorType = pNbt.getInteger(NBT_ROTOR_TYPE);
         rotorDir = Util.intToDirection(pNbt.getInteger(NBT_ROTOR_DIR));
         readSyncableDataFromNBT(pNbt);
         storage.readFromNBT(pNbt);
@@ -82,7 +83,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     public void writeToNBT(NBTTagCompound pNbt) {
         super.writeToNBT(pNbt);
         pNbt.setInteger(NBT_MAXIMUM_ENERGY_GENERATION, maximumEnergyGeneration);
-        pNbt.setBoolean(NBT_HAS_ROTOR, hasRotor);
+        pNbt.setInteger(NBT_ROTOR_TYPE, rotorType);
         pNbt.setInteger(NBT_ROTOR_DIR, Util.directionToInt(rotorDir));
         writeSyncableDataToNBT(pNbt);
         storage.writeToNBT(pNbt);
@@ -112,7 +113,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
         float heightModifier = (float)Math.min(Math.max(yCoord - minHeight, 0), deltaHeight) / (float)deltaHeight;
 
-        return maximumEnergyGeneration * getTunnelLength() * heightModifier * 0.5f;
+        return maximumEnergyGeneration * getTunnelLength() * heightModifier * 0.4f * ModConfiguration.getRotorEnergyMultiplier(rotorType);
     }
 
     public int getMaximumEnergyGeneration() {
@@ -237,12 +238,12 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     }
 
     public boolean hasRotor() {
-        return hasRotor;
+        return rotorType >= 0;
     }
 
     // fDir points towards the rotor
-    public void setRotor(boolean pHasRotor, ForgeDirection fDir) {
-        hasRotor = pHasRotor;
+    public void setRotor(int pRotorType, ForgeDirection fDir) {
+        rotorType = pRotorType;
         rotorDir = fDir;
     }
 
