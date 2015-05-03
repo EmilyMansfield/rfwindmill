@@ -2,6 +2,7 @@ package com.piepenguin.rfwindmill.tileentities;
 
 import com.piepenguin.rfwindmill.items.ModItems;
 import com.piepenguin.rfwindmill.items.RFWItem;
+import com.piepenguin.rfwindmill.lib.ModConfiguration;
 import com.piepenguin.rfwindmill.lib.Util;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -83,6 +84,9 @@ public class TileEntityRotorBlock extends TileEntity {
     }
 
     public int getTexture() {
+        if(ModConfiguration.useIronRotorTexture()) {
+            return 0;
+        }
         switch(type) {
             default:
             case 0:

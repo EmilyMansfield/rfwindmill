@@ -10,6 +10,7 @@ public class ModConfiguration {
 
     private static Configuration config;
     private static boolean forceVanillaRecipes;
+    private static boolean forceIronRotor;
     private static int[] windmillEnergyGeneration = new int[4];
     private static int[] windmillEnergyStorage = new int[4];
     private static int windmillEnergyTransferMultiplier;
@@ -30,6 +31,10 @@ public class ModConfiguration {
                 "ForceVanillaRecipes",
                 false,
                 "Ignore Thermal Expansion and use Vanilla recipes instead").getBoolean();
+        forceIronRotor = config.get(Configuration.CATEGORY_GENERAL,
+                "ForceIronRotorTexture",
+                false,
+                "Use the iron rotor texture regardless of the rotor material").getBoolean();
         windmillEnergyGeneration[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEnergyGeneration",
                 1).getInt();
@@ -77,6 +82,10 @@ public class ModConfiguration {
 
     public static boolean useVanillaRecipes() {
         return forceVanillaRecipes;
+    }
+
+    public static boolean useIronRotorTexture() {
+        return forceIronRotor;
     }
 
     public static int[] getWindmillEnergyGeneration() {
