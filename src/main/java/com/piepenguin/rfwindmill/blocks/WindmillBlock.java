@@ -114,16 +114,16 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                         TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock)pWorld.getTileEntity(dx, dy, dz);
                         // No arbitrary switch statements :(
                         if(equippedRotor == ModItems.rotor1) {
-                            rotorEntity.setTexture(0);
+                            rotorEntity.setType(0);
                         }
                         else if(equippedRotor == ModItems.rotor2) {
-                            rotorEntity.setTexture(1);
+                            rotorEntity.setType(1);
                         }
                         else if(equippedRotor == ModItems.rotor3) {
-                            rotorEntity.setTexture(Util.useThermalExpansion() ? 2 : 4);
+                            rotorEntity.setType(2);
                         }
                         else if(equippedRotor == ModItems.rotor4) {
-                            rotorEntity.setTexture(Util.useThermalExpansion() ? 3 : 5);
+                            rotorEntity.setType(3);
                         }
                         // Tell windmill entity that it has a rotor attached
                         entity.setRotor(true, fDirection);

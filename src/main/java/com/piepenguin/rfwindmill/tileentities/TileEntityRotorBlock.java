@@ -1,5 +1,7 @@
 package com.piepenguin.rfwindmill.tileentities;
 
+import com.piepenguin.rfwindmill.items.ModItems;
+import com.piepenguin.rfwindmill.items.RFWItem;
 import com.piepenguin.rfwindmill.lib.Util;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -12,8 +14,8 @@ public class TileEntityRotorBlock extends TileEntity {
 
     private float rotation = 0.0f;
     private float scale = 0.0f;
-    private static final String NBT_TEXTURE = "RFWRotorTexture";
-    private int texture = 0;
+    private static final String NBT_ROTOR_TYPE = "RFWRotorType";
+    private int type = 0;
     public static String publicName = "tileEntityRotorBlock";
 
     @Override
@@ -32,11 +34,11 @@ public class TileEntityRotorBlock extends TileEntity {
     }
 
     public void readSyncableDataFromNBT(NBTTagCompound pNbt) {
-        texture = pNbt.getInteger(NBT_TEXTURE);
+        type = pNbt.getInteger(NBT_ROTOR_TYPE);
     }
 
     public void writeSyncableDataToNBT(NBTTagCompound pNbt) {
-        pNbt.setInteger(NBT_TEXTURE, texture);
+        pNbt.setInteger(NBT_ROTOR_TYPE, type);
     }
 
     @Override
@@ -72,11 +74,39 @@ public class TileEntityRotorBlock extends TileEntity {
         return scale;
     }
 
-    public int getTexture() {
-        return texture;
+    public int getType() {
+        return type;
     }
 
-    public void setTexture(int pTexture) {
-        texture = pTexture;
+    public void setType(int pType) {
+        type = pType;
+    }
+
+    public int getTexture() {
+        switch(type) {
+            default:
+            case 0:
+                return 0;
+            case 1:
+                return 1;
+            case 2:
+                return Util.useThermalExpansion() ? 2 : 4;
+            case 3:
+                return Util.useThermalExpansion() ? 3 : 5;
+        }
+    }
+
+    public RFWItem getRotorItem() {
+        switch(type) {
+            default:
+            case 0:
+                return ModItems.rotor1;
+            case 1:
+                return ModItems.rotor2;
+            case 2:
+                return ModItems.rotor3;
+            case 3:
+                return ModItems.rotor4;
+        }
     }
 }

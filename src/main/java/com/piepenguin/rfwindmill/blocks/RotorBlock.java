@@ -1,8 +1,6 @@
 package com.piepenguin.rfwindmill.blocks;
 
-import com.piepenguin.rfwindmill.items.ModItems;
 import com.piepenguin.rfwindmill.lib.Constants;
-import com.piepenguin.rfwindmill.lib.EnergyStorage;
 import com.piepenguin.rfwindmill.lib.Util;
 import com.piepenguin.rfwindmill.tileentities.TileEntityRotorBlock;
 import com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock;
@@ -12,9 +10,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -62,7 +58,8 @@ public class RotorBlock extends BlockContainer {
     }
 
     public void dismantle(World pWorld, int pX, int pY, int pZ) {
-        ItemStack itemStack = new ItemStack(ModItems.rotor1);
+        TileEntityRotorBlock entity = (TileEntityRotorBlock)pWorld.getTileEntity(pX, pY, pZ);
+        ItemStack itemStack = new ItemStack(entity.getRotorItem());
         // Delete the block
         pWorld.setBlockToAir(pX, pY, pZ);
         // Drop the item
