@@ -5,6 +5,7 @@ import cofh.api.energy.IEnergyReceiver;
 import com.piepenguin.rfwindmill.blocks.RotorBlock;
 import com.piepenguin.rfwindmill.blocks.WindmillBlock;
 import com.piepenguin.rfwindmill.lib.EnergyStorage;
+import com.piepenguin.rfwindmill.lib.ModConfiguration;
 import com.piepenguin.rfwindmill.lib.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -112,7 +113,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
         float heightModifier = (float)Math.min(Math.max(yCoord - minHeight, 0), deltaHeight) / (float)deltaHeight;
 
-        return maximumEnergyGeneration * getTunnelLength() * heightModifier * 0.5f;
+        return maximumEnergyGeneration * getTunnelLength() * heightModifier * 0.4f * ModConfiguration.getRotorEnergyMultiplier(rotorType);
     }
 
     public int getMaximumEnergyGeneration() {
