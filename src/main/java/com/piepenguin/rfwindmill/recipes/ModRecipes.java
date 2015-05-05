@@ -27,7 +27,6 @@ public class ModRecipes {
 
     private static void registerCommonRecipes() {
         GameRegistry.addRecipe(new ShapedOreRecipe(ModItems.rotor1, "i  ", "iii", "  i", 'i', "ingotIron"));
-
     }
 
     private static void registerVanillaRecipes() {
@@ -38,10 +37,10 @@ public class ModRecipes {
         GameRegistry.addRecipe(new ShapedOreRecipe(ModItems.rotor3, "n  ", "non", "  n", 'n', Items.quartz, 'o', Blocks.obsidian));
         GameRegistry.addRecipe(new ShapedOreRecipe(ModItems.rotor4, "d  ", "dgd", "  d", 'd', "gemDiamond", 'g', "ingotGold"));
 
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock1, " x ", "ibi", "iri", 'x', ModItems.rotor1, 'i', ingotTin, 'r', "dustRedstone", 'b', "blockIron"));
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock2, " x ", "ibi", "iri", 'x', ModItems.rotor2, 'i', "ingotGold", 'r', "dustRedstone", 'b', "blockIron"));
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock3, " x ", "ibi", "oro", 'x', ModItems.rotor3, 'i', Blocks.quartz_block, 'o', Blocks.obsidian, 'r', "dustRedstone", 'b', "blockIron"));
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock4, " x ", "dbd", "iri", 'x', ModItems.rotor4, 'd', "gemDiamond", 'i', "ingotGold", 'r', "dustRedstone", 'b', "blockIron"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock1, " x ", "ibi", "iri", 'x', "dustRedstone", 'i', ingotTin, 'r', "dustRedstone", 'b', "blockIron"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock2, " x ", "ibi", "iri", 'x', "dustRedstone", 'i', "ingotGold", 'r', "dustRedstone", 'b', "blockIron"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock3, " x ", "ibi", "oro", 'x', "dustRedstone", 'i', Blocks.quartz_block, 'o', Blocks.obsidian, 'r', "dustRedstone", 'b', "blockIron"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock4, " x ", "dbd", "iri", 'x', "dustRedstone", 'd', "gemDiamond", 'i', "ingotGold", 'r', "dustRedstone", 'b', "blockIron"));
     }
 
     private static void registerThermalExpansionRecipes() {
@@ -56,10 +55,10 @@ public class ModRecipes {
         GameRegistry.addRecipe(new ShapedOreRecipe(ModItems.rotor3, "s  ", "ses", "  s", 's', "ingotSignalum", 'e', "ingotElectrum"));
         GameRegistry.addRecipe(new ShapedOreRecipe(ModItems.rotor4, "e  ", "eie", "  e", 'e', "ingotEnderium", 'i', "ingotInvar"));
 
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock1, " x ", "imi", " c ", 'x', ModItems.rotor1, 'i', "ingotTin", 'm', machineFrameBasic, 'c', powerCoilSilver));
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock2, " x ", "imi", " c ", 'x', ModItems.rotor2, 'i', "ingotInvar", 'm', machineFrameHardened, 'c', powerCoilSilver));
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock3, " x ", "imi", " c ", 'x', ModItems.rotor3, 'i', "ingotSilver", 'm', machineFrameReinforced, 'c', powerCoilSilver));
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock4, " x ", "imi", " c ", 'x', ModItems.rotor4, 'i', "ingotPlatinum", 'm', machineFrameResonant, 'c', powerCoilSilver));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock1, " x ", "imi", " c ", 'x', "dustRedstone", 'i', "ingotTin", 'm', machineFrameBasic, 'c', powerCoilSilver));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock2, " x ", "imi", " c ", 'x', "dustRedstone", 'i', "ingotInvar", 'm', machineFrameHardened, 'c', powerCoilSilver));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock3, " x ", "imi", " c ", 'x', "dustRedstone", 'i', "ingotSilver", 'm', machineFrameReinforced, 'c', powerCoilSilver));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock4, " x ", "imi", " c ", 'x', "dustRedstone", 'i', "ingotPlatinum", 'm', machineFrameResonant, 'c', powerCoilSilver));
     }
 
     public static String getOreWithFallback(String pOre, String pFallback) {
