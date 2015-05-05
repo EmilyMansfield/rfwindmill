@@ -37,10 +37,10 @@ public class ModRecipes {
         GameRegistry.addRecipe(new ShapedOreRecipe(ModItems.rotor3, "n  ", "non", "  n", 'n', Items.quartz, 'o', Blocks.obsidian));
         GameRegistry.addRecipe(new ShapedOreRecipe(ModItems.rotor4, "d  ", "dgd", "  d", 'd', "gemDiamond", 'g', "ingotGold"));
 
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock1, " x ", "ibi", "iri", 'x', "dustRedstone", 'i', ingotTin, 'r', "dustRedstone", 'b', "blockIron"));
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock2, " x ", "ibi", "iri", 'x', "dustRedstone", 'i', "ingotGold", 'r', "dustRedstone", 'b', "blockIron"));
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock3, " x ", "ibi", "oro", 'x', "dustRedstone", 'i', Blocks.quartz_block, 'o', Blocks.obsidian, 'r', "dustRedstone", 'b', "blockIron"));
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock4, " x ", "dbd", "iri", 'x', "dustRedstone", 'd', "gemDiamond", 'i', "ingotGold", 'r', "dustRedstone", 'b', "blockIron"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock1, " x ", "ibi", "ixi", 'x', "dustRedstone", 'i', ingotTin, 'b', "blockIron"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock2, " x ", "ibi", "ixi", 'x', "dustRedstone", 'i', "ingotGold", 'b', "blockIron"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock3, " x ", "ibi", "oxo", 'x', "dustRedstone", 'i', Blocks.quartz_block, 'o', Blocks.obsidian, 'b', "blockIron"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.windmillBlock4, " x ", "dbd", "ixi", 'x', "dustRedstone", 'd', "gemDiamond", 'i', "ingotGold", 'b', "blockIron"));
     }
 
     private static void registerThermalExpansionRecipes() {
