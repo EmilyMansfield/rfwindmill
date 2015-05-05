@@ -135,16 +135,18 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         storage.modifyEnergyStored(currentEnergyGeneration);
     }
 
-    private int getTunnelLengthSingleBlock(int pX, int pY, int pZ, ForgeDirection pDirection) {
+    private int getTunnelLengthSingleBlock(int pX, int pY, int pZ, ForgeDirection pDirection, boolean ignoreFirst) {
         for(int i = 1; i <= tunnelRange; ++i) {
             int dx = pX + pDirection.offsetX * i;
             int dy = pY + pDirection.offsetY * i;
             int dz = pZ + pDirection.offsetZ * i;
+            // Skip first block if specified
+            if(ignoreFirst && i == 1)
+            {
+                continue;
+            }
             Block block = worldObj.getBlock(dx, dy, dz);
-            if(block == null || (block.getMaterial() != Material.air &&
-                    !(block instanceof RotorBlock) &&
-                    !(block instanceof WindmillBlock)
-            )) {
+            if(block == null || (block.getMaterial() != Material.air)) {
                 return i-1;
             }
         }
@@ -152,9 +154,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return tunnelRange;
     }
 
-    private int getTunnelLengthTwoSided(int pX, int pY, int pZ, ForgeDirection pDirection) {
-        int rangeA = getTunnelLengthSingleBlock(pX, pY, pZ, pDirection);
-        int rangeB = getTunnelLengthSingleBlock(pX, pY, pZ, pDirection.getOpposite());
+    private int getTunnelLengthTwoSided(int pX, int pY, int pZ, ForgeDirection pDirection, boolean ignoreFirst) {
+        int rangeA = getTunnelLengthSingleBlock(pX, pY, pZ, pDirection, ignoreFirst);
+        // Only ignore block on the side the rotor is on
+        int rangeB = getTunnelLengthSingleBlock(pX, pY, pZ, pDirection.getOpposite(), false);
 
         return Math.min(rangeA, rangeB);
     }
@@ -165,7 +168,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.SOUTH) {
             for(int x = -1; x <= 1; ++x) {
                 for(int y = -1; y <= 1; ++y) {
-                    int r = getTunnelLengthTwoSided(xCoord + x, yCoord + y, zCoord, rotorDir);
+                    int r = getTunnelLengthTwoSided(xCoord + x, yCoord + y, zCoord, rotorDir, (x == 0 && y == 0));
                     if(r < range) {
                         range = r;
                     }
@@ -177,7 +180,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             // Check yz plane
             for(int z = -1; z <= 1; ++z) {
                 for(int y = -1; y <= 1; ++y) {
-                    int r = getTunnelLengthTwoSided(xCoord, yCoord + y, zCoord + z, rotorDir);
+                    int r = getTunnelLengthTwoSided(xCoord, yCoord + y, zCoord + z, rotorDir, (z == 0 && y == 0));
                     if(r < range) {
                         range = r;
                     }
