@@ -112,8 +112,14 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         if(deltaHeight <= 0) deltaHeight = 1;
 
         float heightModifier = (float)Math.min(Math.max(yCoord - minHeight, 0), deltaHeight) / (float)deltaHeight;
-
-        return maximumEnergyGeneration * getTunnelLength() * heightModifier * 0.4f * ModConfiguration.getRotorEnergyMultiplier(rotorType);
+        float weatherModifier = 1.0f;
+        if(worldObj.isThundering()) {
+            weatherModifier = ModConfiguration.getWeatherMultiplierThunder();
+        }
+        else if(worldObj.isRaining()) {
+            weatherModifier = ModConfiguration.getWeatherMultiplierRain();
+        }
+        return maximumEnergyGeneration * weatherModifier * getTunnelLength() * heightModifier * 0.4f * ModConfiguration.getRotorEnergyMultiplier(rotorType);
     }
 
     public int getMaximumEnergyGeneration() {

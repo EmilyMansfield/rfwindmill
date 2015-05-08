@@ -16,6 +16,8 @@ public class ModConfiguration {
     private static int windmillEnergyTransferMultiplier;
     // Config has no getFloat()
     private static double[] rotorEnergyMultiplier = new double[4];
+    private static double weatherMultiplierRain;
+    private static double weatherMultiplierThunder;
 
     public static void init(File pConfigFile) {
         if(pConfigFile != null) {
@@ -74,6 +76,12 @@ public class ModConfiguration {
         rotorEnergyMultiplier[3] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorResonantEnergyMultiplier",
                 1.50).getDouble();
+        weatherMultiplierRain = config.get(Configuration.CATEGORY_GENERAL,
+                "WeatherRainEnergyGenerationMultiplier",
+                1.2).getDouble();
+        weatherMultiplierThunder = config.get(Configuration.CATEGORY_GENERAL,
+                "WeatherThunderEnergyGenerationMultiplier",
+                1.5).getDouble();
 
         if(config.hasChanged()) {
             config.save();
@@ -102,5 +110,13 @@ public class ModConfiguration {
 
     public static float getRotorEnergyMultiplier(int pType) {
         return (float)rotorEnergyMultiplier[pType];
+    }
+
+    public static float getWeatherMultiplierRain() {
+        return (float)weatherMultiplierRain;
+    }
+
+    public static float getWeatherMultiplierThunder() {
+        return (float)weatherMultiplierThunder;
     }
 }
