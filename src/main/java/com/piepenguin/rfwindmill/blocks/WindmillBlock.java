@@ -31,20 +31,23 @@ import java.util.List;
 
 public class WindmillBlock extends Block implements ITileEntityProvider {
 
-    protected final int maximumEnergyGeneration;
-    protected final int maximumEnergyTransfer;
-    protected final int capacity;
+    protected final int[] maximumEnergyGeneration;
+    protected final int[] maximumEnergyTransfer;
+    protected final int[] capacity;
 
     private static final int maxMeta = 4;
     private String name;
     private IIcon[] icons;
 
-    public WindmillBlock(String pName, int pMaximumEnergyGeneration, int pCapacity) {
+    public WindmillBlock(String pName, int[] pMaximumEnergyGeneration, int[] pCapacity) {
         super(Material.rock);
         setHardness(3.5f);
         setStepSound(Block.soundTypeMetal);
         maximumEnergyGeneration = pMaximumEnergyGeneration;
-        maximumEnergyTransfer = pMaximumEnergyGeneration * ModConfiguration.getWindmillEnergyTransferMultiplier();
+        maximumEnergyTransfer = pMaximumEnergyGeneration;
+        for(int i = 0; i < pMaximumEnergyGeneration.length; ++i) {
+            maximumEnergyTransfer[i] *= ModConfiguration.getWindmillEnergyTransferMultiplier();
+        }
         capacity = pCapacity;
         name = pName;
         this.setBlockName(Constants.MODID + "_" + name);
@@ -67,7 +70,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
 
     @Override
     public TileEntity createNewTileEntity(World pWorld, int pMeta) {
-        return new TileEntityWindmillBlock(maximumEnergyGeneration, maximumEnergyTransfer, capacity);
+        return new TileEntityWindmillBlock(maximumEnergyGeneration[pMeta], maximumEnergyTransfer[pMeta], capacity[pMeta]);
     }
 
     @Override
@@ -90,8 +93,6 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
 
     @Override
     public void onBlockPlacedBy(World pWorld, int pX, int pY, int pZ, EntityLivingBase pEntity, ItemStack pItemStack) {
-        int direction = MathHelper.floor_double((double) (pEntity.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
-        pWorld.setBlockMetadataWithNotify(pX, pY, pZ, direction, 2);
         if(pItemStack.stackTagCompound != null) {
             TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
             entity.setEnergyStored(pItemStack.stackTagCompound.getInteger(EnergyStorage.NBT_ENERGY));
