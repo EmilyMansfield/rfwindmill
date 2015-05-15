@@ -49,7 +49,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         name = pName;
         this.setBlockName(Constants.MODID + "_" + name);
         this.setCreativeTab(CreativeTabs.tabBlock);
-        GameRegistry.registerBlock(this, name);
+        GameRegistry.registerBlock(this, ItemBlockWindmillBlock.class, name);
         icons = new IIcon[maxMeta];
     }
 
