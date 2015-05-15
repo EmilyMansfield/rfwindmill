@@ -44,7 +44,10 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         setHardness(3.5f);
         setStepSound(Block.soundTypeMetal);
         maximumEnergyGeneration = pMaximumEnergyGeneration;
-        maximumEnergyTransfer = pMaximumEnergyGeneration;
+        // Make a duplicate of the energy generation array and multiply the values by
+        // the transfer multiplier, since an assignment doesn't duplicate the array in Java
+        maximumEnergyTransfer = new int[maximumEnergyGeneration.length];
+        System.arraycopy(pMaximumEnergyGeneration, 0, maximumEnergyTransfer, 0, pMaximumEnergyGeneration.length);
         for(int i = 0; i < pMaximumEnergyGeneration.length; ++i) {
             maximumEnergyTransfer[i] *= ModConfiguration.getWindmillEnergyTransferMultiplier();
         }
