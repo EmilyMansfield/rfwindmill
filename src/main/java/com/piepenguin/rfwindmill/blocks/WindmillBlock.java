@@ -17,6 +17,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -26,14 +27,17 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.List;
+
 public class WindmillBlock extends Block implements ITileEntityProvider {
 
     protected final int maximumEnergyGeneration;
     protected final int maximumEnergyTransfer;
     protected final int capacity;
 
+    private static final int maxMeta = 4;
     private String name;
-    private IIcon sideIcon;
+    private IIcon[] icons;
 
     public WindmillBlock(String pName, int pMaximumEnergyGeneration, int pCapacity) {
         super(Material.rock);
@@ -46,16 +50,19 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         this.setBlockName(Constants.MODID + "_" + name);
         this.setCreativeTab(CreativeTabs.tabBlock);
         GameRegistry.registerBlock(this, name);
+        icons = new IIcon[maxMeta];
     }
 
     @Override
     public void registerBlockIcons(IIconRegister pIconRegister) {
-        sideIcon = pIconRegister.registerIcon(Constants.MODID + ":" + name + "Side");
+        for(int i = 0; i < maxMeta; ++i) {
+            icons[i] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "i" + "Side");
+        }
     }
 
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int pSide, int pMeta) {
-        return sideIcon;
+        return icons[pMeta];
     }
 
     @Override
@@ -66,6 +73,19 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     @Override
     public boolean hasTileEntity(int pMetadata) {
         return true;
+    }
+
+    @Override
+    public int damageDropped(int pMeta) {
+        return pMeta;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public void getSubBlocks(Item pItem, CreativeTabs pCreativeTabs, List list) {
+        for(int i = 0; i < maxMeta; ++i) {
+            list.add(new ItemStack(pItem, 1, i));
+        }
     }
 
     @Override
