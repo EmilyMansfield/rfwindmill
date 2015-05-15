@@ -62,7 +62,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     @Override
     public void registerBlockIcons(IIconRegister pIconRegister) {
         for(int i = 0; i < maxMeta; ++i) {
-            icons[i] = pIconRegister.registerIcon(Constants.MODID + ":" + name + "i" + "Side");
+            icons[i] = pIconRegister.registerIcon(Constants.MODID + ":" + name + (i+1) + "Side");
         }
     }
 
