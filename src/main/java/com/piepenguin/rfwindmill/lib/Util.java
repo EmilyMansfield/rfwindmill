@@ -47,4 +47,8 @@ public class Util {
     public static boolean useThermalExpansion() {
         return Loader.isModLoaded(Constants.THERMAL_EXPANSION_MOD_ID) && !ModConfiguration.useVanillaRecipes();
     }
+
+    public static boolean useThermalFoundation() {
+        return Loader.isModLoaded(Constants.THERMAL_FOUNDATION_MOD_ID) && !ModConfiguration.useVanillaRecipes();
+    }
 }
