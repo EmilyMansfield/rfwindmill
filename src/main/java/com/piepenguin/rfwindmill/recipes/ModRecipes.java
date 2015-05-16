@@ -79,9 +79,9 @@ public class ModRecipes {
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 3), " x ", "imi", " c ", 'x', "dustRedstone", 'i', "ingotPlatinum", 'm', machineFrameResonant, 'c', powerCoilSilver));
 
         // Add upgrade recipes
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 1), "igi", "jmj", "iji", 'i', "ingotInvar", 'j', "ingotInvar", 'g', "gearElectrum", 'm', new ItemStack(ModBlocks.windmillBlock, 1, 0)));
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 2), "igi", "jmj", "iji", 'i', hardenedGlass, 'j', "ingotSilver", 'g', "gearSignalum", 'm', new ItemStack(ModBlocks.windmillBlock, 1, 1)));
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 3), "igi", "jmj", "iji", 'i', "ingotSilver", 'j', "ingotPlatinum", 'g', "gearEnderium", 'm', new ItemStack(ModBlocks.windmillBlock, 1, 2)));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 1), "igi", "jmj", "i i", 'i', "ingotInvar", 'j', "ingotInvar", 'g', "gearElectrum", 'm', new ItemStack(ModBlocks.windmillBlock, 1, 0)));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 2), "igi", "jmj", "i i", 'i', hardenedGlass, 'j', "ingotSilver", 'g', "gearSignalum", 'm', new ItemStack(ModBlocks.windmillBlock, 1, 1)));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 3), "igi", "jmj", "i i", 'i', "ingotSilver", 'j', "ingotPlatinum", 'g', "gearEnderium", 'm', new ItemStack(ModBlocks.windmillBlock, 1, 2)));
     }
 
     public static String getOreWithFallback(String pOre, String pFallback) {
