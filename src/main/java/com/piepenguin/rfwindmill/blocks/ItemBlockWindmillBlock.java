@@ -4,7 +4,10 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-
+/**
+ * ItemBlock version of {@link WindmillBlock}, used when the block
+ * is stored in an inventory.
+ */
 public class ItemBlockWindmillBlock extends ItemBlock {
 
     public ItemBlockWindmillBlock(Block pBlock) {

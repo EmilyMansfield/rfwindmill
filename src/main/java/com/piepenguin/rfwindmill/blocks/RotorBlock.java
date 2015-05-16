@@ -14,6 +14,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+/**
+ * Rotor blocks are created when a {@link WindmillBlock} is right clicked with
+ * a rotor item, and are necessary for the {@link WindmillBlock} to produce RF.
+ * Each {@link RotorBlock} does not deal with energy generation directly.
+ */
 public class RotorBlock extends BlockContainer {
 
     public RotorBlock() {
@@ -54,9 +59,18 @@ public class RotorBlock extends BlockContainer {
             TileEntityWindmillBlock windmillEntity = (TileEntityWindmillBlock)pWorld.getTileEntity(parentX, parentY, parentZ);
             windmillEntity.setRotor(-1, ForgeDirection.NORTH);
         }
+        // Dismantle the rotor
         dismantle(pWorld, pX, pY, pZ);
     }
 
+    /**
+     * Remove the block from the world and drop the corresponding rotor as an
+     * item. Does not notify the parent {@link WindmillBlock} of any changes.
+     * @param pWorld Minecraft {@link World}
+     * @param pX X coordinate of the block
+     * @param pY Y coordinate of the block
+     * @param pZ Z coordinate of the block
+     */
     public void dismantle(World pWorld, int pX, int pY, int pZ) {
         TileEntityRotorBlock entity = (TileEntityRotorBlock)pWorld.getTileEntity(pX, pY, pZ);
         ItemStack itemStack = new ItemStack(entity.getRotorItem());
@@ -69,6 +83,18 @@ public class RotorBlock extends BlockContainer {
         pWorld.spawnEntityInWorld(entityItem);
     }
 
+    /**
+     * Checks the area around the specified position for a 3x3x1 plane of free
+     * blocks in the plane normal to the specified direction, which corresponds
+     * to the bounding box of the rotor when its rendered.
+     * @param pWorld Minecraft {@link World}
+     * @param pX X coordinate where the block is trying to be placed
+     * @param pY Y coordinate where the block is trying to be placed
+     * @param pZ Z coordinate where the block is trying to be placed
+     * @param pPlayer Player trying to place the block
+     * @param pDir Direction the rotor should be facing in
+     * @return
+     */
     public static boolean canPlace(World pWorld, int pX, int pY, int pZ, EntityPlayer pPlayer, ForgeDirection pDir ) {
         // Check if air is free in a 3x3x1 space in the same plane as the rotor
         // This is hideous but I don't know enough Java to fix it :(

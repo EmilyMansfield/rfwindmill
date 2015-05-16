@@ -29,6 +29,20 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
+/**
+ * The main structural block of a windmill, handles creation of the
+ * {@link TileEntityWindmillBlock} tile entity and {@link RotorBlock} creation.
+ *
+ * Multiple block types are implemented using metadata and an array of relevant
+ * values for each type is passed to the constructor.
+ *
+ * When sneak-right clicked empty handed info is printed to the chat detailing
+ * current RF production rate and RF storage. When sneak-right clicked with a
+ * wrench the {@link WindmillBlock} is removed from the world and dropped
+ * instantly as an item, as is the attached {@link RotorBlock} (if any).
+ * Right clicking with a rotor will attach the rotor to the block and create a
+ * corresponding {@link RotorBlock}.
+ */
 public class WindmillBlock extends Block implements ITileEntityProvider {
 
     protected final int[] maximumEnergyGeneration;
@@ -96,6 +110,8 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
 
     @Override
     public void onBlockPlacedBy(World pWorld, int pX, int pY, int pZ, EntityLivingBase pEntity, ItemStack pItemStack) {
+        // If the ItemBlock version has energy stored in it then give the newly
+        // created tile entity that energy
         if(pItemStack.stackTagCompound != null) {
             TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
             entity.setEnergyStored(pItemStack.stackTagCompound.getInteger(EnergyStorage.NBT_ENERGY));
@@ -119,16 +135,20 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                 }
             }
             else {
+                // Attach a rotor if the player is holding one
                 ItemStack equippedItem = pPlayer.getCurrentEquippedItem();
                 if(equippedItem != null && (equippedItem.getItem() == ModItems.rotor1 ||
                         equippedItem.getItem() == ModItems.rotor2 ||
                         equippedItem.getItem() == ModItems.rotor3 ||
                         equippedItem.getItem() == ModItems.rotor4)) {
+                    // Get the direction offset in the direction the player is facing
                     int direction = MathHelper.floor_double((double) (pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
                     ForgeDirection fDirection = Util.intToDirection(direction);
                     int dx = pX + fDirection.offsetX;
                     int dy = pY + fDirection.offsetY;
                     int dz = pZ + fDirection.offsetZ;
+                    // Check that the tile entity for this block doesn't already have a rotor
+                    // and that a rotor can be placed at the offsset
                     TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
                     if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection) && !entity.hasRotor()) {
                         // Attach the rotor to the windmill
@@ -174,10 +194,20 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         }
     }
 
+    /**
+     * Removes the attached rotor (if there is one) and drops it the ground
+     * and then removes this block and drops that too, making sure to save the
+     * stored energy in the newly created {@link ItemStack}
+     * @param pWorld Minecraft {@link world}
+     * @param pX X coordinate of this block
+     * @param pY Y coordinate of this block
+     * @param pZ Z coordinate of this block
+     */
     private void dismantle(World pWorld, int pX, int pY, int pZ) {
-        // Remove the attached rotor, if there is one
+        // Something has gone very wrong if this block doesn't have a tile entity
         TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
         Preconditions.checkNotNull(entity);
+        // Remove the attached rotor, if there is one
         if(entity.hasRotor()) {
             ForgeDirection dir = entity.getRotorDir();
             RotorBlock rotor = (RotorBlock)pWorld.getBlock(
@@ -203,6 +233,15 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         pWorld.spawnEntityInWorld(entityItem);
     }
 
+    /**
+     * Print the amount of energy stored in the windmill in RF and the amount
+     * being produced in RF/t to the chat.
+     * @param pWorld Minecraft {@link World}
+     * @param pX X coordinate of this block
+     * @param pY Y coordinate of this block
+     * @param pZ Z coordinate of this block
+     * @param pPlayer Player whose chat the message should be printed to
+     */
     private void printChatInfo(World pWorld, int pX, int pY, int pZ, EntityPlayer pPlayer) {
         TileEntityWindmillBlock entity = (TileEntityWindmillBlock)pWorld.getTileEntity(pX, pY, pZ);
         String msg = String.format("%s: %d/%d RF %s: %.2f RF/t",
