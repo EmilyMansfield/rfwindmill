@@ -44,6 +44,11 @@ public class ModRecipes {
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 1), " x ", "ibi", "ixi", 'x', "dustRedstone", 'i', "ingotGold", 'b', "blockIron"));
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 2), " x ", "ibi", "oxo", 'x', "dustRedstone", 'i', Blocks.quartz_block, 'o', Blocks.obsidian, 'b', "blockIron"));
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 3), " x ", "dbd", "ixi", 'x', "dustRedstone", 'd', "gemDiamond", 'i', "ingotGold", 'b', "blockIron"));
+
+        // Add upgrade recipes
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 1), "i i", " b ", "i i", 'i', "ingotGold", 'b', new ItemStack(ModBlocks.windmillBlock, 1, 0)));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 2), "i i", " b ", "o o", 'i', Blocks.quartz_block, 'o', Blocks.obsidian, 'b', new ItemStack(ModBlocks.windmillBlock, 1, 1)));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 3), "d d", " b ", "i i", 'i', "ingotGold", 'd', "gemDiamond", 'b', new ItemStack(ModBlocks.windmillBlock, 1, 2)));
     }
 
     // No Thermal Expansion so use gold rotor, nether rotor, and diamond rotor
