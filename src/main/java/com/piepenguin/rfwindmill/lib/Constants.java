@@ -1,5 +1,8 @@
 package com.piepenguin.rfwindmill.lib;
 
+/**
+ * Contains various constants used by the mod, all pretty self-explanatory,
+ */
 public class Constants {
     public static final String MODID = "rfwindmill";
     public static final String NAME = "RFWindmill";

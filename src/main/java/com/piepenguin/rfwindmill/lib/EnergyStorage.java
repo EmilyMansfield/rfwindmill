@@ -3,6 +3,11 @@ package com.piepenguin.rfwindmill.lib;
 import cofh.api.energy.IEnergyStorage;
 import net.minecraft.nbt.NBTTagCompound;
 
+/**
+ * Energy storage component of a machine, stores RF and handles RF transfer.
+ * Should be included in any block that stores RF, i.e.
+ * {@link com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock}.
+ */
 public class EnergyStorage implements IEnergyStorage {
 
     private float energy;

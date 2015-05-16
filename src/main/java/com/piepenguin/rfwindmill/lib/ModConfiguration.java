@@ -6,6 +6,10 @@ import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 
+/**
+ * Handles configuration of the mod via a configuration file, and sets up the
+ * default configuration if one doesn't exist.
+ */
 public class ModConfiguration {
 
     private static Configuration config;
@@ -27,6 +31,10 @@ public class ModConfiguration {
         loadConfig();
     }
 
+    /**
+     * Load the configuration file or set defaults if one doesn't exist.
+     * Mostly handled by Forge.
+     */
     private static void loadConfig() {
         Preconditions.checkNotNull(config);
         forceVanillaRecipes = config.get(Configuration.CATEGORY_GENERAL,
