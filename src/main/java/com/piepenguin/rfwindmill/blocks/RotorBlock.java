@@ -93,7 +93,8 @@ public class RotorBlock extends BlockContainer {
      * @param pZ Z coordinate where the block is trying to be placed
      * @param pPlayer Player trying to place the block
      * @param pDir Direction the rotor should be facing in
-     * @return
+     * @return {@code true} if the rotor can be placed, and {@code false}
+     * otherwise
      */
     public static boolean canPlace(World pWorld, int pX, int pY, int pZ, EntityPlayer pPlayer, ForgeDirection pDir ) {
         // Check if air is free in a 3x3x1 space in the same plane as the rotor
