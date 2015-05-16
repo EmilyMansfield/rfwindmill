@@ -7,7 +7,6 @@ import com.piepenguin.rfwindmill.items.ModItems;
 import com.piepenguin.rfwindmill.lib.Constants;
 import com.piepenguin.rfwindmill.lib.ModConfiguration;
 import com.piepenguin.rfwindmill.lib.Util;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
