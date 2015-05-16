@@ -49,6 +49,7 @@ public class ModRecipes {
         ItemStack machineFrameHardened = Preconditions.checkNotNull(GameRegistry.findItemStack(Constants.THERMAL_EXPANSION_MOD_ID, "frameMachineHardened", 1));
         ItemStack machineFrameReinforced = Preconditions.checkNotNull(GameRegistry.findItemStack(Constants.THERMAL_EXPANSION_MOD_ID, "frameMachineReinforced", 1));
         ItemStack machineFrameResonant = Preconditions.checkNotNull(GameRegistry.findItemStack(Constants.THERMAL_EXPANSION_MOD_ID, "frameMachineResonant", 1));
+        ItemStack hardenedGlass = Preconditions.checkNotNull(GameRegistry.findItemStack(Constants.THERMAL_EXPANSION_MOD_ID, "Glass", 1));
 
         // Thermal Expansion loaded so use electrum rotor, signalum rotor, and enderium rotor
         GameRegistry.addRecipe(new ShapedOreRecipe(ModItems.rotor2, "e  ", "eie", "  e", 'i', "ingotInvar", 'e', "ingotElectrum"));
@@ -59,6 +60,11 @@ public class ModRecipes {
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 1), " x ", "imi", " c ", 'x', "dustRedstone", 'i', "ingotInvar", 'm', machineFrameHardened, 'c', powerCoilSilver));
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 2), " x ", "imi", " c ", 'x', "dustRedstone", 'i', "ingotSilver", 'm', machineFrameReinforced, 'c', powerCoilSilver));
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 3), " x ", "imi", " c ", 'x', "dustRedstone", 'i', "ingotPlatinum", 'm', machineFrameResonant, 'c', powerCoilSilver));
+
+        // Add upgrade recipes
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 1), "igi", " m ", "i i", 'i', "ingotInvar", 'g', "gearElectrum", 'm', new ItemStack(ModBlocks.windmillBlock, 1, 0)));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 2), "igi", " m ", "i i", 'i', hardenedGlass, 'g', "gearSignalum", 'm', new ItemStack(ModBlocks.windmillBlock, 1, 1)));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.windmillBlock, 1, 3), "igi", " m ", "i i", 'i', "ingotSilver", 'g', "gearEnderium", 'm', new ItemStack(ModBlocks.windmillBlock, 1, 2)));
     }
 
     public static String getOreWithFallback(String pOre, String pFallback) {
