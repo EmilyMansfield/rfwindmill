@@ -2,8 +2,6 @@ package com.piepenguin.rfwindmill.tileentities;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import com.piepenguin.rfwindmill.blocks.RotorBlock;
-import com.piepenguin.rfwindmill.blocks.WindmillBlock;
 import com.piepenguin.rfwindmill.lib.EnergyStorage;
 import com.piepenguin.rfwindmill.lib.ModConfiguration;
 import com.piepenguin.rfwindmill.lib.Util;
