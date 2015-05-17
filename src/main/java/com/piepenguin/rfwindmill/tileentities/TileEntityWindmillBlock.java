@@ -160,7 +160,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     }
 
     /**
-     * Maximum energy that can be produced. TODO - Gives false values
+     * Maximum baseline energy that can be produced
      * @return Maximum RF/t
      */
     public int getMaximumEnergyGeneration() {
