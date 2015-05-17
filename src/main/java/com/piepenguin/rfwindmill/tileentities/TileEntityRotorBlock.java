@@ -11,6 +11,12 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
+/**
+ * Tile entity for the {@link com.piepenguin.rfwindmill.blocks.RotorBlock}
+ * class which stores rotation and scale data for the attached
+ * {@link RenderTileEntityRotorBlock} as well as the type of the rotor used
+ * to create it.
+ */
 public class TileEntityRotorBlock extends TileEntity {
 
     private float rotation = 0.0f;
@@ -67,6 +73,11 @@ public class TileEntityRotorBlock extends TileEntity {
         readSyncableDataFromNBT(pPacket.func_148857_g());
     }
 
+    /**
+     * Get the rotation of the rotor about the axis normal to the face its
+     * attached to.
+     * @return Rotation in degrees of the rotor
+     */
     public float getRotation() {
         return rotation;
     }
@@ -75,14 +86,30 @@ public class TileEntityRotorBlock extends TileEntity {
         return scale;
     }
 
+    /**
+     * Get the tier of the rotor used to make the corresponding block.
+     * @return Integer corresponding to the rotor tier used to make the rotor
+     */
     public int getType() {
         return type;
     }
 
+    /**
+     * Set the tier of the rotor used to make the corresponding block.
+     * @param pType Tier of the rotor
+     */
     public void setType(int pType) {
         type = pType;
     }
 
+    /**
+     * Convert the rotor tier into the correct texture depending on the mod
+     * configuration files. Can be forced to always display as the iron
+     * texture, or (by default) takes a texture relative to the materials used
+     * to make the rotor.
+     * @return Array index used by {@link RenderTileEntityRotorBlock} to
+     * identify the texture
+     */
     public int getTexture() {
         if(ModConfiguration.useIronRotorTexture()) {
             return 0;
@@ -100,6 +127,13 @@ public class TileEntityRotorBlock extends TileEntity {
         }
     }
 
+    /**
+     * Converts the rotor tier into the item used to make it. Only ever four
+     * rotors since high tier rotors are conditionally made based on config,
+     * so this is a trivial function.
+     * @return The rotor item used to make the corresponding
+     * {@link com.piepenguin.rfwindmill.blocks.RotorBlock}
+     */
     public RFWItem getRotorItem() {
         switch(type) {
             default:

@@ -14,6 +14,13 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
+/**
+ * Tile entity for the {@link com.piepenguin.rfwindmill.blocks.WindmillBlock}
+ * class, handles the energy generation, storage, and transfer. Energy produced
+ * is dependent on height of the windmill, the rotor material, the free space
+ * around the windmill, and the strength of the weather. See the
+ * {@link #generateEnergy()} method for more.
+ */
 public final class TileEntityWindmillBlock extends TileEntity implements IEnergyProvider {
 
     private EnergyStorage storage;
@@ -48,6 +55,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return name;
     }
 
+    /**
+     * Update the parent entity, generate RF and transfer as much as possible to
+     * connected storage cells if energy is currently stored.
+     */
     @Override
     public void updateEntity() {
         super.updateEntity();
@@ -59,14 +70,28 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         }
     }
 
+    /**
+     * Reads data from {@code pNbt} that must be synced between client and
+     * server, namely the current energy generation.
+     * @param pNbt NBT to read from
+     */
     public void readSyncableDataFromNBT(NBTTagCompound pNbt) {
         currentEnergyGeneration = pNbt.getFloat(NBT_CURRENT_ENERGY_GENERATION);
     }
 
+    /**
+     * Writes data to {@code pNbt} that must be synced between client and
+     * server, namely the current energy generation.
+     * @param pNbt NBT to write to
+     */
     public void writeSyncableDataToNBT(NBTTagCompound pNbt) {
         pNbt.setFloat(NBT_CURRENT_ENERGY_GENERATION, currentEnergyGeneration);
     }
 
+    /**
+     * Read the non-syncable data from {@code pNbt}.
+     * @param pNbt NBT to read from
+     */
     @Override
     public void readFromNBT(NBTTagCompound pNbt) {
         super.readFromNBT(pNbt);
@@ -77,6 +102,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         storage.readFromNBT(pNbt);
     }
 
+    /**
+     * Write the non-syncable data to {@code pNbt}.
+     * @param pNbt NBT to write to
+     */
     @Override
     public void writeToNBT(NBTTagCompound pNbt) {
         super.writeToNBT(pNbt);
@@ -100,11 +129,21 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         readSyncableDataFromNBT(pPacket.func_148857_g());
     }
 
+    /**
+     * Get the actual current energy production rate in RF/t, which will be zero
+     * if there is no rotor attached.
+     * @return Actual energy generation in RF/t
+     */
     public float getEnergyGeneration() {
         if(!hasRotor()) return 0;
         return getTheoreticalEnergyGeneration();
     }
 
+    /**
+     * Get the theoretical energy production rate in RF/t, ignoring the presence
+     * of a rotor
+     * @return Energy produced in RF/t
+     */
     public float getTheoreticalEnergyGeneration() {
         int deltaHeight = maxHeight - minHeight;
         if(deltaHeight <= 0) deltaHeight = 1;
@@ -120,14 +159,28 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return maximumEnergyGeneration * weatherModifier * getTunnelLength() * heightModifier * 0.4f * ModConfiguration.getRotorEnergyMultiplier(rotorType);
     }
 
+    /**
+     * Maximum energy that can be produced. TODO - Gives false values
+     * @return Maximum RF/t
+     */
     public int getMaximumEnergyGeneration() {
         return maximumEnergyGeneration;
     }
 
+    /**
+     * The current rate of energy production in RF/t
+     * @return The current rate of energy production, 0 if no rotor attached
+     */
     public float getCurrentEnergyGeneration() {
         return currentEnergyGeneration;
     }
 
+    /**
+     * Gets the current energy generation at this tick and modifies the stored
+     * energy by that value, as well as syncing the energy generation rate
+     * between client and server. (Used in rendering with
+     * {@link RenderTileEntityRotorBlock}.)
+     */
     private void generateEnergy() {
         currentEnergyGeneration = getEnergyGeneration();
         // Amount of energy generated has changed so sync with server
@@ -139,6 +192,19 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         storage.modifyEnergyStored(currentEnergyGeneration);
     }
 
+    /**
+     * Returns the number of free air blocks in a 1x1x{@code tunnelRange} up to
+     * the first non-air block in the given direction and starting at the
+     * given coordinate. Gives the length of a 'wind-tunnel' until an obstruction
+     * is found.
+     * @param pX X coordinate to start measuring from
+     * @param pY Y coordinate to start measuring from
+     * @param pZ Z coordinate to start measuring from
+     * @param pDirection Direction to check the tunnel in
+     * @param ignoreFirst If {@code true} then ignore the block at
+     * ({@code pX}, {@code pY}, {@code pZ})
+     * @return Length of the 'wind-tunnel'
+     */
     private int getTunnelLengthSingleBlock(int pX, int pY, int pZ, ForgeDirection pDirection, boolean ignoreFirst) {
         for(int i = 1; i <= tunnelRange; ++i) {
             int dx = pX + pDirection.offsetX * i;
@@ -158,6 +224,23 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return tunnelRange;
     }
 
+    /**
+     * Gets the length of a 'wind-tunnel' as per
+     * {@link #getTunnelLengthSingleBlock(int, int, int, ForgeDirection, boolean)}
+     * but tunnel length is measured separately in two opposite directions and
+     * the shortest length taken to be the length of the wind tunnel. The first
+     * block is ignored in the given {@code pDirection} so as to ignore the
+     * {@link com.piepenguin.rfwindmill.blocks.RotorBlock}.
+     * @param pX X coordinate to start measuring from
+     * @param pY Y coordinate to start measuring from
+     * @param pZ Z coordinate to start measuring from
+     * @param pDirection Direction the rotor is facing
+     * @param ignoreFirst If {@code true} then ignore the block at
+     *                    ({@code pX}, {@code pY}, {@code pZ}). The block is
+     *                    never ignored when going in the opposite direction
+     *                    however
+     * @return Shortest unobstructed length of the two opposing 'wind-tunnel's
+     */
     private int getTunnelLengthTwoSided(int pX, int pY, int pZ, ForgeDirection pDirection, boolean ignoreFirst) {
         int rangeA = getTunnelLengthSingleBlock(pX, pY, pZ, pDirection, ignoreFirst);
         // Only ignore block on the side the rotor is on
@@ -166,6 +249,13 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return Math.min(rangeA, rangeB);
     }
 
+    /**
+     * Get the length of a 3x3 tunnel in the same plane as the rotor as per
+     * {@link #getTunnelLengthTwoSided(int, int, int, ForgeDirection, boolean)}
+     * but take the shortest unobstructed range in the 3x3x{@code tunnelRange}
+     * to be the length of the tunnel.
+     * @return Length of the 'wind-tunnel'
+     */
     private int getTunnelLength() {
         int range = tunnelRange;
         // If rotor dir is north or south then check xy plane
@@ -194,6 +284,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return range;
     }
 
+    /**
+     * Transfer energy to any blocks demanding energy that are connected to
+     * this one.
+     */
     private void transferEnergy() {
         for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
             TileEntity tile = getWorldObj().getTileEntity(
@@ -248,7 +342,14 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return rotorType >= 0;
     }
 
-    // fDir points towards the rotor
+    /**
+     * Set the tier of the rotor connected to the corresponding
+     * {@link com.piepenguin.rfwindmill.blocks.WindmillBlock}. -1 if no rotor is
+     * connected.
+     * @param pRotorType Tier of the rotor being attached. -1 if no rotor
+     * @param fDir Direction the rotor is facing, i.e. the normal to the face
+     *             the rotor is being placed on
+     */
     public void setRotor(int pRotorType, ForgeDirection fDir) {
         rotorType = pRotorType;
         rotorDir = fDir;
