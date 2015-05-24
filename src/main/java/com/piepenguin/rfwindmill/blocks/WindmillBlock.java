@@ -198,7 +198,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
      * Removes the attached rotor (if there is one) and drops it the ground
      * and then removes this block and drops that too, making sure to save the
      * stored energy in the newly created {@link ItemStack}
-     * @param pWorld Minecraft {@link world}
+     * @param pWorld Minecraft {@link World}
      * @param pX X coordinate of this block
      * @param pY Y coordinate of this block
      * @param pZ Z coordinate of this block

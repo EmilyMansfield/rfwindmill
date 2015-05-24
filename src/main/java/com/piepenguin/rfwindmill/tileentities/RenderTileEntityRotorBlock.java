@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * Handles custom rendering of {@link com.piepenguin.rfwindmill.blocks.RotorBlock}
- * by replacing it with a rototating 3d rotor model. All possible textures are
+ * by replacing it with a rotating 3d rotor model. All possible textures are
  * stored in the renderer and determined at runtime via the metadata of the
  * corresponding {@link com.piepenguin.rfwindmill.blocks.RotorBlock}.
  */
