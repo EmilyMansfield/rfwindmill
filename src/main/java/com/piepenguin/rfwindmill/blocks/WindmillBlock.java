@@ -23,7 +23,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -141,9 +140,11 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                         equippedItem.getItem() == ModItems.rotor2 ||
                         equippedItem.getItem() == ModItems.rotor3 ||
                         equippedItem.getItem() == ModItems.rotor4)) {
-                    // Get the direction offset in the direction the player is facing
-                    int direction = MathHelper.floor_double((double) (pPlayer.rotationYaw * 4.0f / 360.0f) + 0.50) & 3;
-                    ForgeDirection fDirection = Util.intToDirection(direction);
+                    // Get the direction offset of the face the player clicked
+                    ForgeDirection fDirection = ForgeDirection.getOrientation(pSide);
+                    if(fDirection == ForgeDirection.DOWN || fDirection == ForgeDirection.UP) {
+                        return false;
+                    }
                     int dx = pX + fDirection.offsetX;
                     int dy = pY + fDirection.offsetY;
                     int dz = pZ + fDirection.offsetZ;
@@ -154,7 +155,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                         // Attach the rotor to the windmill
                         RFWItem equippedRotor = (RFWItem)equippedItem.getItem();
                         pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
-                        pWorld.setBlockMetadataWithNotify(dx, dy, dz, direction, 2);
+                        pWorld.setBlockMetadataWithNotify(dx, dy, dz, Util.directionToInt(fDirection), 2);
                         TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock)pWorld.getTileEntity(dx, dy, dz);
                         // No arbitrary switch statements :(
                         int rotorType = -1;
