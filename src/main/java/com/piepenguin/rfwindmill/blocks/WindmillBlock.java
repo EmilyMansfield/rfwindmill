@@ -219,7 +219,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         }
 
         // Remove the actual turbine and drop it
-        ItemStack itemStack = new ItemStack(this);
+        ItemStack itemStack = new ItemStack(this, 1, entity.getBlockMetadata());
         int energy = entity.getEnergyStored();
         if(energy > 0) {
             if(itemStack.getTagCompound() == null) {
