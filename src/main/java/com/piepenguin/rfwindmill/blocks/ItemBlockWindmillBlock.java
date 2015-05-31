@@ -24,10 +24,10 @@ public class ItemBlockWindmillBlock extends ItemBlock {
                 name = "basic";
                 break;
             case 1:
-                name = "reinforced";
+                name = "hardened";
                 break;
             case 2:
-                name = "hardened";
+                name = "reinforced";
                 break;
             case 3:
                 name = "resonant";
