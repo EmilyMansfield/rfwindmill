@@ -47,7 +47,8 @@ public class ModConfiguration {
                 "Use the iron rotor texture regardless of the rotor material").getBoolean();
         windmillEnergyGeneration[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEnergyGeneration",
-                1).getInt();
+                1,
+                "Multiply by 4 to get the maximum RF/t independent of other factors").getInt();
         windmillEnergyGeneration[1] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillHardenedEnergyGeneration",
                 3).getInt();
@@ -59,7 +60,8 @@ public class ModConfiguration {
                 9).getInt();
         windmillEnergyStorage[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEnergyStorage",
-                16000).getInt();
+                16000,
+                "Energy storage capacity of the windmill in RF").getInt();
         windmillEnergyStorage[1] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillHardenedEnergyStorage",
                 32000).getInt();
@@ -71,7 +73,8 @@ public class ModConfiguration {
                 64000).getInt();
         windmillEnergyTransferMultiplier = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillEnergyTransferMultiplier",
-                40).getInt();
+                40,
+                "Multiply by the base energy generation e.g. WindmillBasicEnergyGeneration to get the rate of energy transfer in RF/t").getInt();
         rotorEnergyMultiplier[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorBasicEnergyMultiplier",
                 0.75).getDouble();
@@ -86,10 +89,12 @@ public class ModConfiguration {
                 1.50).getDouble();
         weatherMultiplierRain = config.get(Configuration.CATEGORY_GENERAL,
                 "WeatherRainEnergyGenerationMultiplier",
-                1.2).getDouble();
+                1.2,
+                "Multiplier applied to the windmill generation when it's raining").getDouble();
         weatherMultiplierThunder = config.get(Configuration.CATEGORY_GENERAL,
                 "WeatherThunderEnergyGenerationMultiplier",
-                1.5).getDouble();
+                1.5
+                "Multiplier applied to the windmill generation when it's raining").getDouble();
 
         if(config.hasChanged()) {
             config.save();
