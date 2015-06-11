@@ -25,7 +25,6 @@ public class TileEntityRotorBlock extends TileEntity {
     private int type = 0;
     public static String publicName = "tileEntityRotorBlock";
     public static int ticksPerRotation = 100;
-    public static int ticksPerClick = 4;
     public int toRotate = 0;
     public boolean turnedByWind;
 
@@ -172,7 +171,7 @@ public class TileEntityRotorBlock extends TileEntity {
      */
     public void handcrank() {
         if(!turnedByWind && toRotate == 0) {
-            toRotate += ticksPerClick;
+            toRotate += Util.ticksPerClick();
             rotation += 360.0f / ticksPerRotation;
         }
     }

@@ -94,4 +94,12 @@ public class Util {
     public static boolean useThermalFoundation() {
         return Loader.isModLoaded(Constants.THERMAL_FOUNDATION_MOD_ID) && !ModConfiguration.useVanillaRecipes();
     }
+
+    /**
+     * Returns the number of ticks one right click cycle takes.
+     * @return Ticks in a player click cycle
+     */
+    public static int ticksPerClick() {
+        return 4;
+    }
 }

@@ -216,7 +216,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * Mark for handcrank energy generation for the next 4 ticks
      */
     public void handcrank() {
-        toGenerate += 4;
+        toGenerate += Util.ticksPerClick();
     }
 
     /**
