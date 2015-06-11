@@ -24,6 +24,8 @@ public class TileEntityRotorBlock extends TileEntity {
     private static final String NBT_ROTOR_TYPE = "RFWRotorType";
     private int type = 0;
     public static String publicName = "tileEntityRotorBlock";
+    public static int ticksPerRotation = 100;
+    public boolean turnedByWind;
 
     @Override
     public void updateEntity() {
@@ -34,7 +36,14 @@ public class TileEntityRotorBlock extends TileEntity {
             int parentZ = zCoord + turbineDir.offsetZ;
             TileEntityWindmillBlock entity = (TileEntityWindmillBlock)worldObj.getTileEntity(parentX, parentY, parentZ);
             if(entity != null) {
-                rotation += entity.getCurrentEnergyGeneration() / entity.getMaximumEnergyGeneration();
+                float generation = entity.getCurrentEnergyGeneration();
+                if(generation > 0.01) {
+                    turnedByWind = true;
+                    rotation += generation / entity.getMaximumEnergyGeneration();
+                }
+                else {
+                    turnedByWind = false;
+                }
             }
             scale = 1.0f;
         }
@@ -145,6 +154,18 @@ public class TileEntityRotorBlock extends TileEntity {
                 return ModItems.rotor3;
             case 3:
                 return ModItems.rotor4;
+        }
+    }
+
+    /**
+     * Rotate the rotor when it's turned by hand. Energy generation is handled
+     * by the corresponding {@link TileEntityRotorBlock}, only rotation is
+     * updated here. Does nothing if the rotor is generating energy from the
+     * wind.
+     */
+    public void handcrank() {
+        if(!turnedByWind) {
+            rotation += 360.0f / ticksPerRotation;
         }
     }
 }

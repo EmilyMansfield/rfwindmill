@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -61,6 +62,19 @@ public class RotorBlock extends BlockContainer {
         }
         // Dismantle the rotor
         dismantle(pWorld, pX, pY, pZ);
+    }
+
+    @Override
+    public boolean onBlockActivated(World pWorld, int pX, int pY, int pZ, EntityPlayer pPlayer, int pSide, float pDx, float pDy, float pDz) {
+        // Cannot be activated by a block activator, must be a player
+        if(pPlayer == null || pPlayer instanceof FakePlayer)
+        {
+            return false;
+        }
+        TileEntityRotorBlock entity = (TileEntityRotorBlock)pWorld.getTileEntity(pX, pY, pZ);
+        entity.handcrank();
+
+        return true;
     }
 
     /**
