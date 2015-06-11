@@ -71,9 +71,16 @@ public class RotorBlock extends BlockContainer {
         {
             return false;
         }
-        TileEntityRotorBlock entity = (TileEntityRotorBlock)pWorld.getTileEntity(pX, pY, pZ);
-        entity.handcrank();
-
+        TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock)pWorld.getTileEntity(pX, pY, pZ);
+        if(rotorEntity != null) {
+            rotorEntity.handcrank();
+            ForgeDirection rotorDir = Util.intToDirection(rotorEntity.getBlockMetadata()).getOpposite();
+            int parentX = pX + rotorDir.offsetX;
+            int parentY = pY + rotorDir.offsetY;
+            int parentZ = pZ + rotorDir.offsetZ;
+            TileEntityWindmillBlock windmillEntity = (TileEntityWindmillBlock)pWorld.getTileEntity(parentX, parentY, parentZ);
+            windmillEntity.handcrank();
+        }
         return true;
     }
 

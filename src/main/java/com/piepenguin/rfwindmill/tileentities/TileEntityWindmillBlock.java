@@ -36,6 +36,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private float oldEnergyGeneration = 0.0f;
     private int rotorType; // -1 if no rotor
     private ForgeDirection rotorDir;
+    private int toGenerate = 0;
 
     public static final String publicName = "tileEntityWindmillBlock";
     private static final String name = "tileEntityWindmillBlock";
@@ -63,7 +64,13 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     public void updateEntity() {
         super.updateEntity();
         if(!worldObj.isRemote) {
-            generateEnergy();
+            if(toGenerate > 0) {
+                generateHandcrankEnergy();
+                --toGenerate;
+            }
+            else {
+                generateEnergy();
+            }
             if(storage.getEnergyStored() > 0) {
                 transferEnergy();
             }
@@ -176,20 +183,53 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     }
 
     /**
-     * Gets the current energy generation at this tick and modifies the stored
-     * energy by that value, as well as syncing the energy generation rate
-     * between client and server. (Used in rendering with
-     * {@link RenderTileEntityRotorBlock}.)
+     * Calculate the energy generation due to the wind and modify the energy.
      */
     private void generateEnergy() {
         currentEnergyGeneration = getEnergyGeneration();
+        syncEnergy();
+        storage.modifyEnergyStored(currentEnergyGeneration);
+    }
+
+    /**
+     * Get the energy generation in RF/t at the current tick via the handcrank
+     * system instead of wind.
+     * @return Energy produced in RF/t
+     */
+    private float getHandcrankEnergyGeneration() {
+        // Handcrank energy is a fixed (small) proportion of the total that
+        // can be produced, and is independent of rotor type or environmental
+        // factors
+        return maximumEnergyGeneration * 0.4f;
+    }
+
+    /**
+     * Calculate the energy generation due to the player and modify the energy.
+     */
+    private void generateHandcrankEnergy() {
+        currentEnergyGeneration = getHandcrankEnergyGeneration();
+        syncEnergy();
+        storage.modifyEnergyStored(currentEnergyGeneration);
+    }
+
+    /**
+     * Mark for handcrank energy generation for the next 4 ticks
+     */
+    public void handcrank() {
+        toGenerate += 4;
+    }
+
+    /**
+     * Sync the energy generation rate between client and server. (Used in
+     * rendering with {@link RenderTileEntityRotorBlock}.)
+     */
+    private void syncEnergy() {
         // Amount of energy generated has changed so sync with server
         if((int)currentEnergyGeneration != (int)oldEnergyGeneration) {
             oldEnergyGeneration = currentEnergyGeneration;
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             markDirty();
         }
-        storage.modifyEnergyStored(currentEnergyGeneration);
     }
 
     /**

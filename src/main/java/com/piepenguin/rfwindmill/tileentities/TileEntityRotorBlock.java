@@ -176,4 +176,12 @@ public class TileEntityRotorBlock extends TileEntity {
             rotation += 360.0f / ticksPerRotation;
         }
     }
+
+    /**
+     * Return true if the rotor is turning under the action of a player.
+     * @return true if the rotor is turning by hand, false otherwise
+     */
+    public boolean isHandcranked() {
+        return toRotate > 0;
+    }
 }
