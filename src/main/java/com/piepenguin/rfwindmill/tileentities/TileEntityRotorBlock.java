@@ -24,9 +24,9 @@ public class TileEntityRotorBlock extends TileEntity {
     private static final String NBT_ROTOR_TYPE = "RFWRotorType";
     private int type = 0;
     public static String publicName = "tileEntityRotorBlock";
-    public static int ticksPerRotation = 100;
-    public int toRotate = 0;
-    public boolean turnedByWind;
+    private static int ticksPerRotation = 100;
+    private int toRotate = 0;
+    private boolean turnedByWind;
 
     @Override
     public void updateEntity() {
