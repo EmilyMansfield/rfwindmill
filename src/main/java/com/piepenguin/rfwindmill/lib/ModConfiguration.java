@@ -93,7 +93,7 @@ public class ModConfiguration {
                 "Multiplier applied to the windmill generation when it's raining").getDouble();
         weatherMultiplierThunder = config.get(Configuration.CATEGORY_GENERAL,
                 "WeatherThunderEnergyGenerationMultiplier",
-                1.5
+                1.5,
                 "Multiplier applied to the windmill generation when it's raining").getDouble();
 
         if(config.hasChanged()) {
