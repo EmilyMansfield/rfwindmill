@@ -26,7 +26,6 @@ public class TileEntityRotorBlock extends TileEntity {
     public static String publicName = "tileEntityRotorBlock";
     private static int ticksPerRotation = 100;
     private int toRotate = 0;
-    private boolean turnedByWind;
 
     @Override
     public void updateEntity() {
@@ -37,19 +36,13 @@ public class TileEntityRotorBlock extends TileEntity {
             int parentZ = zCoord + turbineDir.offsetZ;
             TileEntityWindmillBlock entity = (TileEntityWindmillBlock)worldObj.getTileEntity(parentX, parentY, parentZ);
             if(entity != null) {
+                toRotate = entity.getHandcrankTicks();
                 float generation = entity.getCurrentEnergyGeneration();
-                if(generation > 0.01) {
-                    turnedByWind = true;
+                if(toRotate == 0) {
                     rotation += generation / entity.getMaximumEnergyGeneration();
+                } else {
+                    rotation += 360.0f / ticksPerRotation;
                 }
-                else {
-                    turnedByWind = false;
-                }
-            }
-            // Rotate the rotor by one tick of a hand crank action
-            if(toRotate > 0) {
-                rotation += 360.0f / ticksPerRotation;
-                --toRotate;
             }
             scale = 1.0f;
         }
@@ -161,26 +154,5 @@ public class TileEntityRotorBlock extends TileEntity {
             case 3:
                 return ModItems.rotor4;
         }
-    }
-
-    /**
-     * Rotate the rotor when it's turned by hand. Energy generation is handled
-     * by the corresponding {@link TileEntityRotorBlock}, only rotation is
-     * updated here. Does nothing if the rotor is generating energy from the
-     * wind.
-     */
-    public void handcrank() {
-        if(!turnedByWind && toRotate == 0) {
-            toRotate += Util.ticksPerClick();
-            rotation += 360.0f / ticksPerRotation;
-        }
-    }
-
-    /**
-     * Return true if the rotor is turning under the action of a player.
-     * @return true if the rotor is turning by hand, false otherwise
-     */
-    public boolean isHandcranked() {
-        return toRotate > 0;
     }
 }

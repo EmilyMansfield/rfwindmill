@@ -22,6 +22,7 @@ public class ModConfiguration {
     private static double[] rotorEnergyMultiplier = new double[4];
     private static double weatherMultiplierRain;
     private static double weatherMultiplierThunder;
+    private static double handcrankEnergyMultiplier;
 
     public static void init(File pConfigFile) {
         if(pConfigFile != null) {
@@ -95,7 +96,10 @@ public class ModConfiguration {
                 "WeatherThunderEnergyGenerationMultiplier",
                 1.5,
                 "Multiplier applied to the windmill generation when it's raining").getDouble();
-
+        handcrankEnergyMultiplier = config.get(Configuration.CATEGORY_GENERAL,
+                "HandcrankEnergyMultiplier",
+                0.1,
+                "Multiplier applied to energy generation when turning rotors by hand").getDouble();
         if(config.hasChanged()) {
             config.save();
         }
@@ -131,5 +135,9 @@ public class ModConfiguration {
 
     public static float getWeatherMultiplierThunder() {
         return (float)weatherMultiplierThunder;
+    }
+
+    public static float getHandcrankEnergyMultiplier() {
+        return (float)handcrankEnergyMultiplier;
     }
 }

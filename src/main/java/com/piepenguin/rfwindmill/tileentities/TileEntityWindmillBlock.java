@@ -31,6 +31,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private static final String NBT_ROTOR_TYPE =  "RFWRotorType";
     private static final String NBT_ROTOR_DIR = "RFWRotorDir";
     private static final String NBT_CURRENT_ENERGY_GENERATION = "RFWCurrentEnergyGeneration";
+    private static final String NBT_TO_GENERATE_TICKS = "RFWToGenerateTicks";
     private int maximumEnergyGeneration;
     private float currentEnergyGeneration;
     private float oldEnergyGeneration = 0.0f;
@@ -84,6 +85,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     public void readSyncableDataFromNBT(NBTTagCompound pNbt) {
         currentEnergyGeneration = pNbt.getFloat(NBT_CURRENT_ENERGY_GENERATION);
+        toGenerate = pNbt.getInteger(NBT_TO_GENERATE_TICKS);
     }
 
     /**
@@ -93,6 +95,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     public void writeSyncableDataToNBT(NBTTagCompound pNbt) {
         pNbt.setFloat(NBT_CURRENT_ENERGY_GENERATION, currentEnergyGeneration);
+        pNbt.setInteger(NBT_TO_GENERATE_TICKS, toGenerate);
     }
 
     /**
@@ -200,7 +203,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         // Handcrank energy is a fixed (small) proportion of the total that
         // can be produced, and is independent of rotor type or environmental
         // factors
-        return maximumEnergyGeneration * 0.4f;
+        return maximumEnergyGeneration * 10.0f * ModConfiguration.getHandcrankEnergyMultiplier();
     }
 
     /**
@@ -217,6 +220,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     public void handcrank() {
         toGenerate += Util.ticksPerClick();
+    }
+
+    public int getHandcrankTicks() {
+        return toGenerate;
     }
 
     /**
