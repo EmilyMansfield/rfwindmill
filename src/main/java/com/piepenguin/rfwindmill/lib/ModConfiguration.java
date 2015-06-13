@@ -83,16 +83,16 @@ public class ModConfiguration {
                 "Multiply by the base wind energy generation to get the rate of energy transfer in RF/t").getInt();
         rotorEnergyMultiplier[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorBasicEnergyMultiplier",
-                0.75).getDouble();
+                0.625).getDouble();
         rotorEnergyMultiplier[1] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorHardenedEnergyMultiplier",
-                1.00).getDouble();
+                0.75).getDouble();
         rotorEnergyMultiplier[2] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorReinforcedEnergyMultiplier",
-                1.25).getDouble();
+                0.875).getDouble();
         rotorEnergyMultiplier[3] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorResonantEnergyMultiplier",
-                1.50).getDouble();
+                1.0).getDouble();
         weatherMultiplierRain = config.get(Configuration.CATEGORY_GENERAL,
                 "WeatherRainEnergyGenerationMultiplier",
                 1.2,
@@ -103,7 +103,7 @@ public class ModConfiguration {
                 "Multiplier applied to the windmill generation when it's raining").getDouble();
         handcrankEnergyMultiplier = config.get(Configuration.CATEGORY_GENERAL,
                 "HandcrankEnergyMultiplier",
-                0.1,
+                0.4,
                 "Multiplier applied to energy generation when turning rotors by hand").getDouble();
         if(config.hasChanged()) {
             config.save();
