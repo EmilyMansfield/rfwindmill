@@ -16,6 +16,10 @@ public class EnergyPacket {
      */
     private int currentLifetime;
 
+    public EnergyPacket() {
+        this(0, 0);
+    }
+
     public EnergyPacket(float pEnergyStored, int pLifetime) {
         energyStored = pEnergyStored;
         lifetime = pLifetime;
@@ -24,6 +28,10 @@ public class EnergyPacket {
 
     public int getTotalLifetime() {
         return lifetime;
+    }
+
+    public int getLifetime() {
+        return currentLifetime;
     }
 
     public float getTotalEnergyStored() {

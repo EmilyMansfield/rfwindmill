@@ -2,6 +2,7 @@ package com.piepenguin.rfwindmill.tileentities;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import com.piepenguin.rfwindmill.lib.EnergyPacket;
 import com.piepenguin.rfwindmill.lib.EnergyStorage;
 import com.piepenguin.rfwindmill.lib.ModConfiguration;
 import com.piepenguin.rfwindmill.lib.Util;
@@ -18,8 +19,7 @@ import net.minecraftforge.common.util.ForgeDirection;
  * Tile entity for the {@link com.piepenguin.rfwindmill.blocks.WindmillBlock}
  * class, handles the energy generation, storage, and transfer. Energy produced
  * is dependent on height of the windmill, the rotor material, the free space
- * around the windmill, and the strength of the weather. See the
- * {@link #generateEnergy()} method for more.
+ * around the windmill, and the strength of the weather..
  */
 public final class TileEntityWindmillBlock extends TileEntity implements IEnergyProvider {
 
@@ -27,18 +27,20 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private static final int tunnelRange = 10;
     private static final int minHeight = 60;
     private static final int maxHeight = 100;
-    private static final String NBT_MAXIMUM_ENERGY_GENERATION = "RFWMaximumEnergyGeneration";
+    private static final String NBT_EFFICIENCY = "RFWEfficiency";
     private static final String NBT_ROTOR_TYPE =  "RFWRotorType";
     private static final String NBT_ROTOR_DIR = "RFWRotorDir";
     private static final String NBT_CURRENT_ENERGY_GENERATION = "RFWCurrentEnergyGeneration";
     private static final String NBT_TO_GENERATE_TICKS = "RFWToGenerateTicks";
-    private int maximumEnergyGeneration;
     private float currentEnergyGeneration;
     private float oldEnergyGeneration = 0.0f;
     private int rotorType; // -1 if no rotor
     private ForgeDirection rotorDir;
     private int toGenerate = 0;
-
+    private EnergyPacket energyPacket = new EnergyPacket();
+    private float efficiency;
+    private static float windGenerationBase = 40.0f;
+    private static int windPacketLength = 4;
     public static final String publicName = "tileEntityWindmillBlock";
     private static final String name = "tileEntityWindmillBlock";
 
@@ -46,9 +48,9 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         this(0, 0, 0);
     }
 
-    public TileEntityWindmillBlock(int pMaximumEnergyGeneration, int pMaximumEnergyTransfer, int pCapacity) {
+    public TileEntityWindmillBlock(float pEfficiency, int pMaximumEnergyTransfer, int pCapacity) {
         storage = new EnergyStorage(pCapacity, pMaximumEnergyTransfer);
-        maximumEnergyGeneration = pMaximumEnergyGeneration;
+        efficiency = pEfficiency;
         rotorType = -1;
         rotorDir = ForgeDirection.NORTH;
     }
@@ -65,12 +67,13 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     public void updateEntity() {
         super.updateEntity();
         if(!worldObj.isRemote) {
-            if(toGenerate > 0) {
-                generateHandcrankEnergy();
-                --toGenerate;
+            // Energy left in the packet so utilise it
+            if(energyPacket.getLifetime() > 0) {
+                extractFromEnergyPacket(energyPacket);
             }
+            // No energy left so attempt to generate a packet from the wind
             else {
-                generateEnergy();
+                energyPacket = getEnergyPacketFromWind();
             }
             if(storage.getEnergyStored() > 0) {
                 transferEnergy();
@@ -105,7 +108,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     @Override
     public void readFromNBT(NBTTagCompound pNbt) {
         super.readFromNBT(pNbt);
-        maximumEnergyGeneration = pNbt.getInteger(NBT_MAXIMUM_ENERGY_GENERATION);
+        efficiency = pNbt.getFloat(NBT_EFFICIENCY);
         rotorType = pNbt.getInteger(NBT_ROTOR_TYPE);
         rotorDir = Util.intToDirection(pNbt.getInteger(NBT_ROTOR_DIR));
         readSyncableDataFromNBT(pNbt);
@@ -119,7 +122,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     @Override
     public void writeToNBT(NBTTagCompound pNbt) {
         super.writeToNBT(pNbt);
-        pNbt.setInteger(NBT_MAXIMUM_ENERGY_GENERATION, maximumEnergyGeneration);
+        pNbt.setFloat(NBT_EFFICIENCY, efficiency);
         pNbt.setInteger(NBT_ROTOR_TYPE, rotorType);
         pNbt.setInteger(NBT_ROTOR_DIR, Util.directionToInt(rotorDir));
         writeSyncableDataToNBT(pNbt);
@@ -140,21 +143,13 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     }
 
     /**
-     * Get the actual current energy production rate in RF/t, which will be zero
-     * if there is no rotor attached.
-     * @return Actual energy generation in RF/t
+     * Create a new energy packet from the wind.
+     * Calculates the energy in the wind that is accessible to the windmill and
+     * creates a new energy packet containing that energy. Takes into account
+     * the height, weather, and wind tunnel length.
+     * @return Energy packet containing energy from the wind.
      */
-    public float getEnergyGeneration() {
-        if(!hasRotor()) return 0;
-        return getTheoreticalEnergyGeneration();
-    }
-
-    /**
-     * Get the theoretical energy production rate in RF/t, ignoring the presence
-     * of a rotor
-     * @return Energy produced in RF/t
-     */
-    public float getTheoreticalEnergyGeneration() {
+    private EnergyPacket getEnergyPacketFromWind() {
         int deltaHeight = maxHeight - minHeight;
         if(deltaHeight <= 0) deltaHeight = 1;
 
@@ -166,15 +161,54 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         else if(worldObj.isRaining()) {
             weatherModifier = ModConfiguration.getWeatherMultiplierRain();
         }
-        return maximumEnergyGeneration * weatherModifier * getTunnelLength() * heightModifier * 0.4f * ModConfiguration.getRotorEnergyMultiplier(rotorType);
+        float energy = windGenerationBase * heightModifier * getTunnelLength() * weatherModifier;
+        if(energy < 0.01) {
+            return new EnergyPacket(0, 0);
+        }
+        else {
+            return new EnergyPacket(energy, windPacketLength);
+        }
     }
 
     /**
-     * Maximum baseline energy that can be produced
-     * @return Maximum RF/t
+     * Create a new energy packet from hand power.
+     * Calculates the energy coming from a player rotating the rotor and creates
+     * a new energy packet containing that energy.
+     * @return Energy packet containing energy from the player
      */
-    public int getMaximumEnergyGeneration() {
-        return maximumEnergyGeneration;
+    private EnergyPacket getEnergyPacketFromHand() {
+        return new EnergyPacket(windGenerationBase * ModConfiguration.getHandcrankEnergyMultiplier(), Util.ticksPerClick());
+    }
+
+    /**
+     * Calculate the energy that can be extracted from the energy packet
+     * limited by the efficiency of the system. Takes into account the efficiency
+     * of the turbine and of the rotor. Does not modify the packet.
+     * @param pEnergyPacket Energy packet to calculate from
+     * @return Extractable energy in {@code pEnergyPacket} in RF/t
+     */
+    private float getExtractableEnergyFromPacket(EnergyPacket pEnergyPacket) {
+        float totalEfficiency = 1.0f;
+        if(!hasRotor()) {
+            totalEfficiency = 0.0f;
+        }
+        else {
+            totalEfficiency *= ModConfiguration.getRotorEnergyMultiplier(rotorType);
+            totalEfficiency *= efficiency;
+        }
+        return pEnergyPacket.getEnergyPerTick() * totalEfficiency;
+    }
+
+    /**
+     * Takes an energy packet and extracts energy from it. Modifies the lifetime
+     * of the packet accordingly.
+     * @param pEnergyPacket Packet to extract from
+     */
+    private void extractFromEnergyPacket(EnergyPacket pEnergyPacket){
+        currentEnergyGeneration = getExtractableEnergyFromPacket(pEnergyPacket);
+        pEnergyPacket.deplete();
+        syncEnergy();
+        storage.modifyEnergyStored(currentEnergyGeneration);
     }
 
     /**
@@ -183,47 +217,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     public float getCurrentEnergyGeneration() {
         return currentEnergyGeneration;
-    }
-
-    /**
-     * Calculate the energy generation due to the wind and modify the energy.
-     */
-    private void generateEnergy() {
-        currentEnergyGeneration = getEnergyGeneration();
-        syncEnergy();
-        storage.modifyEnergyStored(currentEnergyGeneration);
-    }
-
-    /**
-     * Get the energy generation in RF/t at the current tick via the handcrank
-     * system instead of wind.
-     * @return Energy produced in RF/t
-     */
-    private float getHandcrankEnergyGeneration() {
-        // Handcrank energy is a fixed (small) proportion of the total that
-        // can be produced, and is independent of rotor type or environmental
-        // factors
-        return maximumEnergyGeneration * 10.0f * ModConfiguration.getHandcrankEnergyMultiplier();
-    }
-
-    /**
-     * Calculate the energy generation due to the player and modify the energy.
-     */
-    private void generateHandcrankEnergy() {
-        currentEnergyGeneration = getHandcrankEnergyGeneration();
-        syncEnergy();
-        storage.modifyEnergyStored(currentEnergyGeneration);
-    }
-
-    /**
-     * Mark for handcrank energy generation for the next 4 ticks
-     */
-    public void handcrank() {
-        toGenerate += Util.ticksPerClick();
-    }
-
-    public int getHandcrankTicks() {
-        return toGenerate;
     }
 
     /**
