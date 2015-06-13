@@ -15,7 +15,7 @@ public class ModConfiguration {
     private static Configuration config;
     private static boolean forceVanillaRecipes;
     private static boolean forceIronRotor;
-    private static int[] windmillEnergyGeneration = new int[4];
+    private static float[] windmillEfficiency = new float[4];
     private static int[] windmillEnergyStorage = new int[4];
     private static int windmillEnergyTransferMultiplier;
     // Config has no getFloat()
@@ -23,6 +23,7 @@ public class ModConfiguration {
     private static double weatherMultiplierRain;
     private static double weatherMultiplierThunder;
     private static double handcrankEnergyMultiplier;
+    private static float windGenerationBase;
 
     public static void init(File pConfigFile) {
         if(pConfigFile != null) {
@@ -46,19 +47,23 @@ public class ModConfiguration {
                 "ForceIronRotorTexture",
                 false,
                 "Use the iron rotor texture regardless of the rotor material").getBoolean();
-        windmillEnergyGeneration[0] = config.get(Configuration.CATEGORY_GENERAL,
-                "WindmillBasicEnergyGeneration",
-                1,
-                "Multiply by 4 to get the maximum RF/t independent of other factors").getInt();
-        windmillEnergyGeneration[1] = config.get(Configuration.CATEGORY_GENERAL,
-                "WindmillHardenedEnergyGeneration",
-                3).getInt();
-        windmillEnergyGeneration[2] = config.get(Configuration.CATEGORY_GENERAL,
-                "WindmillReinforcedEnergyGeneration",
-                6).getInt();
-        windmillEnergyGeneration[3] = config.get(Configuration.CATEGORY_GENERAL,
-                "WindmillResonantEnergyGeneration",
-                9).getInt();
+        windGenerationBase = (float)config.get(Configuration.CATEGORY_GENERAL,
+                "WindGenerationBase",
+                40.0,
+                "The amount of energy in the wind in RF/t").getDouble();
+        windmillEfficiency[0] = (float)config.get(Configuration.CATEGORY_GENERAL,
+                "WindmillBasicEfficiency",
+                0.2,
+                "How good the windmill is at extracting energy from the wind").getDouble();
+        windmillEfficiency[1] = (float)config.get(Configuration.CATEGORY_GENERAL,
+                "WindmillHardenedEfficiency",
+                0.4).getDouble();
+        windmillEfficiency[2] = (float)config.get(Configuration.CATEGORY_GENERAL,
+                "WindmillReinforcedEfficiency",
+                0.8).getDouble();
+        windmillEfficiency[3] = (float)config.get(Configuration.CATEGORY_GENERAL,
+                "WindmillResonantEfficiency",
+                1.0).getDouble();
         windmillEnergyStorage[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEnergyStorage",
                 16000,
@@ -74,8 +79,8 @@ public class ModConfiguration {
                 64000).getInt();
         windmillEnergyTransferMultiplier = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillEnergyTransferMultiplier",
-                40,
-                "Multiply by the base energy generation e.g. WindmillBasicEnergyGeneration to get the rate of energy transfer in RF/t").getInt();
+                4,
+                "Multiply by the base wind energy generation to get the rate of energy transfer in RF/t").getInt();
         rotorEnergyMultiplier[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorBasicEnergyMultiplier",
                 0.75).getDouble();
@@ -113,8 +118,8 @@ public class ModConfiguration {
         return forceIronRotor;
     }
 
-    public static int[] getWindmillEnergyGeneration() {
-        return windmillEnergyGeneration;
+    public static float[] getWindmillEfficiency() {
+        return windmillEfficiency;
     }
 
     public static int[] getWindmillEnergyStorage() {
@@ -139,5 +144,9 @@ public class ModConfiguration {
 
     public static float getHandcrankEnergyMultiplier() {
         return (float)handcrankEnergyMultiplier;
+    }
+
+    public static float getWindGenerationBase() {
+        return windGenerationBase;
     }
 }

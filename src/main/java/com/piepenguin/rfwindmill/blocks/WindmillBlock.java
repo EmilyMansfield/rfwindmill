@@ -26,6 +26,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ import java.util.List;
  */
 public class WindmillBlock extends Block implements ITileEntityProvider {
 
-    protected final int[] maximumEnergyGeneration;
+    protected final float[] efficiency;
     protected final int[] maximumEnergyTransfer;
     protected final int[] capacity;
 
@@ -52,18 +53,13 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
     private String name;
     private IIcon[] icons;
 
-    public WindmillBlock(String pName, int[] pMaximumEnergyGeneration, int[] pCapacity) {
+    public WindmillBlock(String pName, float[] pEfficiency, int[] pCapacity) {
         super(Material.rock);
         setHardness(3.5f);
         setStepSound(Block.soundTypeMetal);
-        maximumEnergyGeneration = pMaximumEnergyGeneration;
-        // Make a duplicate of the energy generation array and multiply the values by
-        // the transfer multiplier, since an assignment doesn't duplicate the array in Java
-        maximumEnergyTransfer = new int[maximumEnergyGeneration.length];
-        System.arraycopy(pMaximumEnergyGeneration, 0, maximumEnergyTransfer, 0, pMaximumEnergyGeneration.length);
-        for(int i = 0; i < pMaximumEnergyGeneration.length; ++i) {
-            maximumEnergyTransfer[i] *= ModConfiguration.getWindmillEnergyTransferMultiplier();
-        }
+        efficiency = pEfficiency;
+        maximumEnergyTransfer = new int[efficiency.length];
+        Arrays.fill(maximumEnergyTransfer, (int)(ModConfiguration.getWindGenerationBase() * ModConfiguration.getWindmillEnergyTransferMultiplier()));
         capacity = pCapacity;
         name = pName;
         this.setBlockName(Constants.MODID + "_" + name);
@@ -86,7 +82,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
 
     @Override
     public TileEntity createNewTileEntity(World pWorld, int pMeta) {
-        return new TileEntityWindmillBlock(maximumEnergyGeneration[pMeta], maximumEnergyTransfer[pMeta], capacity[pMeta]);
+        return new TileEntityWindmillBlock(efficiency[pMeta], maximumEnergyTransfer[pMeta], capacity[pMeta]);
     }
 
     @Override
@@ -250,7 +246,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                 entity.getEnergyStored(),
                 entity.getMaxEnergyStored(),
                 Lang.localise("energy.generating"),
-                entity.getEnergyGeneration());
+                entity.getCurrentEnergyGeneration());
         pPlayer.addChatMessage(new ChatComponentText(msg));
     }
 }

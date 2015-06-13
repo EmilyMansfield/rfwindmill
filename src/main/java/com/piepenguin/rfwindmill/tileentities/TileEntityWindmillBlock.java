@@ -176,6 +176,12 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return new EnergyPacket(windGenerationBase * ModConfiguration.getHandcrankEnergyMultiplier(), Util.ticksPerClick());
     }
 
+    public void handcrank() {
+        if(energyPacket.getLifetime() <= 0) {
+            energyPacket = getEnergyPacketFromHand();
+        }
+    }
+
     /**
      * Calculate the energy that can be extracted from the energy packet
      * limited by the efficiency of the system. Takes into account the efficiency
