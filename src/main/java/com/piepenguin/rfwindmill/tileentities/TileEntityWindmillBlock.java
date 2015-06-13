@@ -72,6 +72,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             // No energy left so attempt to generate a packet from the wind
             else {
                 energyPacket = getEnergyPacketFromWind();
+                extractFromEnergyPacket(energyPacket);
             }
             if(storage.getEnergyStored() > 0) {
                 transferEnergy();
