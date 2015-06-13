@@ -83,7 +83,8 @@ public class ModConfiguration {
                 "Multiply by the base wind energy generation to get the rate of energy transfer in RF/t").getInt();
         rotorEnergyMultiplier[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorBasicEnergyMultiplier",
-                0.625).getDouble();
+                0.625,
+                "Multiplier applied to the windmill generation due to the rotor").getDouble();
         rotorEnergyMultiplier[1] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorHardenedEnergyMultiplier",
                 0.75).getDouble();
