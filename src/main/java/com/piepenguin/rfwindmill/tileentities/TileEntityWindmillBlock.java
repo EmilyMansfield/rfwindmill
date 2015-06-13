@@ -158,12 +158,12 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         else if(worldObj.isRaining()) {
             weatherModifier = ModConfiguration.getWeatherMultiplierRain();
         }
-        float energy = windGenerationBase * heightModifier * getTunnelLength() * weatherModifier;
+        float energy = windGenerationBase * heightModifier * getTunnelLength() * 0.1f * weatherModifier;
         if(energy < 0.01) {
             return new EnergyPacket(0, 0);
         }
         else {
-            return new EnergyPacket(energy, windPacketLength);
+            return new EnergyPacket(energy * windPacketLength, windPacketLength);
         }
     }
 
@@ -174,7 +174,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * @return Energy packet containing energy from the player
      */
     private EnergyPacket getEnergyPacketFromHand() {
-        return new EnergyPacket(windGenerationBase * ModConfiguration.getHandcrankEnergyMultiplier(), Util.ticksPerClick());
+        return new EnergyPacket(Util.ticksPerClick() * windGenerationBase * ModConfiguration.getHandcrankEnergyMultiplier(), Util.ticksPerClick());
     }
 
     public void handcrank() {
