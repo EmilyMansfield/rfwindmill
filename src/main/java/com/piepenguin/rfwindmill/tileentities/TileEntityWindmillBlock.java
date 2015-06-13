@@ -31,12 +31,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private static final String NBT_ROTOR_TYPE =  "RFWRotorType";
     private static final String NBT_ROTOR_DIR = "RFWRotorDir";
     private static final String NBT_CURRENT_ENERGY_GENERATION = "RFWCurrentEnergyGeneration";
-    private static final String NBT_TO_GENERATE_TICKS = "RFWToGenerateTicks";
     private float currentEnergyGeneration;
     private float oldEnergyGeneration = 0.0f;
     private int rotorType; // -1 if no rotor
     private ForgeDirection rotorDir;
-    private int toGenerate = 0;
     private EnergyPacket energyPacket = new EnergyPacket();
     private float efficiency;
     private static float windGenerationBase = 40.0f;
@@ -88,7 +86,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     public void readSyncableDataFromNBT(NBTTagCompound pNbt) {
         currentEnergyGeneration = pNbt.getFloat(NBT_CURRENT_ENERGY_GENERATION);
-        toGenerate = pNbt.getInteger(NBT_TO_GENERATE_TICKS);
     }
 
     /**
@@ -98,7 +95,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     public void writeSyncableDataToNBT(NBTTagCompound pNbt) {
         pNbt.setFloat(NBT_CURRENT_ENERGY_GENERATION, currentEnergyGeneration);
-        pNbt.setInteger(NBT_TO_GENERATE_TICKS, toGenerate);
     }
 
     /**

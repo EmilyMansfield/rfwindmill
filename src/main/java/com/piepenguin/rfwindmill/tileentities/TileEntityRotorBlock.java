@@ -24,8 +24,7 @@ public class TileEntityRotorBlock extends TileEntity {
     private static final String NBT_ROTOR_TYPE = "RFWRotorType";
     private int type = 0;
     public static String publicName = "tileEntityRotorBlock";
-    private static int ticksPerRotation = 100;
-    private int toRotate = 0;
+    private static final float degreesPerRFPerTick = 1.0f;
 
     @Override
     public void updateEntity() {
@@ -36,13 +35,7 @@ public class TileEntityRotorBlock extends TileEntity {
             int parentZ = zCoord + turbineDir.offsetZ;
             TileEntityWindmillBlock entity = (TileEntityWindmillBlock)worldObj.getTileEntity(parentX, parentY, parentZ);
             if(entity != null) {
-                toRotate = entity.getHandcrankTicks();
-                float generation = entity.getCurrentEnergyGeneration();
-                if(toRotate == 0) {
-                    rotation += generation / entity.getMaximumEnergyGeneration();
-                } else {
-                    rotation += 360.0f / ticksPerRotation;
-                }
+                rotation += entity.getCurrentEnergyGeneration() * degreesPerRFPerTick;
             }
             scale = 1.0f;
         }
