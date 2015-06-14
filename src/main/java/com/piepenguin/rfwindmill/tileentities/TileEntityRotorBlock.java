@@ -29,7 +29,9 @@ public class TileEntityRotorBlock extends TileEntity {
     @Override
     public void updateEntity() {
         if(worldObj.isRemote) {
-            ForgeDirection turbineDir = Util.intToDirection(getBlockMetadata()).getOpposite();
+            // We only need 4 directions so only the bottom two bits of
+            // the metadata need to be considered
+            ForgeDirection turbineDir = Util.intToDirection(getBlockMetadata() & 3).getOpposite();
             int parentX = xCoord + turbineDir.offsetX;
             int parentY = yCoord + turbineDir.offsetY;
             int parentZ = zCoord + turbineDir.offsetZ;
@@ -96,11 +98,13 @@ public class TileEntityRotorBlock extends TileEntity {
     }
 
     /**
-     * Set the tier of the rotor used to make the corresponding block.
+     * Set the tier of the rotor used to make the corresponding block and
+     * update the metadata of the block accordingly.
      * @param pType Tier of the rotor
      */
     public void setType(int pType) {
         type = pType;
+        worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, (type << 2) + (getBlockMetadata() & 3), 2);
     }
 
     /**

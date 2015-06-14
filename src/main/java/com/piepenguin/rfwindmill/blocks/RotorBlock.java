@@ -1,16 +1,22 @@
 package com.piepenguin.rfwindmill.blocks;
 
 import com.piepenguin.rfwindmill.lib.Constants;
+import com.piepenguin.rfwindmill.lib.ModConfiguration;
 import com.piepenguin.rfwindmill.lib.Util;
 import com.piepenguin.rfwindmill.tileentities.TileEntityRotorBlock;
 import com.piepenguin.rfwindmill.tileentities.TileEntityWindmillBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -19,13 +25,39 @@ import net.minecraftforge.common.util.ForgeDirection;
  * Rotor blocks are created when a {@link WindmillBlock} is right clicked with
  * a rotor item, and are necessary for the {@link WindmillBlock} to produce RF.
  * Each {@link RotorBlock} does not deal with energy generation directly.
+ * The lowest 2 bits of the metadata store the direction that the rotor is
+ * facing and the highest 2 store the texture id.
  */
 public class RotorBlock extends BlockContainer {
 
+    private static final int numIcons = 4;
+    private IIcon[] icons;
+
     public RotorBlock() {
         super(Material.iron);
+        setStepSound(Block.soundTypeMetal);
         this.setBlockName(Constants.MODID + "_" + "rotor");
         GameRegistry.registerBlock(this, "rotor");
+        icons = new IIcon[numIcons];
+    }
+
+    @Override
+    public void registerBlockIcons(IIconRegister pIconRegister) {
+        icons[0] = pIconRegister.registerIcon(Constants.MODID + ":" + "rotorIron");
+        icons[1] = pIconRegister.registerIcon(Constants.MODID + ":" + "rotorElectrum");
+        icons[2] = pIconRegister.registerIcon(Constants.MODID + ":" + (Util.useThermalExpansion() ? "rotorSignalum" : "rotorNether"));
+        icons[3] = pIconRegister.registerIcon(Constants.MODID + ":" + (Util.useThermalExpansion() ? "rotorEnderium" : "rotorDiamond"));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int pSide, int pMeta) {
+        // Ignore 2 lowest bits
+        return icons[(pMeta & 12) >> 2];
+    }
+
+    @Override
+    public int damageDropped(int pMeta) {
+        return pMeta;
     }
 
     @Override
@@ -53,7 +85,7 @@ public class RotorBlock extends BlockContainer {
         // Tell the parent windmill block that it no longer has a rotor
         TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock)pWorld.getTileEntity(pX, pY, pZ);
         if(rotorEntity != null) {
-            ForgeDirection rotorDir = Util.intToDirection(rotorEntity.getBlockMetadata()).getOpposite();
+            ForgeDirection rotorDir = Util.intToDirection(rotorEntity.getBlockMetadata() & 3).getOpposite();
             int parentX = pX + rotorDir.offsetX;
             int parentY = pY + rotorDir.offsetY;
             int parentZ = pZ + rotorDir.offsetZ;
@@ -73,7 +105,7 @@ public class RotorBlock extends BlockContainer {
         }
         TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock)pWorld.getTileEntity(pX, pY, pZ);
         if(rotorEntity != null) {
-            ForgeDirection rotorDir = Util.intToDirection(rotorEntity.getBlockMetadata()).getOpposite();
+            ForgeDirection rotorDir = Util.intToDirection(rotorEntity.getBlockMetadata() & 3).getOpposite();
             int parentX = pX + rotorDir.offsetX;
             int parentY = pY + rotorDir.offsetY;
             int parentZ = pZ + rotorDir.offsetZ;

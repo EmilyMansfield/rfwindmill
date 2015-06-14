@@ -38,7 +38,7 @@ public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
         TileEntityRotorBlock entity = (TileEntityRotorBlock)pEntity;
         float rotation = entity.getRotation();
         float scale = entity.getScale();
-        int meta = entity.getBlockMetadata();
+        int meta = entity.getBlockMetadata() & 3;
         bindTexture(textures[entity.getTexture()]);
         GL11.glPushMatrix();
         // Position the rotor on the centre of the face and turn it the right way
