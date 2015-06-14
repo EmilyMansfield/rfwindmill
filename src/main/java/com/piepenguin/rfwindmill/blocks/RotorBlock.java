@@ -37,16 +37,29 @@ public class RotorBlock extends BlockContainer {
         super(Material.iron);
         setStepSound(Block.soundTypeMetal);
         this.setBlockName(Constants.MODID + "_" + "rotor");
-        GameRegistry.registerBlock(this, "rotor");
+        GameRegistry.registerBlock(this, ItemBlockRotorBlock.class, "rotor");
         icons = new IIcon[numIcons];
     }
 
+    public static String getMaterialName(int pRotorType) {
+        switch(pRotorType) {
+            default:
+            case 0:
+                return "rotorIron";
+            case 1:
+                return (Util.useThermalFoundation() ? "rotorElectrum" : "rotorGold");
+            case 2:
+                return (Util.useThermalFoundation() ? "rotorSignalum" : "rotorNether");
+            case 3:
+                return (Util.useThermalFoundation() ? "rotorEnderium" : "rotorDiamond");
+        }
+    }
     @Override
     public void registerBlockIcons(IIconRegister pIconRegister) {
-        icons[0] = pIconRegister.registerIcon(Constants.MODID + ":" + "rotorIron");
-        icons[1] = pIconRegister.registerIcon(Constants.MODID + ":" + "rotorElectrum");
-        icons[2] = pIconRegister.registerIcon(Constants.MODID + ":" + (Util.useThermalExpansion() ? "rotorSignalum" : "rotorNether"));
-        icons[3] = pIconRegister.registerIcon(Constants.MODID + ":" + (Util.useThermalExpansion() ? "rotorEnderium" : "rotorDiamond"));
+        icons[0] = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(0));
+        icons[1] = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(1));
+        icons[2] = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(2));
+        icons[3] = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(3));
     }
 
     @SideOnly(Side.CLIENT)
