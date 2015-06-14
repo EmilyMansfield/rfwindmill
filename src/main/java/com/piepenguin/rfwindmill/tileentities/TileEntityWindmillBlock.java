@@ -227,7 +227,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     private void syncEnergy() {
         // Amount of energy generated has changed so sync with server
-        if((int)currentEnergyGeneration != (int)oldEnergyGeneration) {
+        if(Math.abs(currentEnergyGeneration - oldEnergyGeneration) > 0.01) {
             oldEnergyGeneration = currentEnergyGeneration;
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             markDirty();
