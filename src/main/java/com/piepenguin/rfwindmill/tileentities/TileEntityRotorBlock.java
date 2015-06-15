@@ -24,7 +24,7 @@ public class TileEntityRotorBlock extends TileEntity {
     private static final String NBT_ROTOR_TYPE = "RFWRotorType";
     private int type = 0;
     public static String publicName = "tileEntityRotorBlock";
-    private static final float degreesPerRFPerTick = 1.0f;
+    private static final float degreesPerRFPerTick = ModConfiguration.getAngularVelocityPerRF();
 
     @Override
     public void updateEntity() {

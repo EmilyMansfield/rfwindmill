@@ -24,6 +24,7 @@ public class ModConfiguration {
     private static double weatherMultiplierThunder;
     private static double handcrankEnergyMultiplier;
     private static float windGenerationBase;
+    private static float angularVelocityPerRF;
 
     public static void init(File pConfigFile) {
         if(pConfigFile != null) {
@@ -53,17 +54,17 @@ public class ModConfiguration {
                 "The amount of energy in the wind in RF/t").getDouble();
         windmillEfficiency[0] = (float)config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEfficiency",
-                0.2,
+                0.1,
                 "How good the windmill is at extracting energy from the wind").getDouble();
         windmillEfficiency[1] = (float)config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillHardenedEfficiency",
-                0.4).getDouble();
+                0.3).getDouble();
         windmillEfficiency[2] = (float)config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillReinforcedEfficiency",
-                0.8).getDouble();
+                0.6).getDouble();
         windmillEfficiency[3] = (float)config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillResonantEfficiency",
-                1.0).getDouble();
+                0.9).getDouble();
         windmillEnergyStorage[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEnergyStorage",
                 16000,
@@ -106,6 +107,10 @@ public class ModConfiguration {
                 "HandcrankEnergyMultiplier",
                 0.4,
                 "Multiplier applied to energy generation when turning rotors by hand").getDouble();
+        angularVelocityPerRF = (float)config.get(Configuration.CATEGORY_GENERAL,
+                "AngularVelocityPerRF",
+                0.5,
+                "Degrees per RF per tick that the rotor rotates by").getDouble();
         if(config.hasChanged()) {
             config.save();
         }
@@ -149,5 +154,9 @@ public class ModConfiguration {
 
     public static float getWindGenerationBase() {
         return windGenerationBase;
+    }
+
+    public static float getAngularVelocityPerRF() {
+        return angularVelocityPerRF;
     }
 }
