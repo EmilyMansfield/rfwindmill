@@ -56,10 +56,9 @@ public class RotorBlock extends BlockContainer {
     }
     @Override
     public void registerBlockIcons(IIconRegister pIconRegister) {
-        icons[0] = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(0));
-        icons[1] = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(1));
-        icons[2] = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(2));
-        icons[3] = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(3));
+        for(int i = 0; i < numIcons; ++i) {
+            icons[i] = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(i));
+        }
     }
 
     @SideOnly(Side.CLIENT)
