@@ -65,7 +65,7 @@ public class RotorBlock extends BlockContainer {
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int pSide, int pMeta) {
         // Ignore 2 lowest bits
-        return icons[(pMeta & 12) >> 2];
+        return icons[pMeta >> 2];
     }
 
     @Override
