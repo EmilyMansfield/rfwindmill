@@ -1,7 +1,7 @@
-tile.rfwindmill_windmillBlock.basic.name=Basic Flux Windmill
-tile.rfwindmill_windmillBlock.hardened.name=Hardened Flux Windmill
-tile.rfwindmill_windmillBlock.reinforced.name=Reinforced Flux Windmill
-tile.rfwindmill_windmillBlock.resonant.name=Resonant Flux Windmill
+tile.rfwindmill_windmillBlock.basic.name=Flux Windmill (Basic)
+tile.rfwindmill_windmillBlock.hardened.name=Flux Windmill (Hardened)
+tile.rfwindmill_windmillBlock.reinforced.name=§eFlux Windmill (Reinforced)
+tile.rfwindmill_windmillBlock.resonant.name=§bFlux Windmill (Resonant)
 
 tile.rfwindmill_rotor.rotorIron.name=Iron Rotor
 tile.rfwindmill_rotor.rotorElectrum.name=Electrum Rotor
