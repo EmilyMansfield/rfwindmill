@@ -1,0 +1,23 @@
+tile.rfwindmill_windmillBlock.basic.name=Fluxwindkraftanlage (Basis)
+tile.rfwindmill_windmillBlock.hardened.name=Fluxwindkraftanlage (Hart)
+tile.rfwindmill_windmillBlock.reinforced.name=§eFluxwindkraftanlage (Bewehr)
+tile.rfwindmill_windmillBlock.resonant.name=§bFluxwindkraftanlage (Resonant)
+
+tile.rfwindmill_rotor.rotorIron.name=Eisenrotor
+tile.rfwindmill_rotor.rotorElectrum.name=Elektrumrotor
+tile.rfwindmill_rotor.rotorSignalum.name=Signalumrotor
+tile.rfwindmill_rotor.rotorEnderium.name=Enderiumrotor
+tile.rfwindmill_rotor.rotorGold.name=Goldrotor
+tile.rfwindmill_rotor.rotorNether.name=Netherrotor
+tile.rfwindmill_rotor.rotorDiamond.name=Diamantrotor
+
+item.rfwindmill_rotorIron.name=Eisenrotor
+item.rfwindmill_rotorElectrum.name=Elektrumrotor
+item.rfwindmill_rotorSignalum.name=Signalumrotor
+item.rfwindmill_rotorEnderium.name=EnderiumRotor
+item.rfwindmill_rotorGold.name=Goldrotor
+item.rfwindmill_rotorNether.name=Netherrotor
+item.rfwindmill_rotorDiamond.name=Diamantrotor
+
+info.rfwindmill.energy.stored=Gespeicherte
+info.rfwindmill.energy.generating=Erzeugungs
