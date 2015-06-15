@@ -3,6 +3,14 @@ tile.rfwindmill_windmillBlock.hardened.name=硬化RF风力发电机
 tile.rfwindmill_windmillBlock.reinforced.name=强化RF风力发电机
 tile.rfwindmill_windmillBlock.resonant.name=振谐RF风力发电机
 
+tile.rfwindmill_rotor.rotorIron.name=铁转子
+tile.rfwindmill_rotor.rotorElectrum.name=金银合金转子
+tile.rfwindmill_rotor.rotorSignalum.name=信素转子
+tile.rfwindmill_rotor.rotorEnderium.name=末影转子
+tile.rfwindmill_rotor.rotorGold.name=金转子
+tile.rfwindmill_rotor.rotorNether.name=地狱转子
+tile.rfwindmill_rotor.rotorDiamond.name=钻石转子
+
 item.rfwindmill_rotorIron.name=铁转子
 item.rfwindmill_rotorElectrum.name=金银合金转子
 item.rfwindmill_rotorSignalum.name=信素转子
@@ -12,3 +20,4 @@ item.rfwindmill_rotorNether.name=地狱转子
 item.rfwindmill_rotorDiamond.name=钻石转子
 
 info.rfwindmill.energy.stored=储能
+info.rfwindmill.energy.generating=發電
