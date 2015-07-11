@@ -305,6 +305,9 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             for(int x = -1; x <= 1; ++x) {
                 for(int y = -1; y <= 1; ++y) {
                     int r = getTunnelLengthTwoSided(xCoord + x, yCoord + y, zCoord, rotorDir, (x == 0 && y == 0));
+                    if(x == 0 && y == 0) {
+                        r = getTunnelLengthSingleBlock(xCoord, yCoord, zCoord, rotorDir, true);
+                    }
                     if(r < range) {
                         range = r;
                     }
