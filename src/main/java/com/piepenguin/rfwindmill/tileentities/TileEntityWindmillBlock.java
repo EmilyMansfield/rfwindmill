@@ -243,20 +243,15 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * @param pY Y coordinate to start measuring from
      * @param pZ Z coordinate to start measuring from
      * @param pDirection Direction to check the tunnel in
-     * @param ignoreFirst If {@code true} then ignore the block at
-     * ({@code pX}, {@code pY}, {@code pZ})
+     * @param toSkip Number of blocks in {@code pDirection} to ignore
      * @return Length of the 'wind-tunnel'
      */
-    private int getTunnelLengthSingleBlock(int pX, int pY, int pZ, ForgeDirection pDirection, boolean ignoreFirst) {
-        for(int i = 1; i <= tunnelRange; ++i) {
+    private int getTunnelLengthSingleBlock(int pX, int pY, int pZ, ForgeDirection pDirection, int toSkip) {
+        for(int i = toSkip; i < tunnelRange; ++i) {
+            // Skip specified number of blocks
             int dx = pX + pDirection.offsetX * i;
             int dy = pY + pDirection.offsetY * i;
             int dz = pZ + pDirection.offsetZ * i;
-            // Skip first block if specified
-            if(ignoreFirst && i == 1)
-            {
-                continue;
-            }
             Block block = worldObj.getBlock(dx, dy, dz);
             if(block == null || (block.getMaterial() != Material.air)) {
                 return i-1;
@@ -268,7 +263,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     /**
      * Gets the length of a 'wind-tunnel' as per
-     * {@link #getTunnelLengthSingleBlock(int, int, int, ForgeDirection, boolean)}
+     * {@link #getTunnelLengthSingleBlock(int, int, int, ForgeDirection, int)}
      * but tunnel length is measured separately in two opposite directions and
      * the shortest length taken to be the length of the wind tunnel. The first
      * block is ignored in the given {@code pDirection} so as to ignore the
@@ -277,18 +272,19 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * @param pY Y coordinate to start measuring from
      * @param pZ Z coordinate to start measuring from
      * @param pDirection Direction the rotor is facing
-     * @param ignoreFirst If {@code true} then ignore the block at
-     *                    ({@code pX}, {@code pY}, {@code pZ}). The block is
-     *                    never ignored when going in the opposite direction
-     *                    however
+     * @param isCenter {@code true} if the tunnel starts on the windmill center
      * @return Shortest unobstructed length of the two opposing 'wind-tunnel's
      */
-    private int getTunnelLengthTwoSided(int pX, int pY, int pZ, ForgeDirection pDirection, boolean ignoreFirst) {
-        int rangeA = getTunnelLengthSingleBlock(pX, pY, pZ, pDirection, ignoreFirst);
-        // Only ignore block on the side the rotor is on
-        int rangeB = getTunnelLengthSingleBlock(pX, pY, pZ, pDirection.getOpposite(), false);
-
-        return Math.min(rangeA, rangeB);
+    private int getTunnelLengthTwoSided(int pX, int pY, int pZ, ForgeDirection pDirection, boolean isCenter) {
+        if(isCenter) {
+            return getTunnelLengthSingleBlock(pX, pY, pZ, pDirection, 2);
+        }
+        else {
+            return Math.min(
+                    getTunnelLengthSingleBlock(pX, pY, pZ, pDirection, 1),
+                    getTunnelLengthSingleBlock(pX, pY, pZ, pDirection.getOpposite(), 0)
+            );
+        }
     }
 
     /**
@@ -304,7 +300,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.SOUTH) {
             for(int x = -1; x <= 1; ++x) {
                 for(int y = -1; y <= 1; ++y) {
-                    int r = getTunnelLengthTwoSided(xCoord + x, yCoord + y, zCoord, rotorDir, (x == 0 && y == 0));
+                    int r = getTunnelLengthTwoSided(xCoord + x, yCoord + y, zCoord, rotorDir, x == 0);
                     if(r < range) {
                         range = r;
                     }
@@ -316,7 +312,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             // Check yz plane
             for(int z = -1; z <= 1; ++z) {
                 for(int y = -1; y <= 1; ++y) {
-                    int r = getTunnelLengthTwoSided(xCoord, yCoord + y, zCoord + z, rotorDir, (z == 0 && y == 0));
+                    int r = getTunnelLengthTwoSided(xCoord, yCoord + y, zCoord + z, rotorDir, z == 0);
                     if(r < range) {
                         range = r;
                     }
