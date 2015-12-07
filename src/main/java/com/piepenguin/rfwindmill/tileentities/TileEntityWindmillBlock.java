@@ -157,7 +157,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         else if(worldObj.isRaining()) {
             weatherModifier = ModConfiguration.getWeatherMultiplierRain();
         }
-        float energy = ModConfiguration.getWindGenerationBase() * heightModifier * getTunnelLength() * 0.1f * weatherModifier;
+        float energy = ModConfiguration.getWindGenerationBase() * 0.1f * heightModifier * getTunnelLength() * weatherModifier;
         if(energy < 0.01) {
             return new EnergyPacket(0, 0);
         }

@@ -50,18 +50,18 @@ public class ModConfiguration {
                 "Use the iron rotor texture regardless of the rotor material").getBoolean();
         windGenerationBase = (float)config.get(Configuration.CATEGORY_GENERAL,
                 "WindGenerationBase",
-                40.0,
+                160.0,
                 "The amount of energy in the wind in RF/t").getDouble();
         windmillEfficiency[0] = (float)config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEfficiency",
-                0.1,
+                0.05,
                 "How good the windmill is at extracting energy from the wind").getDouble();
         windmillEfficiency[1] = (float)config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillHardenedEfficiency",
-                0.3).getDouble();
+                0.2).getDouble();
         windmillEfficiency[2] = (float)config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillReinforcedEfficiency",
-                0.6).getDouble();
+                0.5).getDouble();
         windmillEfficiency[3] = (float)config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillResonantEfficiency",
                 0.9).getDouble();
@@ -109,7 +109,7 @@ public class ModConfiguration {
                 "Multiplier applied to energy generation when turning rotors by hand").getDouble();
         angularVelocityPerRF = (float)config.get(Configuration.CATEGORY_GENERAL,
                 "AngularVelocityPerRF",
-                0.5,
+                0.15,
                 "Degrees per RF per tick that the rotor rotates by").getDouble();
         if(config.hasChanged()) {
             config.save();
