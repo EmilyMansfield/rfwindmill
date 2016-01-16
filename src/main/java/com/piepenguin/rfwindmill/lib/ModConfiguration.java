@@ -25,6 +25,7 @@ public class ModConfiguration {
     private static double handcrankEnergyMultiplier;
     private static float windGenerationBase;
     private static float angularVelocityPerRF;
+    private static int[] heightBounds = new int[2];
 
     public static void init(File pConfigFile) {
         if(pConfigFile != null) {
@@ -111,6 +112,14 @@ public class ModConfiguration {
                 "AngularVelocityPerRF",
                 0.15,
                 "Degrees per RF per tick that the rotor rotates by").getDouble();
+        heightBounds[0] = config.get(Configuration.CATEGORY_GENERAL,
+                "GenerationHeightBoundLower",
+                60,
+                "Lowest height that the windmills will generate energy at").getInt();
+        heightBounds[1] = config.get(Configuration.CATEGORY_GENERAL,
+                "GenerationHeightBoundUpper",
+                100,
+                "Height at which the windmill will generate the most energy").getInt();
         if(config.hasChanged()) {
             config.save();
         }
@@ -158,5 +167,13 @@ public class ModConfiguration {
 
     public static float getAngularVelocityPerRF() {
         return angularVelocityPerRF;
+    }
+
+    public static int getHeightBoundsLower() {
+        return heightBounds[0];
+    }
+
+    public static int getHeightBoundsUpper() {
+        return heightBounds[1];
     }
 }

@@ -25,8 +25,8 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     private EnergyStorage storage;
     private static final int tunnelRange = 10;
-    private static final int minHeight = 60;
-    private static final int maxHeight = 100;
+    private static int minHeight = ModConfiguration.getHeightBoundsLower();
+    private static int maxHeight = ModConfiguration.getHeightBoundsUpper();
     private static final String NBT_EFFICIENCY = "RFWEfficiency";
     private static final String NBT_ROTOR_TYPE =  "RFWRotorType";
     private static final String NBT_ROTOR_DIR = "RFWRotorDir";
