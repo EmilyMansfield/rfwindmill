@@ -31,14 +31,12 @@ public class ModRecipes {
         registerCommonRecipes();
         if(Util.useThermalFoundation() && !ModConfiguration.useVanillaRecipes()) {
             registerThermalFoundationRotors();
-        }
-        else {
+        } else {
             registerVanillaRotors();
         }
         if(Util.useThermalExpansion() && !ModConfiguration.useVanillaRecipes()) {
             registerThermalExpansionTurbines();
-        }
-        else {
+        } else {
             registerVanillaTurbines();
         }
     }
@@ -74,9 +72,9 @@ public class ModRecipes {
      * Register vanilla rotor recipes. Called when Thermal Foundation is not
      * loaded or vanilla recipes are forced. Rotor types created are
      * <ul>
-     *     <li>Gold Rotor</li>
-     *     <li>Nether Rotor</li>
-     *     <li>Diamond Rotor</li>
+     * <li>Gold Rotor</li>
+     * <li>Nether Rotor</li>
+     * <li>Diamond Rotor</li>
      * </ul>
      */
     private static void registerVanillaRotors() {
@@ -88,9 +86,9 @@ public class ModRecipes {
     /**
      * Register Thermal Foundation rotor recipes. Rotor types are
      * <ul>
-     *     <li>Electrum Rotor</li>
-     *     <li>Signalum Rotor</li>
-     *     <li>Enderium Rotor</li>
+     * <li>Electrum Rotor</li>
+     * <li>Signalum Rotor</li>
+     * <li>Enderium Rotor</li>
      * </ul>
      */
     private static void registerThermalFoundationRotors() {
@@ -124,7 +122,8 @@ public class ModRecipes {
     /**
      * Attempt to find the {@code pOre} in the Forge ore dictionary and return
      * it if found otherwise return the {@code pFallback}
-     * @param pOre Ore name to search for (not necessarily an ore)
+     *
+     * @param pOre      Ore name to search for (not necessarily an ore)
      * @param pFallback Material to fall back to if the {@code pOre} wasn't found
      * @return {@code pOre} if it's in the dictionary, {@code fallback} otherwise
      */

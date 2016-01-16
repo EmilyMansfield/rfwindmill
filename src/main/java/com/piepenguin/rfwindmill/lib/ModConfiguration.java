@@ -49,21 +49,21 @@ public class ModConfiguration {
                 "ForceIronRotorTexture",
                 false,
                 "Use the iron rotor texture regardless of the rotor material").getBoolean();
-        windGenerationBase = (float)config.get(Configuration.CATEGORY_GENERAL,
+        windGenerationBase = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindGenerationBase",
                 160.0,
                 "The amount of energy in the wind in RF/t").getDouble();
-        windmillEfficiency[0] = (float)config.get(Configuration.CATEGORY_GENERAL,
+        windmillEfficiency[0] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEfficiency",
                 0.05,
                 "How good the windmill is at extracting energy from the wind").getDouble();
-        windmillEfficiency[1] = (float)config.get(Configuration.CATEGORY_GENERAL,
+        windmillEfficiency[1] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillHardenedEfficiency",
                 0.2).getDouble();
-        windmillEfficiency[2] = (float)config.get(Configuration.CATEGORY_GENERAL,
+        windmillEfficiency[2] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillReinforcedEfficiency",
                 0.5).getDouble();
-        windmillEfficiency[3] = (float)config.get(Configuration.CATEGORY_GENERAL,
+        windmillEfficiency[3] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillResonantEfficiency",
                 0.9).getDouble();
         windmillEnergyStorage[0] = config.get(Configuration.CATEGORY_GENERAL,
@@ -108,7 +108,7 @@ public class ModConfiguration {
                 "HandcrankEnergyMultiplier",
                 0.4,
                 "Multiplier applied to energy generation when turning rotors by hand").getDouble();
-        angularVelocityPerRF = (float)config.get(Configuration.CATEGORY_GENERAL,
+        angularVelocityPerRF = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "AngularVelocityPerRF",
                 0.15,
                 "Degrees per RF per tick that the rotor rotates by").getDouble();
@@ -146,19 +146,19 @@ public class ModConfiguration {
     }
 
     public static float getRotorEnergyMultiplier(int pType) {
-        return (float)rotorEnergyMultiplier[pType];
+        return (float) rotorEnergyMultiplier[pType];
     }
 
     public static float getWeatherMultiplierRain() {
-        return (float)weatherMultiplierRain;
+        return (float) weatherMultiplierRain;
     }
 
     public static float getWeatherMultiplierThunder() {
-        return (float)weatherMultiplierThunder;
+        return (float) weatherMultiplierThunder;
     }
 
     public static float getHandcrankEnergyMultiplier() {
-        return (float)handcrankEnergyMultiplier;
+        return (float) handcrankEnergyMultiplier;
     }
 
     public static float getWindGenerationBase() {

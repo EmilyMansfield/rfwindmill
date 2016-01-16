@@ -28,7 +28,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private static int minHeight = ModConfiguration.getHeightBoundsLower();
     private static int maxHeight = ModConfiguration.getHeightBoundsUpper();
     private static final String NBT_EFFICIENCY = "RFWEfficiency";
-    private static final String NBT_ROTOR_TYPE =  "RFWRotorType";
+    private static final String NBT_ROTOR_TYPE = "RFWRotorType";
     private static final String NBT_ROTOR_DIR = "RFWRotorDir";
     private static final String NBT_CURRENT_ENERGY_GENERATION = "RFWCurrentEnergyGeneration";
     private float currentEnergyGeneration;
@@ -82,6 +82,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     /**
      * Reads data from {@code pNbt} that must be synced between client and
      * server, namely the current energy generation.
+     *
      * @param pNbt NBT to read from
      */
     public void readSyncableDataFromNBT(NBTTagCompound pNbt) {
@@ -91,6 +92,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     /**
      * Writes data to {@code pNbt} that must be synced between client and
      * server, namely the current energy generation.
+     *
      * @param pNbt NBT to write to
      */
     public void writeSyncableDataToNBT(NBTTagCompound pNbt) {
@@ -99,6 +101,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     /**
      * Read the non-syncable data from {@code pNbt}.
+     *
      * @param pNbt NBT to read from
      */
     @Override
@@ -113,6 +116,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     /**
      * Write the non-syncable data to {@code pNbt}.
+     *
      * @param pNbt NBT to write to
      */
     @Override
@@ -143,25 +147,25 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * Calculates the energy in the wind that is accessible to the windmill and
      * creates a new energy packet containing that energy. Takes into account
      * the height, weather, and wind tunnel length.
+     *
      * @return Energy packet containing energy from the wind.
      */
     private EnergyPacket getEnergyPacketFromWind() {
         int deltaHeight = maxHeight - minHeight;
         if(deltaHeight <= 0) deltaHeight = 1;
 
-        float heightModifier = (float)Math.min(Math.max(yCoord - minHeight, 0), deltaHeight) / (float)deltaHeight;
+        float heightModifier = (float) Math.min(Math.max(yCoord - minHeight, 0), deltaHeight) / (float) deltaHeight;
         float weatherModifier = 1.0f;
         if(worldObj.isThundering()) {
             weatherModifier = ModConfiguration.getWeatherMultiplierThunder();
-        }
-        else if(worldObj.isRaining()) {
+        } else if(worldObj.isRaining()) {
             weatherModifier = ModConfiguration.getWeatherMultiplierRain();
         }
-        float energy = ModConfiguration.getWindGenerationBase() * 0.1f * heightModifier * getTunnelLength() * weatherModifier;
+        float energy = ModConfiguration.getWindGenerationBase() * 0.1f
+                * heightModifier * getTunnelLength() * weatherModifier;
         if(energy < 0.01) {
             return new EnergyPacket(0, 0);
-        }
-        else {
+        } else {
             return new EnergyPacket(energy * windPacketLength, windPacketLength);
         }
     }
@@ -170,10 +174,14 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * Create a new energy packet from hand power.
      * Calculates the energy coming from a player rotating the rotor and creates
      * a new energy packet containing that energy.
+     *
      * @return Energy packet containing energy from the player
      */
     private EnergyPacket getEnergyPacketFromHand() {
-        return new EnergyPacket(Util.ticksPerClick() * ModConfiguration.getWindGenerationBase() * ModConfiguration.getHandcrankEnergyMultiplier(), Util.ticksPerClick());
+        return new EnergyPacket(
+                Util.ticksPerClick() * ModConfiguration.getWindGenerationBase()
+                        * ModConfiguration.getHandcrankEnergyMultiplier(),
+                Util.ticksPerClick());
     }
 
     public void handcrank() {
@@ -186,6 +194,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * Calculate the energy that can be extracted from the energy packet
      * limited by the efficiency of the system. Takes into account the efficiency
      * of the turbine and of the rotor. Does not modify the packet.
+     *
      * @param pEnergyPacket Energy packet to calculate from
      * @return Extractable energy in {@code pEnergyPacket} in RF/t
      */
@@ -193,8 +202,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         float totalEfficiency = 1.0f;
         if(!hasRotor()) {
             totalEfficiency = 0.0f;
-        }
-        else {
+        } else {
             totalEfficiency *= ModConfiguration.getRotorEnergyMultiplier(rotorType);
             totalEfficiency *= efficiency;
         }
@@ -204,9 +212,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     /**
      * Takes an energy packet and extracts energy from it. Modifies the lifetime
      * of the packet accordingly.
+     *
      * @param pEnergyPacket Packet to extract from
      */
-    private void extractFromEnergyPacket(EnergyPacket pEnergyPacket){
+    private void extractFromEnergyPacket(EnergyPacket pEnergyPacket) {
         currentEnergyGeneration = getExtractableEnergyFromPacket(pEnergyPacket);
         pEnergyPacket.deplete();
         syncEnergy();
@@ -215,6 +224,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     /**
      * The current rate of energy production in RF/t
+     *
      * @return The current rate of energy production, 0 if no rotor attached
      */
     public float getCurrentEnergyGeneration() {
@@ -239,11 +249,12 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * the first non-air block in the given direction and starting at the
      * given coordinate. Gives the length of a 'wind-tunnel' until an obstruction
      * is found.
-     * @param pX X coordinate to start measuring from
-     * @param pY Y coordinate to start measuring from
-     * @param pZ Z coordinate to start measuring from
+     *
+     * @param pX         X coordinate to start measuring from
+     * @param pY         Y coordinate to start measuring from
+     * @param pZ         Z coordinate to start measuring from
      * @param pDirection Direction to check the tunnel in
-     * @param toSkip Number of blocks in {@code pDirection} to ignore
+     * @param toSkip     Number of blocks in {@code pDirection} to ignore
      * @return Length of the 'wind-tunnel'
      */
     private int getTunnelLengthSingleBlock(int pX, int pY, int pZ, ForgeDirection pDirection, int toSkip) {
@@ -254,7 +265,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             int dz = pZ + pDirection.offsetZ * i;
             Block block = worldObj.getBlock(dx, dy, dz);
             if(block == null || (block.getMaterial() != Material.air)) {
-                return i-1;
+                return i - 1;
             }
         }
 
@@ -268,18 +279,18 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * the shortest length taken to be the length of the wind tunnel. The first
      * block is ignored in the given {@code pDirection} so as to ignore the
      * {@link com.piepenguin.rfwindmill.blocks.RotorBlock}.
-     * @param pX X coordinate to start measuring from
-     * @param pY Y coordinate to start measuring from
-     * @param pZ Z coordinate to start measuring from
+     *
+     * @param pX         X coordinate to start measuring from
+     * @param pY         Y coordinate to start measuring from
+     * @param pZ         Z coordinate to start measuring from
      * @param pDirection Direction the rotor is facing
-     * @param isCenter {@code true} if the tunnel starts on the windmill center
+     * @param isCenter   {@code true} if the tunnel starts on the windmill center
      * @return Shortest unobstructed length of the two opposing 'wind-tunnel's
      */
     private int getTunnelLengthTwoSided(int pX, int pY, int pZ, ForgeDirection pDirection, boolean isCenter) {
         if(isCenter) {
             return getTunnelLengthSingleBlock(pX, pY, pZ, pDirection, 2);
-        }
-        else {
+        } else {
             return Math.min(
                     getTunnelLengthSingleBlock(pX, pY, pZ, pDirection, 1),
                     getTunnelLengthSingleBlock(pX, pY, pZ, pDirection.getOpposite(), 0)
@@ -292,6 +303,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * {@link #getTunnelLengthTwoSided(int, int, int, ForgeDirection, boolean)}
      * but take the shortest unobstructed range in the 3x3x{@code tunnelRange}
      * to be the length of the tunnel.
+     *
      * @return Length of the 'wind-tunnel'
      */
     private int getTunnelLength() {
@@ -333,7 +345,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                     yCoord + direction.offsetY,
                     zCoord + direction.offsetZ);
             if(tile instanceof IEnergyReceiver) {
-                IEnergyReceiver receiver = (IEnergyReceiver)tile;
+                IEnergyReceiver receiver = (IEnergyReceiver) tile;
                 extractEnergy(direction.getOpposite(), receiver.receiveEnergy(direction.getOpposite(), storage.getExtract(), false), false);
             }
         }
@@ -343,8 +355,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     public int extractEnergy(ForgeDirection pFrom, int pMaxExtract, boolean pSimulate) {
         if(canConnectEnergy(pFrom)) {
             return storage.extractEnergy(pMaxExtract, pSimulate);
-        }
-        else {
+        } else {
             return 0;
         }
     }
@@ -384,9 +395,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * Set the tier of the rotor connected to the corresponding
      * {@link com.piepenguin.rfwindmill.blocks.WindmillBlock}. -1 if no rotor is
      * connected.
+     *
      * @param pRotorType Tier of the rotor being attached. -1 if no rotor
-     * @param fDir Direction the rotor is facing, i.e. the normal to the face
-     *             the rotor is being placed on
+     * @param fDir       Direction the rotor is facing, i.e. the normal to the face
+     *                   the rotor is being placed on
      */
     public void setRotor(int pRotorType, ForgeDirection fDir) {
         rotorType = pRotorType;

@@ -10,6 +10,7 @@ public class Lang {
     /**
      * Localise the given info string. Used for info strings only, not block
      * names or textures.
+     *
      * @param pText identifier for the info string
      * @return Localised version of the string
      */

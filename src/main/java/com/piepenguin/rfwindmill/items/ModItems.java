@@ -22,8 +22,7 @@ public final class ModItems {
             rotor2 = new RFWItem("rotorElectrum");
             rotor3 = new RFWItem("rotorSignalum");
             rotor4 = new RFWItem("rotorEnderium");
-        }
-        else {
+        } else {
             rotor2 = new RFWItem("rotorGold");
             rotor3 = new RFWItem("rotorNether");
             rotor4 = new RFWItem("rotorDiamond");

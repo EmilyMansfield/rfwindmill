@@ -35,7 +35,7 @@ public class TileEntityRotorBlock extends TileEntity {
             int parentX = xCoord + turbineDir.offsetX;
             int parentY = yCoord + turbineDir.offsetY;
             int parentZ = zCoord + turbineDir.offsetZ;
-            TileEntityWindmillBlock entity = (TileEntityWindmillBlock)worldObj.getTileEntity(parentX, parentY, parentZ);
+            TileEntityWindmillBlock entity = (TileEntityWindmillBlock) worldObj.getTileEntity(parentX, parentY, parentZ);
             if(entity != null) {
                 rotation += entity.getCurrentEnergyGeneration() * degreesPerRFPerTick;
             }
@@ -79,6 +79,7 @@ public class TileEntityRotorBlock extends TileEntity {
     /**
      * Get the rotation of the rotor about the axis normal to the face its
      * attached to.
+     *
      * @return Rotation in degrees of the rotor
      */
     public float getRotation() {
@@ -91,6 +92,7 @@ public class TileEntityRotorBlock extends TileEntity {
 
     /**
      * Get the tier of the rotor used to make the corresponding block.
+     *
      * @return Integer corresponding to the rotor tier used to make the rotor
      */
     public int getType() {
@@ -100,6 +102,7 @@ public class TileEntityRotorBlock extends TileEntity {
     /**
      * Set the tier of the rotor used to make the corresponding block and
      * update the metadata of the block accordingly.
+     *
      * @param pType Tier of the rotor
      */
     public void setType(int pType) {
@@ -112,6 +115,7 @@ public class TileEntityRotorBlock extends TileEntity {
      * configuration files. Can be forced to always display as the iron
      * texture, or (by default) takes a texture relative to the materials used
      * to make the rotor.
+     *
      * @return Array index used by {@link RenderTileEntityRotorBlock} to
      * identify the texture
      */
@@ -136,6 +140,7 @@ public class TileEntityRotorBlock extends TileEntity {
      * Converts the rotor tier into the item used to make it. Only ever four
      * rotors since high tier rotors are conditionally made based on config,
      * so this is a trivial function.
+     *
      * @return The rotor item used to make the corresponding
      * {@link com.piepenguin.rfwindmill.blocks.RotorBlock}
      */

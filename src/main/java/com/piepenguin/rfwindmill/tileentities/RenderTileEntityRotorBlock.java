@@ -35,7 +35,7 @@ public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity pEntity, double pX, double pY, double pZ, float pDt) {
-        TileEntityRotorBlock entity = (TileEntityRotorBlock)pEntity;
+        TileEntityRotorBlock entity = (TileEntityRotorBlock) pEntity;
         float rotation = entity.getRotation();
         float scale = entity.getScale();
         int meta = entity.getBlockMetadata() & 3;
@@ -44,18 +44,18 @@ public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
         // Position the rotor on the centre of the face and turn it the right way
         switch(meta) {
             case 0:
-                GL11.glTranslated(pX+0.5f, pY+0.5f, pZ+1.0f);
+                GL11.glTranslated(pX + 0.5f, pY + 0.5f, pZ + 1.0f);
                 GL11.glRotatef(180.0f, 0, 1.0f, 0);
                 break;
             case 1:
-                GL11.glTranslated(pX, pY+0.5f, pZ+0.5f);
+                GL11.glTranslated(pX, pY + 0.5f, pZ + 0.5f);
                 GL11.glRotatef(90.0f, 0, 1.0f, 0);
                 break;
             case 2:
-                GL11.glTranslated(pX+0.5f, pY+0.5f, pZ);
+                GL11.glTranslated(pX + 0.5f, pY + 0.5f, pZ);
                 break;
             case 3:
-                GL11.glTranslated(pX+1.0f, pY+0.5f, pZ+0.5f);
+                GL11.glTranslated(pX + 1.0f, pY + 0.5f, pZ + 0.5f);
                 GL11.glRotatef(270.0f, 0, 1.0f, 0);
                 break;
         }

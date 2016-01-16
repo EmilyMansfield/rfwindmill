@@ -57,7 +57,7 @@ public class EnergyStorage implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int pMaxReceive, boolean pSimulate) {
-        int energyReceived = Math.min(capacity - (int)energy, Math.min(maxReceive, pMaxReceive));
+        int energyReceived = Math.min(capacity - (int) energy, Math.min(maxReceive, pMaxReceive));
 
         if(!pSimulate) {
             energy += energyReceived;
@@ -68,7 +68,7 @@ public class EnergyStorage implements IEnergyStorage {
 
     @Override
     public int extractEnergy(int pMaxExtract, boolean pSimulate) {
-        int energyExtracted = Math.min((int)energy, Math.min(maxExtract, pMaxExtract));
+        int energyExtracted = Math.min((int) energy, Math.min(maxExtract, pMaxExtract));
 
         if(!pSimulate) {
             energy -= energyExtracted;
@@ -82,29 +82,27 @@ public class EnergyStorage implements IEnergyStorage {
 
         if(energy > capacity) {
             energy = capacity;
-        }
-        else if(energy < 0) {
+        } else if(energy < 0) {
             energy = 0;
         }
     }
 
     @Override
     public int getEnergyStored() {
-        return (int)energy;
+        return (int) energy;
     }
 
     public void setEnergyStored(int pEnergy) {
         energy = pEnergy;
         if(energy > capacity) {
             energy = capacity;
-        }
-        else if(energy < 0) {
+        } else if(energy < 0) {
             energy = 0;
         }
     }
 
     public int getExtract() {
-        return Math.min(maxExtract, (int)energy);
+        return Math.min(maxExtract, (int) energy);
     }
 
     @Override

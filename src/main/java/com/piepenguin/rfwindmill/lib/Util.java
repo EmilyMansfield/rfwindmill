@@ -14,27 +14,29 @@ public class Util {
 
     /**
      * Checks if the player is currently wielding a Buildcraft-compatible wrench
+     *
      * @param pPlayer Player who might be holding the wrench
-     * @param pX X coordinate of the position trying to be wrenched
-     * @param pY Y coordinate of the position trying to be wrenched
-     * @param pZ Z coordinate of the position trying to be wrenched
+     * @param pX      X coordinate of the position trying to be wrenched
+     * @param pY      Y coordinate of the position trying to be wrenched
+     * @param pZ      Z coordinate of the position trying to be wrenched
      * @return {@code true} if the player can wrench and {@code false} otherwise
      */
     public static boolean hasWrench(EntityPlayer pPlayer, int pX, int pY, int pZ) {
         ItemStack tool = pPlayer.getCurrentEquippedItem();
         return tool != null && (ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") &&
-                    (tool.getItem() instanceof IToolWrench) &&
-                    ((IToolWrench)tool.getItem()).canWrench(pPlayer, pX, pY, pZ));
+                (tool.getItem() instanceof IToolWrench) &&
+                ((IToolWrench) tool.getItem()).canWrench(pPlayer, pX, pY, pZ));
     }
 
     /**
      * Convert an integer 0-3 into a Forge direction in the xz plane according to
      * <ul>
-     *     <li>0 -> North</li>
-     *     <li>1 -> East</li>
-     *     <li>2 -> South</li>
-     *     <li>3 -> West</li>
+     * <li>0 -> North</li>
+     * <li>1 -> East</li>
+     * <li>2 -> South</li>
+     * <li>3 -> West</li>
      * </ul>
+     *
      * @param pDir Integer representing a direction in the xz plane
      * @return Forge direction corresponding to that direction
      */
@@ -56,11 +58,12 @@ public class Util {
     /**
      * Convert a Forge direction in the xz plane into an integer 0-3 according to
      * <ul>
-     *     <li>North -> 0</li>
-     *     <li>East -> 1</li>
-     *     <li>South -> 2</li>
-     *     <li>West -> 3</li>
+     * <li>North -> 0</li>
+     * <li>East -> 1</li>
+     * <li>South -> 2</li>
+     * <li>West -> 3</li>
      * </ul>
+     *
      * @param pDir Forge direction in the xz plane
      * @return Integer representing that direction
      */
@@ -79,6 +82,7 @@ public class Util {
 
     /**
      * Checks if Thermal Expansion features should be used
+     *
      * @return {@code true} if Thermal Expansion is loaded and the recipes
      * aren't disabled and {@code false} otherwise
      */
@@ -88,6 +92,7 @@ public class Util {
 
     /**
      * Checks if Thermal Foundation features should be used
+     *
      * @return {@code true} if Thermal Foundation is loaded and the recipes
      * aren't disabled, and {@code false} otherwise
      */
@@ -97,6 +102,7 @@ public class Util {
 
     /**
      * Returns the number of ticks one right click cycle takes.
+     *
      * @return Ticks in a player click cycle
      */
     public static int ticksPerClick() {
