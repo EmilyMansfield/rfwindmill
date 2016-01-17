@@ -24,7 +24,6 @@ public class TileEntityRotorBlock extends TileEntity {
     private static final String NBT_ROTOR_TYPE = "RFWRotorType";
     private int type = 0;
     public static String publicName = "tileEntityRotorBlock";
-    private static final float degreesPerRFPerTick = ModConfiguration.getAngularVelocityPerRF();
 
     @Override
     public void updateEntity() {
@@ -37,7 +36,7 @@ public class TileEntityRotorBlock extends TileEntity {
             int parentZ = zCoord + turbineDir.offsetZ;
             TileEntityWindmillBlock entity = (TileEntityWindmillBlock) worldObj.getTileEntity(parentX, parentY, parentZ);
             if(entity != null) {
-                rotation += entity.getCurrentEnergyGeneration() * degreesPerRFPerTick;
+                rotation += entity.getRotationPerTick();
             }
             scale = 1.0f;
         }

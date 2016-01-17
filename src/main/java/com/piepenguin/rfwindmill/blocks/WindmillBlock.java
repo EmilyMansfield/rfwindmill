@@ -58,9 +58,11 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         setHardness(3.5f);
         setStepSound(Block.soundTypeMetal);
         efficiency = pEfficiency;
-        maximumEnergyTransfer = new int[efficiency.length];
-        Arrays.fill(maximumEnergyTransfer, (int) (ModConfiguration.getWindGenerationBase() * ModConfiguration.getWindmillEnergyTransferMultiplier()));
         capacity = pCapacity;
+        maximumEnergyTransfer = new int[capacity.length];
+        for(int i = 0; i < capacity.length; ++i) {
+            maximumEnergyTransfer[i] = (int) (ModConfiguration.getWindmillEnergyTransferMultiplier() * capacity[i]);
+        }
         name = pName;
         this.setBlockName(Constants.MODID + "_" + name);
         this.setCreativeTab(CreativeTabs.tabBlock);

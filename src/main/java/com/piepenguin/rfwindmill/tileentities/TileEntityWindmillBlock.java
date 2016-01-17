@@ -25,8 +25,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     private EnergyStorage storage;
     private static final int tunnelRange = 10;
-    private static int minHeight = ModConfiguration.getHeightBoundsLower();
-    private static int maxHeight = ModConfiguration.getHeightBoundsUpper();
     private static final String NBT_EFFICIENCY = "RFWEfficiency";
     private static final String NBT_ROTOR_TYPE = "RFWRotorType";
     private static final String NBT_ROTOR_DIR = "RFWRotorDir";
@@ -147,27 +145,85 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * Calculates the energy in the wind that is accessible to the windmill and
      * creates a new energy packet containing that energy. Takes into account
      * the height, weather, and wind tunnel length.
+     * <p/>
+     * Equations are based on real-world mechanics of wind turbines. All turbines
+     * have a maximum theoretical output ratio of C = 0.59, the Betz limit, but
+     * C changes depending on the rotor material and generator efficiency.
+     * Modifiers for C are given below.
+     * <p/>
+     * The total power available to the windmill is given by
+     * <p>
+     * P = 1/2 &rho; &pi; r^2 v^3 C
+     * </p>
+     * where &rho; = 1.2 is the air density, r is the radius of the rotor blades,
+     * and v is the wind velocity.
+     * <p/>
+     * Wind velocity depends on height, and follows
+     * a power law depending on a reference height z_r and wind speed v_r
+     * <p>
+     * v = v_r ((z - 64)/z_r)^&alpha;
+     * </p>
+     * where z is the height above the surface (defined as z = 64), and &alpha;
+     * is a coefficient approximately equal to 1/7 over land and 1/10 over open
+     * water.
+     * TODO: Implement a != 1/7 everywhere
+     * The reference value are taken to be z_r = 10, and v_r normally distributed
+     * between 0 and 9.4.
+     * TODO: Implement normal distribution instead of fixing v_r
+     *
+     * Physical power values are in Watts, and calculating the highest possible
+     * power output gives approximately 6000W. Conveniently, 300RF/t is an
+     * acceptable upper generation bound, giving 1J = 1RF.
      *
      * @return Energy packet containing energy from the wind.
      */
     private EnergyPacket getEnergyPacketFromWind() {
-        int deltaHeight = maxHeight - minHeight;
-        if(deltaHeight <= 0) deltaHeight = 1;
+        final float density = 1.2f;
+        final float betzLimit = 0.59f;
+        final float referenceSpeed = 9.4f;
+        final float referenceHeight = 10.0f;
+        final float radius = 1.5f;
 
-        float heightModifier = (float) Math.min(Math.max(yCoord - minHeight, 0), deltaHeight) / (float) deltaHeight;
+        double heightModifier = referenceSpeed
+                * Math.pow(Math.max(yCoord - 64, 0) / referenceHeight, 1.0 / 7.0);
+
+        /* TODO: Use a more sophisticated weather model? */
         float weatherModifier = 1.0f;
         if(worldObj.isThundering()) {
             weatherModifier = ModConfiguration.getWeatherMultiplierThunder();
         } else if(worldObj.isRaining()) {
             weatherModifier = ModConfiguration.getWeatherMultiplierRain();
         }
-        float energy = ModConfiguration.getWindGenerationBase() * 0.1f
-                * heightModifier * getTunnelLength() * weatherModifier;
-        if(energy < 0.01) {
+
+        /* RF per second */
+        double power = 0.5f * density * betzLimit * radius * radius * Math.PI
+                * Math.pow(heightModifier, 3) * getTunnelLength() / (float) tunnelRange
+                * weatherModifier;
+
+        if(power < 0.01) {
             return new EnergyPacket(0, 0);
         } else {
-            return new EnergyPacket(energy * windPacketLength, windPacketLength);
+            return new EnergyPacket((int) (power / 20.0f * windPacketLength), windPacketLength);
         }
+    }
+
+    /**
+     * Calculates the number of degrees per tick that the attached rotor should
+     * rotate at based on the current wind power.
+     *
+     * @return Degrees per tick
+     */
+    public float getRotationPerTick() {
+        final float radius = 1.5f;
+        final float width = 0.25f;
+        final float referenceSpeed = 9.4f;
+        final float referenceHeight = 10.0f;
+
+        double heightModifier = referenceSpeed
+                * Math.pow(Math.max(yCoord - 64, 0) / referenceHeight, 1.0 / 7.0);
+        double angularVelocity = heightModifier / Math.sqrt(radius * radius + 0.25 * width * width);
+
+        return (float) (angularVelocity / (40.0 * Math.PI) * 360.0);
     }
 
     /**

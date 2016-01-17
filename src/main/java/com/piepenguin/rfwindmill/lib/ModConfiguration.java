@@ -17,15 +17,13 @@ public class ModConfiguration {
     private static boolean forceIronRotor;
     private static float[] windmillEfficiency = new float[4];
     private static int[] windmillEnergyStorage = new int[4];
-    private static int windmillEnergyTransferMultiplier;
+    private static double windmillEnergyTransferMultiplier;
     // Config has no getFloat()
     private static double[] rotorEnergyMultiplier = new double[4];
     private static double weatherMultiplierRain;
     private static double weatherMultiplierThunder;
     private static double handcrankEnergyMultiplier;
     private static float windGenerationBase;
-    private static float angularVelocityPerRF;
-    private static int[] heightBounds = new int[2];
 
     public static void init(File pConfigFile) {
         if(pConfigFile != null) {
@@ -55,17 +53,17 @@ public class ModConfiguration {
                 "The amount of energy in the wind in RF/t").getDouble();
         windmillEfficiency[0] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEfficiency",
-                0.05,
+                0.6,
                 "How good the windmill is at extracting energy from the wind").getDouble();
         windmillEfficiency[1] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillHardenedEfficiency",
-                0.2).getDouble();
+                0.7).getDouble();
         windmillEfficiency[2] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillReinforcedEfficiency",
-                0.5).getDouble();
+                0.8).getDouble();
         windmillEfficiency[3] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillResonantEfficiency",
-                0.9).getDouble();
+                0.95).getDouble();
         windmillEnergyStorage[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEnergyStorage",
                 16000,
@@ -81,18 +79,18 @@ public class ModConfiguration {
                 64000).getInt();
         windmillEnergyTransferMultiplier = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillEnergyTransferMultiplier",
-                4,
-                "Multiply by the base wind energy generation to get the rate of energy transfer in RF/t").getInt();
+                0.01,
+                "Multiply by the storage to get the rate of energy transfer in RF/t").getDouble();
         rotorEnergyMultiplier[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorBasicEnergyMultiplier",
-                0.625,
+                0.75,
                 "Multiplier applied to the windmill generation due to the rotor").getDouble();
         rotorEnergyMultiplier[1] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorHardenedEnergyMultiplier",
-                0.75).getDouble();
+                0.85).getDouble();
         rotorEnergyMultiplier[2] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorReinforcedEnergyMultiplier",
-                0.875).getDouble();
+                0.95).getDouble();
         rotorEnergyMultiplier[3] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorResonantEnergyMultiplier",
                 1.0).getDouble();
@@ -108,18 +106,6 @@ public class ModConfiguration {
                 "HandcrankEnergyMultiplier",
                 0.4,
                 "Multiplier applied to energy generation when turning rotors by hand").getDouble();
-        angularVelocityPerRF = (float) config.get(Configuration.CATEGORY_GENERAL,
-                "AngularVelocityPerRF",
-                0.15,
-                "Degrees per RF per tick that the rotor rotates by").getDouble();
-        heightBounds[0] = config.get(Configuration.CATEGORY_GENERAL,
-                "GenerationHeightBoundLower",
-                60,
-                "Lowest height that the windmills will generate energy at").getInt();
-        heightBounds[1] = config.get(Configuration.CATEGORY_GENERAL,
-                "GenerationHeightBoundUpper",
-                100,
-                "Height at which the windmill will generate the most energy").getInt();
         if(config.hasChanged()) {
             config.save();
         }
@@ -141,8 +127,8 @@ public class ModConfiguration {
         return windmillEnergyStorage;
     }
 
-    public static int getWindmillEnergyTransferMultiplier() {
-        return windmillEnergyTransferMultiplier;
+    public static float getWindmillEnergyTransferMultiplier() {
+        return (float) windmillEnergyTransferMultiplier;
     }
 
     public static float getRotorEnergyMultiplier(int pType) {
@@ -163,17 +149,5 @@ public class ModConfiguration {
 
     public static float getWindGenerationBase() {
         return windGenerationBase;
-    }
-
-    public static float getAngularVelocityPerRF() {
-        return angularVelocityPerRF;
-    }
-
-    public static int getHeightBoundsLower() {
-        return heightBounds[0];
-    }
-
-    public static int getHeightBoundsUpper() {
-        return heightBounds[1];
     }
 }
