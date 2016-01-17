@@ -29,8 +29,11 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private static final String NBT_ROTOR_TYPE = "RFWRotorType";
     private static final String NBT_ROTOR_DIR = "RFWRotorDir";
     private static final String NBT_CURRENT_ENERGY_GENERATION = "RFWCurrentEnergyGeneration";
+    private static final String NBT_CURRENT_ROTOR_SPEED = "RFWCurrentRotorSpeed";
     private float currentEnergyGeneration;
     private float oldEnergyGeneration = 0.0f;
+    private float currentRotorSpeed;
+    private float oldRotorSpeed = 0.0f;
     private int rotorType; // -1 if no rotor
     private ForgeDirection rotorDir;
     private EnergyPacket energyPacket = new EnergyPacket();
@@ -69,6 +72,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             // No energy left so attempt to generate a packet from the wind
             else {
                 energyPacket = getEnergyPacketFromWind();
+                updateRotationPerTick();
                 extractFromEnergyPacket(energyPacket);
             }
             if(storage.getEnergyStored() > 0) {
@@ -85,6 +89,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     public void readSyncableDataFromNBT(NBTTagCompound pNbt) {
         currentEnergyGeneration = pNbt.getFloat(NBT_CURRENT_ENERGY_GENERATION);
+        currentRotorSpeed = pNbt.getFloat(NBT_CURRENT_ROTOR_SPEED);
     }
 
     /**
@@ -95,6 +100,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     public void writeSyncableDataToNBT(NBTTagCompound pNbt) {
         pNbt.setFloat(NBT_CURRENT_ENERGY_GENERATION, currentEnergyGeneration);
+        pNbt.setFloat(NBT_CURRENT_ROTOR_SPEED, currentRotorSpeed);
     }
 
     /**
@@ -211,9 +217,8 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * Calculates the number of degrees per tick that the attached rotor should
      * rotate at based on the current wind power.
      *
-     * @return Degrees per tick
      */
-    public float getRotationPerTick() {
+    public void updateRotationPerTick() {
         final float radius = 1.5f;
         final float width = 0.25f;
         final float referenceSpeed = 9.4f;
@@ -223,7 +228,17 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 * Math.pow(Math.max(yCoord - 64, 0) / referenceHeight, 1.0 / 7.0);
         double angularVelocity = heightModifier / Math.sqrt(radius * radius + 0.25 * width * width);
 
-        return (float) (angularVelocity / (40.0 * Math.PI) * 360.0);
+        currentRotorSpeed = (float) ((hasRotor() ? 1.0 : 0.0) * angularVelocity / (40.0 * Math.PI)
+                * 360.0 * getTunnelLength() / 10.0);
+    }
+
+    /**
+     * The current rotor angular velocity in degrees per tick
+     *
+     * @return Angular velocity of the rotor
+     */
+    public float getCurrentRotorSpeed() {
+        return currentRotorSpeed;
     }
 
     /**
@@ -274,6 +289,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         currentEnergyGeneration = getExtractableEnergyFromPacket(pEnergyPacket);
         pEnergyPacket.deplete();
         syncEnergy();
+        syncSpeed();
         storage.modifyEnergyStored(currentEnergyGeneration);
     }
 
@@ -287,13 +303,24 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     }
 
     /**
-     * Sync the energy generation rate between client and server. (Used in
-     * rendering with {@link RenderTileEntityRotorBlock}.)
+     * Sync the energy generation rate between client and server
      */
     private void syncEnergy() {
         // Amount of energy generated has changed so sync with server
         if(Math.abs(currentEnergyGeneration - oldEnergyGeneration) > 0.01) {
             oldEnergyGeneration = currentEnergyGeneration;
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            markDirty();
+        }
+    }
+
+    /**
+     * Sync the rotor speed between client and server. (Used in rendering with
+     * {@link RenderTileEntityRotorBlock}.)
+     */
+    private void syncSpeed() {
+        if(Math.abs(currentRotorSpeed - oldRotorSpeed) > 0.01) {
+            oldRotorSpeed = currentRotorSpeed;
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             markDirty();
         }
