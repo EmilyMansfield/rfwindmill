@@ -53,14 +53,14 @@ public class ModConfiguration {
                 "The amount of energy in the wind in RF/t").getDouble();
         windmillEfficiency[0] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEfficiency",
-                0.6,
+                0.1,
                 "How good the windmill is at extracting energy from the wind").getDouble();
         windmillEfficiency[1] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillHardenedEfficiency",
-                0.7).getDouble();
+                0.35).getDouble();
         windmillEfficiency[2] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillReinforcedEfficiency",
-                0.8).getDouble();
+                0.65).getDouble();
         windmillEfficiency[3] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillResonantEfficiency",
                 0.95).getDouble();
@@ -83,14 +83,14 @@ public class ModConfiguration {
                 "Multiply by the storage to get the rate of energy transfer in RF/t").getDouble();
         rotorEnergyMultiplier[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorBasicEnergyMultiplier",
-                0.75,
+                0.3,
                 "Multiplier applied to the windmill generation due to the rotor").getDouble();
         rotorEnergyMultiplier[1] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorHardenedEnergyMultiplier",
-                0.85).getDouble();
+                0.5).getDouble();
         rotorEnergyMultiplier[2] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorReinforcedEnergyMultiplier",
-                0.95).getDouble();
+                0.7).getDouble();
         rotorEnergyMultiplier[3] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorResonantEnergyMultiplier",
                 1.0).getDouble();
