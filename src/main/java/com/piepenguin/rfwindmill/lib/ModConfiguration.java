@@ -15,10 +15,9 @@ public class ModConfiguration {
     private static Configuration config;
     private static boolean forceVanillaRecipes;
     private static boolean forceIronRotor;
-    private static float[] windmillEfficiency = new float[4];
+    private static double[] windmillEfficiency = new double[4];
     private static int[] windmillEnergyStorage = new int[4];
     private static double windmillEnergyTransferMultiplier;
-    // Config has no getFloat()
     private static double[] rotorEfficiency = new double[4];
     private static double weatherMultiplierRain;
     private static double weatherMultiplierThunder;
@@ -38,6 +37,8 @@ public class ModConfiguration {
      */
     private static void loadConfig() {
         Preconditions.checkNotNull(config);
+
+        /* Recipes */
         forceVanillaRecipes = config.get(Configuration.CATEGORY_GENERAL,
                 "ForceVanillaRecipes",
                 false,
@@ -46,19 +47,23 @@ public class ModConfiguration {
                 "ForceIronRotorTexture",
                 false,
                 "Use the iron rotor texture regardless of the rotor material").getBoolean();
-        windmillEfficiency[0] = (float) config.get(Configuration.CATEGORY_GENERAL,
+
+        /* Windmill efficiency */
+        windmillEfficiency[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEfficiency",
                 0.1,
                 "How good the windmill is at extracting energy from the wind").getDouble();
-        windmillEfficiency[1] = (float) config.get(Configuration.CATEGORY_GENERAL,
+        windmillEfficiency[1] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillHardenedEfficiency",
                 0.35).getDouble();
-        windmillEfficiency[2] = (float) config.get(Configuration.CATEGORY_GENERAL,
+        windmillEfficiency[2] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillReinforcedEfficiency",
                 0.65).getDouble();
-        windmillEfficiency[3] = (float) config.get(Configuration.CATEGORY_GENERAL,
+        windmillEfficiency[3] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillResonantEfficiency",
                 0.95).getDouble();
+
+        /* Windmill storage */
         windmillEnergyStorage[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEnergyStorage",
                 16000,
@@ -72,10 +77,14 @@ public class ModConfiguration {
         windmillEnergyStorage[3] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillResonantEnergyStorage",
                 64000).getInt();
+
+        /* Windmill energy transfer multiplier */
         windmillEnergyTransferMultiplier = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillEnergyTransferMultiplier",
                 0.01,
                 "Multiply by the storage to get the rate of energy transfer in RF/t").getDouble();
+
+        /* Rotor efficiency */
         rotorEfficiency[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorBasicEnergyMultiplier",
                 0.3,
@@ -89,6 +98,8 @@ public class ModConfiguration {
         rotorEfficiency[3] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorResonantEnergyMultiplier",
                 1.0).getDouble();
+
+        /* Weather multipliers */
         weatherMultiplierRain = config.get(Configuration.CATEGORY_GENERAL,
                 "WeatherRainEnergyGenerationMultiplier",
                 1.2,
@@ -97,10 +108,13 @@ public class ModConfiguration {
                 "WeatherThunderEnergyGenerationMultiplier",
                 1.5,
                 "Multiplier applied to the windmill generation when it's raining").getDouble();
+
+        /* Handcrank power */
         handcrankPower = config.get(Configuration.CATEGORY_GENERAL,
                 "HandcrankPower",
                 35,
                 "Power the player can apply to the rotor, in RF/t").getDouble();
+
         if(config.hasChanged()) {
             config.save();
         }
@@ -114,8 +128,8 @@ public class ModConfiguration {
         return forceIronRotor;
     }
 
-    public static float[] getWindmillEfficiency() {
-        return windmillEfficiency;
+    public static float getWindmillEfficiency(int pType) {
+        return (float) windmillEfficiency[pType];
     }
 
     public static int[] getWindmillEnergyStorage() {

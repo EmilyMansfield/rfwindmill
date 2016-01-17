@@ -15,7 +15,10 @@ public class ModBlocks {
      * Create {@link Block} instances of all the blocks in the mod.
      */
     public static void init() {
-        float[] efficiency = ModConfiguration.getWindmillEfficiency();
+        float[] efficiency = new float[4];
+        for(int i = 0; i < efficiency.length; ++i) {
+            efficiency[i] = ModConfiguration.getWindmillEfficiency(i);
+        }
         int[] energyStorage = ModConfiguration.getWindmillEnergyStorage();
         windmillBlock = new WindmillBlock("windmillBlock", efficiency, energyStorage);
         rotorBlock1 = new RotorBlock();
