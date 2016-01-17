@@ -19,11 +19,10 @@ public class ModConfiguration {
     private static int[] windmillEnergyStorage = new int[4];
     private static double windmillEnergyTransferMultiplier;
     // Config has no getFloat()
-    private static double[] rotorEnergyMultiplier = new double[4];
+    private static double[] rotorEfficiency = new double[4];
     private static double weatherMultiplierRain;
     private static double weatherMultiplierThunder;
-    private static double handcrankEnergyMultiplier;
-    private static float windGenerationBase;
+    private static double handcrankPower;
 
     public static void init(File pConfigFile) {
         if(pConfigFile != null) {
@@ -47,10 +46,6 @@ public class ModConfiguration {
                 "ForceIronRotorTexture",
                 false,
                 "Use the iron rotor texture regardless of the rotor material").getBoolean();
-        windGenerationBase = (float) config.get(Configuration.CATEGORY_GENERAL,
-                "WindGenerationBase",
-                160.0,
-                "The amount of energy in the wind in RF/t").getDouble();
         windmillEfficiency[0] = (float) config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEfficiency",
                 0.1,
@@ -81,17 +76,17 @@ public class ModConfiguration {
                 "WindmillEnergyTransferMultiplier",
                 0.01,
                 "Multiply by the storage to get the rate of energy transfer in RF/t").getDouble();
-        rotorEnergyMultiplier[0] = config.get(Configuration.CATEGORY_GENERAL,
+        rotorEfficiency[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorBasicEnergyMultiplier",
                 0.3,
                 "Multiplier applied to the windmill generation due to the rotor").getDouble();
-        rotorEnergyMultiplier[1] = config.get(Configuration.CATEGORY_GENERAL,
+        rotorEfficiency[1] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorHardenedEnergyMultiplier",
                 0.5).getDouble();
-        rotorEnergyMultiplier[2] = config.get(Configuration.CATEGORY_GENERAL,
+        rotorEfficiency[2] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorReinforcedEnergyMultiplier",
                 0.7).getDouble();
-        rotorEnergyMultiplier[3] = config.get(Configuration.CATEGORY_GENERAL,
+        rotorEfficiency[3] = config.get(Configuration.CATEGORY_GENERAL,
                 "RotorResonantEnergyMultiplier",
                 1.0).getDouble();
         weatherMultiplierRain = config.get(Configuration.CATEGORY_GENERAL,
@@ -102,10 +97,10 @@ public class ModConfiguration {
                 "WeatherThunderEnergyGenerationMultiplier",
                 1.5,
                 "Multiplier applied to the windmill generation when it's raining").getDouble();
-        handcrankEnergyMultiplier = config.get(Configuration.CATEGORY_GENERAL,
-                "HandcrankEnergyMultiplier",
-                0.4,
-                "Multiplier applied to energy generation when turning rotors by hand").getDouble();
+        handcrankPower = config.get(Configuration.CATEGORY_GENERAL,
+                "HandcrankPower",
+                35,
+                "Power the player can apply to the rotor, in RF/t").getDouble();
         if(config.hasChanged()) {
             config.save();
         }
@@ -131,8 +126,8 @@ public class ModConfiguration {
         return (float) windmillEnergyTransferMultiplier;
     }
 
-    public static float getRotorEnergyMultiplier(int pType) {
-        return (float) rotorEnergyMultiplier[pType];
+    public static float getRotorEfficiency(int pType) {
+        return (float) rotorEfficiency[pType];
     }
 
     public static float getWeatherMultiplierRain() {
@@ -143,11 +138,7 @@ public class ModConfiguration {
         return (float) weatherMultiplierThunder;
     }
 
-    public static float getHandcrankEnergyMultiplier() {
-        return (float) handcrankEnergyMultiplier;
-    }
-
-    public static float getWindGenerationBase() {
-        return windGenerationBase;
+    public static float getHandcrankPower() {
+        return (float) handcrankPower;
     }
 }

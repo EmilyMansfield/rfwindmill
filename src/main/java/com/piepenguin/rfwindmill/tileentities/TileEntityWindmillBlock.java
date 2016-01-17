@@ -235,8 +235,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     private EnergyPacket getEnergyPacketFromHand() {
         return new EnergyPacket(
-                Util.ticksPerClick() * ModConfiguration.getWindGenerationBase()
-                        * ModConfiguration.getHandcrankEnergyMultiplier(),
+                Util.ticksPerClick() * ModConfiguration.getHandcrankPower(),
                 Util.ticksPerClick());
     }
 
@@ -259,7 +258,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         if(!hasRotor()) {
             totalEfficiency = 0.0f;
         } else {
-            totalEfficiency *= ModConfiguration.getRotorEnergyMultiplier(rotorType);
+            totalEfficiency *= ModConfiguration.getRotorEfficiency(rotorType);
             totalEfficiency *= efficiency;
         }
         return pEnergyPacket.getEnergyPerTick() * totalEfficiency;
