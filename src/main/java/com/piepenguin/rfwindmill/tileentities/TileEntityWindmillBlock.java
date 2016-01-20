@@ -23,13 +23,16 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public final class TileEntityWindmillBlock extends TileEntity implements IEnergyProvider {
 
-    private EnergyStorage storage;
+    public static final String publicName = "tileEntityWindmillBlock";
     private static final int tunnelRange = 10;
     private static final String NBT_EFFICIENCY = "RFWEfficiency";
     private static final String NBT_ROTOR_TYPE = "RFWRotorType";
     private static final String NBT_ROTOR_DIR = "RFWRotorDir";
     private static final String NBT_CURRENT_ENERGY_GENERATION = "RFWCurrentEnergyGeneration";
     private static final String NBT_CURRENT_ROTOR_SPEED = "RFWCurrentRotorSpeed";
+    private static final String name = "tileEntityWindmillBlock";
+    private static int windPacketLength = 4;
+    private EnergyStorage storage;
     private float currentEnergyGeneration;
     private float oldEnergyGeneration = 0.0f;
     private float currentRotorSpeed;
@@ -38,9 +41,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private ForgeDirection rotorDir;
     private EnergyPacket energyPacket = new EnergyPacket();
     private float efficiency;
-    private static int windPacketLength = 4;
-    public static final String publicName = "tileEntityWindmillBlock";
-    private static final String name = "tileEntityWindmillBlock";
 
     public TileEntityWindmillBlock() {
         this(0, 0, 0);

@@ -30,14 +30,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class RotorBlock extends BlockContainer {
 
     private static final int numIcons = 4;
-    private IIcon[] icons;
+    private IIcon icon;
 
     public RotorBlock() {
         super(Material.iron);
         setStepSound(Block.soundTypeMetal);
         this.setBlockName(Constants.MODID + "_" + "rotor");
         GameRegistry.registerBlock(this, ItemBlockRotorBlock.class, "rotor");
-        icons = new IIcon[numIcons];
     }
 
     public static String getMaterialName(int pRotorType) {
@@ -56,15 +55,12 @@ public class RotorBlock extends BlockContainer {
 
     @Override
     public void registerBlockIcons(IIconRegister pIconRegister) {
-        for(int i = 0; i < numIcons; ++i) {
-            icons[i] = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(i));
-        }
+        icon = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(0));
     }
 
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int pSide, int pMeta) {
-        // Ignore 2 lowest bits
-        return icons[pMeta >> 2];
+        return icon;
     }
 
     @Override
