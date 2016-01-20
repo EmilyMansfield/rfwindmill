@@ -22,15 +22,16 @@ public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
             new ResourceLocation(Constants.MODID, "models/RotorBlockSignalumTexture.png"),
             new ResourceLocation(Constants.MODID, "models/RotorBlockEnderiumTexture.png"),
             new ResourceLocation(Constants.MODID, "models/RotorBlockNetherTexture.png"),
-            new ResourceLocation(Constants.MODID, "models/RotorBlockDiamondTexture.png")
+            new ResourceLocation(Constants.MODID, "models/RotorBlockDiamondTexture.png"),
+            new ResourceLocation(Constants.MODID, "models/RotorBlockWoodenTexture.png")
     };
-    private static String objectModelPath = "models/RotorBlockModel.obj";
-    private ResourceLocation objModelLocation;
-    private IModelCustom model;
+    private IModelCustom[] models = new IModelCustom[2];
 
     public RenderTileEntityRotorBlock() {
-        objModelLocation = new ResourceLocation(Constants.MODID, objectModelPath);
-        model = AdvancedModelLoader.loadModel(objModelLocation);
+        models[0] = AdvancedModelLoader.loadModel(new ResourceLocation(
+                Constants.MODID, "models/RotorBlockModel.obj"));
+        models[1] = AdvancedModelLoader.loadModel(new ResourceLocation(
+                Constants.MODID, "models/CrankBlockModel.obj"));
     }
 
     @Override
@@ -39,6 +40,7 @@ public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
         float rotation = entity.getRotation();
         float scale = entity.getScale();
         int meta = entity.getBlockMetadata() & 3;
+        int modelType = entity.getType() < 4 ? 0 : 1;
         bindTexture(textures[entity.getTexture()]);
         GL11.glPushMatrix();
         // Position the rotor on the centre of the face and turn it the right way
@@ -62,7 +64,7 @@ public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
         GL11.glScalef(scale, scale, scale);
         GL11.glRotatef(rotation, 0, 0, 1.0f);
         GL11.glPushMatrix();
-        model.renderAll();
+        models[modelType].renderAll();
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }

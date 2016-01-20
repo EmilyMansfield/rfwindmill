@@ -71,7 +71,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             }
             // No energy left so attempt to generate a packet from the wind
             else {
-                energyPacket = getEnergyPacketFromWind();
+                if(hasRotor()) {
+                    // No point generating a new packet if it can't be used
+                    energyPacket = getEnergyPacketFromWind();
+                }
                 updateRotationPerTick();
                 extractFromEnergyPacket(energyPacket);
             }
@@ -470,7 +473,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     }
 
     public boolean hasRotor() {
-        return rotorType >= 0;
+        return rotorType >= 0 && rotorType < 4;
     }
 
     /**

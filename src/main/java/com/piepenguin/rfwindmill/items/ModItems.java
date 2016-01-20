@@ -19,7 +19,6 @@ public final class ModItems {
      */
     public static void init() {
         rotor1 = new RFWItem("rotorIron");
-        rotor5 = new RFWItem("rotorCrank");
         if(Loader.isModLoaded(Constants.THERMAL_EXPANSION_MOD_ID)) {
             rotor2 = new RFWItem("rotorElectrum");
             rotor3 = new RFWItem("rotorSignalum");
@@ -29,5 +28,6 @@ public final class ModItems {
             rotor3 = new RFWItem("rotorNether");
             rotor4 = new RFWItem("rotorDiamond");
         }
+        rotor5 = new RFWItem("rotorCrank");
     }
 }

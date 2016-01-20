@@ -29,8 +29,7 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public class RotorBlock extends BlockContainer {
 
-    private static final int numIcons = 4;
-    private IIcon icon;
+    private IIcon[] icons = new IIcon[2];
 
     public RotorBlock() {
         super(Material.iron);
@@ -39,30 +38,27 @@ public class RotorBlock extends BlockContainer {
         GameRegistry.registerBlock(this, ItemBlockRotorBlock.class, "rotor");
     }
 
-    public static String getMaterialName(int pRotorType) {
-        switch(pRotorType) {
-            default:
-            case 0:
-                return "rotorIron";
-            case 1:
-                return (Util.useThermalFoundation() ? "rotorElectrum" : "rotorGold");
-            case 2:
-                return (Util.useThermalFoundation() ? "rotorSignalum" : "rotorNether");
-            case 3:
-                return (Util.useThermalFoundation() ? "rotorEnderium" : "rotorDiamond");
-            case 4:
-                return "rotorCrank";
-        }
+    /**
+     * Return a string equal the name of the general version of the rotor.
+     * 0 for a rotor, 1 for a crank.
+     *
+     * @param type Either 0 or 1
+     * @return Either "rotor" or "crank"
+     */
+    public static String getName(int type) {
+        return type == 0 ? "rotor" : "crank";
     }
 
     @Override
     public void registerBlockIcons(IIconRegister pIconRegister) {
-        icon = pIconRegister.registerIcon(Constants.MODID + ":" + getMaterialName(0));
+        for(int i = 0; i < 2; ++i) {
+            icons[0] = pIconRegister.registerIcon(Constants.MODID + ":" + getName(i));
+        }
     }
 
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int pSide, int pMeta) {
-        return icon;
+        return icons[pMeta >> 2];
     }
 
     @Override

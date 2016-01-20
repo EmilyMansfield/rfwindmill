@@ -12,7 +12,7 @@ public class ItemBlockRotorBlock extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack pItemStack) {
-        return getUnlocalizedName() + "." + RotorBlock.getMaterialName(pItemStack.getItemDamage() >> 2);
+        return getUnlocalizedName() + "." + RotorBlock.getName(pItemStack.getItemDamage() >> 2);
     }
 
     @Override

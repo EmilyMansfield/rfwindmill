@@ -3,14 +3,8 @@ tile.rfwindmill_windmillBlock.hardened.name=Flux Windmill (Hardened)
 tile.rfwindmill_windmillBlock.reinforced.name=§eFlux Windmill (Reinforced)
 tile.rfwindmill_windmillBlock.resonant.name=§bFlux Windmill (Resonant)
 
-tile.rfwindmill_rotor.rotorIron.name=Iron Rotor
-tile.rfwindmill_rotor.rotorElectrum.name=Electrum Rotor
-tile.rfwindmill_rotor.rotorSignalum.name=Signalum Rotor
-tile.rfwindmill_rotor.rotorEnderium.name=Enderium Rotor
-tile.rfwindmill_rotor.rotorGold.name=Gold Rotor
-tile.rfwindmill_rotor.rotorNether.name=Nether Rotor
-tile.rfwindmill_rotor.rotorDiamond.name=Diamond Rotor
-tile.rfwindmill_rotor.rotorCrank.name=Wooden Crank
+tile.rfwindmill_rotor.rotor.name=Rotor
+tile.rfwindmill_rotor.crank.name=Crank
 
 item.rfwindmill_rotorIron.name=Iron Rotor
 item.rfwindmill_rotorElectrum.name=Electrum Rotor

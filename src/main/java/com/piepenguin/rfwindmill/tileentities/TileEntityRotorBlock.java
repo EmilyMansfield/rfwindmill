@@ -106,7 +106,7 @@ public class TileEntityRotorBlock extends TileEntity {
      */
     public void setType(int pType) {
         type = pType;
-        worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, getBlockMetadata() & 3, 2);
+        worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, (type < 4 ? 0 : 1 << 2) + getBlockMetadata() & 3, 2);
     }
 
     /**
@@ -154,7 +154,7 @@ public class TileEntityRotorBlock extends TileEntity {
                 return ModItems.rotor3;
             case 3:
                 return ModItems.rotor4;
-            case 6:
+            case 4:
                 return ModItems.rotor5;
         }
     }

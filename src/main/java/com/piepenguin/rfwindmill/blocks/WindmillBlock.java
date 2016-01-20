@@ -135,7 +135,8 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                 if(equippedItem != null && (equippedItem.getItem() == ModItems.rotor1 ||
                         equippedItem.getItem() == ModItems.rotor2 ||
                         equippedItem.getItem() == ModItems.rotor3 ||
-                        equippedItem.getItem() == ModItems.rotor4)) {
+                        equippedItem.getItem() == ModItems.rotor4 ||
+                        equippedItem.getItem() == ModItems.rotor5)) {
                     // Get the direction offset of the face the player clicked
                     ForgeDirection fDirection = ForgeDirection.getOrientation(pSide);
                     if(fDirection == ForgeDirection.DOWN || fDirection == ForgeDirection.UP) {
@@ -163,6 +164,8 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                             rotorType = 2;
                         } else if(equippedRotor == ModItems.rotor4) {
                             rotorType = 3;
+                        } else if(equippedRotor == ModItems.rotor5) {
+                            rotorType = 4;
                         }
                         // Tell entities the rotor type
                         rotorEntity.setType(rotorType);
