@@ -10,6 +10,7 @@ tile.rfwindmill_rotor.rotorEnderium.name=Enderium Rotor
 tile.rfwindmill_rotor.rotorGold.name=Gold Rotor
 tile.rfwindmill_rotor.rotorNether.name=Nether Rotor
 tile.rfwindmill_rotor.rotorDiamond.name=Diamond Rotor
+tile.rfwindmill_rotor.rotorCrank.name=Wooden Crank
 
 item.rfwindmill_rotorIron.name=Iron Rotor
 item.rfwindmill_rotorElectrum.name=Electrum Rotor
@@ -18,6 +19,7 @@ item.rfwindmill_rotorEnderium.name=Enderium Rotor
 item.rfwindmill_rotorGold.name=Gold Rotor
 item.rfwindmill_rotorNether.name=Nether Rotor
 item.rfwindmill_rotorDiamond.name=Diamond Rotor
+item.rfwindmill_rotorCrank.name=Wooden Crank
 
 info.rfwindmill.energy.stored=Stored
 info.rfwindmill.energy.generating=Generating

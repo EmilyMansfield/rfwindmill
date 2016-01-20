@@ -132,13 +132,13 @@ public class TileEntityRotorBlock extends TileEntity {
                 return Util.useThermalExpansion() ? 2 : 4;
             case 3:
                 return Util.useThermalExpansion() ? 3 : 5;
+            case 4:
+                return 6;
         }
     }
 
     /**
-     * Converts the rotor tier into the item used to make it. Only ever four
-     * rotors since high tier rotors are conditionally made based on config,
-     * so this is a trivial function.
+     * Converts the rotor tier into the item used to make it.
      *
      * @return The rotor item used to make the corresponding
      * {@link com.piepenguin.rfwindmill.blocks.RotorBlock}
@@ -154,6 +154,8 @@ public class TileEntityRotorBlock extends TileEntity {
                 return ModItems.rotor3;
             case 3:
                 return ModItems.rotor4;
+            case 6:
+                return ModItems.rotor5;
         }
     }
 }

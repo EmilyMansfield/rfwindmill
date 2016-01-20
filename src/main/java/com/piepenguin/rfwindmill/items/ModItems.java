@@ -12,12 +12,14 @@ public final class ModItems {
     public static RFWItem rotor2;
     public static RFWItem rotor3;
     public static RFWItem rotor4;
+    public static RFWItem rotor5;
 
     /**
      * Creates {@link RFWItem} instances of all the items in the mod.
      */
     public static void init() {
         rotor1 = new RFWItem("rotorIron");
+        rotor5 = new RFWItem("rotorCrank");
         if(Loader.isModLoaded(Constants.THERMAL_EXPANSION_MOD_ID)) {
             rotor2 = new RFWItem("rotorElectrum");
             rotor3 = new RFWItem("rotorSignalum");

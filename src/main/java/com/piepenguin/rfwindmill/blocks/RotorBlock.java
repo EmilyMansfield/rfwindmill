@@ -50,6 +50,8 @@ public class RotorBlock extends BlockContainer {
                 return (Util.useThermalFoundation() ? "rotorSignalum" : "rotorNether");
             case 3:
                 return (Util.useThermalFoundation() ? "rotorEnderium" : "rotorDiamond");
+            case 4:
+                return "rotorCrank";
         }
     }
 
