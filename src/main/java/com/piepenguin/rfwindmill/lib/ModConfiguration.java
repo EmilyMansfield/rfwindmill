@@ -51,14 +51,14 @@ public class ModConfiguration {
         /* Windmill efficiency */
         windmillEfficiency[0] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillBasicEfficiency",
-                0.1,
+                0.2,
                 "How good the windmill is at extracting energy from the wind").getDouble();
         windmillEfficiency[1] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillHardenedEfficiency",
-                0.35).getDouble();
+                0.45).getDouble();
         windmillEfficiency[2] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillReinforcedEfficiency",
-                0.65).getDouble();
+                0.75).getDouble();
         windmillEfficiency[3] = config.get(Configuration.CATEGORY_GENERAL,
                 "WindmillResonantEfficiency",
                 0.95).getDouble();
