@@ -41,6 +41,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private ForgeDirection rotorDir;
     private EnergyPacket energyPacket = new EnergyPacket();
     private float efficiency;
+    private boolean queuedCrank = false; // Used to smooth cranking
 
     public TileEntityWindmillBlock() {
         this(0, 0, 0);
@@ -67,6 +68,11 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         if(!worldObj.isRemote) {
             // Energy left in the packet so utilise it
             if(energyPacket.getLifetime() > 0) {
+                extractFromEnergyPacket(energyPacket);
+                updateRotationPerTick();
+            } else if(queuedCrank && energyPacket.getLifetime() <= 0) {
+                queuedCrank = false;
+                energyPacket = getEnergyPacketFromHand();
                 extractFromEnergyPacket(energyPacket);
                 updateRotationPerTick();
             }
@@ -270,6 +276,8 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     public void handcrank() {
         if(energyPacket.getLifetime() <= 0) {
             energyPacket = getEnergyPacketFromHand();
+        } else {
+            queuedCrank = true;
         }
     }
 
