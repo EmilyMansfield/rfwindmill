@@ -30,7 +30,7 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public class RotorBlock extends Block implements ITileEntityProvider {
 
-    private IIcon[] icons = new IIcon[2];
+    private IIcon[] icons = new IIcon[3];
 
     public RotorBlock() {
         super(Material.iron);
@@ -47,12 +47,12 @@ public class RotorBlock extends Block implements ITileEntityProvider {
      * @return Either "rotor" or "crank"
      */
     public static String getName(int type) {
-        return type == 0 ? "rotor" : "crank";
+        return type == 0 ? "rotor" : type == 1 ? "crank" : "wheel";
     }
 
     @Override
     public void registerBlockIcons(IIconRegister pIconRegister) {
-        for(int i = 0; i < 2; ++i) {
+        for(int i = 0; i < 3; ++i) {
             icons[i] = pIconRegister.registerIcon(Constants.MODID + ":" + getName(i));
         }
     }

@@ -119,20 +119,22 @@ public class TileEntityRotorBlock extends TileEntity {
      * identify the texture
      */
     public int getTexture() {
-        if(ModConfiguration.useIronRotorTexture()) {
+        if(ModConfiguration.useIronRotorTexture() && type < 4) {
             return 0;
         }
         switch(type) {
             default:
-            case 0:
+            case 0: // Tier 1 Rotor
                 return 0;
-            case 1:
+            case 1: // Tier 2 Rotor
                 return 1;
-            case 2:
+            case 2: // Tier 3 Rotor
                 return Util.useThermalExpansion() ? 2 : 4;
-            case 3:
+            case 3: // Tier 4 Rotor
                 return Util.useThermalExpansion() ? 3 : 5;
-            case 4:
+            case 4: // Wooden crank
+                return 6;
+            case 5: // Tier 1 Wheel
                 return 6;
         }
     }
@@ -146,16 +148,18 @@ public class TileEntityRotorBlock extends TileEntity {
     public RFWItem getRotorItem() {
         switch(type) {
             default:
-            case 0:
+            case 0: // Tier 1 Rotor
                 return ModItems.rotor1;
-            case 1:
+            case 1: // Tier 2 Rotor
                 return ModItems.rotor2;
-            case 2:
+            case 2: // Tier 3 Rotor
                 return ModItems.rotor3;
-            case 3:
+            case 3: // Tier 4 Rotor
                 return ModItems.rotor4;
-            case 4:
+            case 4: // Wooden crank
                 return ModItems.rotor5;
+            case 5: // Tier 1 Wheel
+                return ModItems.wheel1;
         }
     }
 }

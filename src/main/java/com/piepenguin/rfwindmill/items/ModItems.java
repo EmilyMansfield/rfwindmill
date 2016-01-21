@@ -13,6 +13,7 @@ public final class ModItems {
     public static RFWItem rotor3;
     public static RFWItem rotor4;
     public static RFWItem rotor5;
+    public static RFWItem wheel1;
 
     /**
      * Creates {@link RFWItem} instances of all the items in the mod.
@@ -29,5 +30,6 @@ public final class ModItems {
             rotor4 = new RFWItem("rotorDiamond");
         }
         rotor5 = new RFWItem("rotorCrank");
+        wheel1 = new RFWItem("rotorWheelWood");
     }
 }

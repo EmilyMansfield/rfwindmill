@@ -136,7 +136,8 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                         equippedItem.getItem() == ModItems.rotor2 ||
                         equippedItem.getItem() == ModItems.rotor3 ||
                         equippedItem.getItem() == ModItems.rotor4 ||
-                        equippedItem.getItem() == ModItems.rotor5)) {
+                        equippedItem.getItem() == ModItems.rotor5 ||
+                        equippedItem.getItem() == ModItems.wheel1)) {
                     // Get the direction offset of the face the player clicked
                     ForgeDirection fDirection = ForgeDirection.getOrientation(pSide);
                     if(fDirection == ForgeDirection.DOWN || fDirection == ForgeDirection.UP) {
@@ -163,9 +164,15 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                             rotorType = 3;
                         } else if(equippedRotor == ModItems.rotor5) {
                             rotorType = 4;
+                        } else if(equippedRotor == ModItems.wheel1) {
+                            rotorType = 5;
                         }
                         pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
-                        pWorld.setBlockMetadataWithNotify(dx, dy, dz, (rotorType < 4 ? 0 : (1 << 2)) + Util.directionToInt(fDirection), 2);
+                        // Calculate metadata depending on rotor type and facing
+                        int meta = Util.directionToInt(fDirection);
+                        if(rotorType == 4) meta += 1 << 2;
+                        else if(rotorType > 4) meta += 1 << 3;
+                        pWorld.setBlockMetadataWithNotify(dx, dy, dz, meta, 2);
                         TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock) pWorld.getTileEntity(dx, dy, dz);
                         // Tell entities the rotor type
                         rotorEntity.setType(rotorType);

@@ -5,6 +5,7 @@ tile.rfwindmill_windmillBlock.resonant.name=§bFlux Windmill (Resonant)
 
 tile.rfwindmill_rotor.rotor.name=Rotor
 tile.rfwindmill_rotor.crank.name=Crank
+tile.rfwindmill_rotor.wheel.name=Wheel
 
 item.rfwindmill_rotorIron.name=Iron Rotor
 item.rfwindmill_rotorElectrum.name=Electrum Rotor
@@ -14,6 +15,7 @@ item.rfwindmill_rotorGold.name=Gold Rotor
 item.rfwindmill_rotorNether.name=Nether Rotor
 item.rfwindmill_rotorDiamond.name=Diamond Rotor
 item.rfwindmill_rotorCrank.name=Wooden Crank
+item.rfwindmill_rotorWheelWood.name=Wooden Water Wheel
 
 info.rfwindmill.energy.stored=Stored
 info.rfwindmill.energy.generating=Generating

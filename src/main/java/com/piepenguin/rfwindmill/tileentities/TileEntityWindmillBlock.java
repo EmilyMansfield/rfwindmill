@@ -505,8 +505,12 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return rotorType == 4;
     }
 
+    public boolean hasWheel() {
+        return rotorType > 4;
+    }
+
     public boolean hasAttachment() {
-        return hasRotor() || hasCrank();
+        return hasRotor() || hasCrank() || hasWheel();
     }
 
     /**

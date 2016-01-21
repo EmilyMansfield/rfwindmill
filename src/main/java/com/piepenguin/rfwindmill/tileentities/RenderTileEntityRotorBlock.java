@@ -25,13 +25,15 @@ public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
             new ResourceLocation(Constants.MODID, "models/RotorBlockDiamondTexture.png"),
             new ResourceLocation(Constants.MODID, "models/RotorBlockWoodenTexture.png")
     };
-    private IModelCustom[] models = new IModelCustom[2];
+    private IModelCustom[] models = new IModelCustom[3];
 
     public RenderTileEntityRotorBlock() {
         models[0] = AdvancedModelLoader.loadModel(new ResourceLocation(
                 Constants.MODID, "models/RotorBlockModel.obj"));
         models[1] = AdvancedModelLoader.loadModel(new ResourceLocation(
                 Constants.MODID, "models/CrankBlockModel.obj"));
+        models[2] = AdvancedModelLoader.loadModel(new ResourceLocation(
+                Constants.MODID, "models/WheelBlockModel.obj"));
     }
 
     @Override
@@ -40,7 +42,10 @@ public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
         float rotation = entity.getRotation();
         float scale = entity.getScale();
         int meta = entity.getBlockMetadata() & 3;
-        int modelType = entity.getType() < 4 ? 0 : 1;
+        int modelType = entity.getType();
+        if(modelType < 4) modelType = 0;
+        else if(modelType == 4) modelType = 1;
+        else modelType = 2;
         bindTexture(textures[entity.getTexture()]);
         GL11.glPushMatrix();
         // Position the rotor on the centre of the face and turn it the right way
