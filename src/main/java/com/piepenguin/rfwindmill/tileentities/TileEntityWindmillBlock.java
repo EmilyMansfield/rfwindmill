@@ -68,15 +68,20 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             // Energy left in the packet so utilise it
             if(energyPacket.getLifetime() > 0) {
                 extractFromEnergyPacket(energyPacket);
+                updateRotationPerTick();
             }
             // No energy left so attempt to generate a packet from the wind
             else {
                 if(hasRotor()) {
                     // No point generating a new packet if it can't be used
                     energyPacket = getEnergyPacketFromWind();
+                    extractFromEnergyPacket(energyPacket);
+                    updateRotationPerTick();
+                } else if(hasCrank()) {
+                    updateRotationPerTick();
+                    syncEnergy();
+                    syncSpeed();
                 }
-                updateRotationPerTick();
-                extractFromEnergyPacket(energyPacket);
             }
             if(storage.getEnergyStored() > 0) {
                 transferEnergy();
@@ -179,7 +184,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      * The reference value are taken to be z_r = 10, and v_r normally distributed
      * between 0 and 9.4.
      * TODO: Implement normal distribution instead of fixing v_r
-     *
+     * <p/>
      * Physical power values are in Watts, and calculating the highest possible
      * power output gives approximately 6000W. Conveniently, 300RF/t is an
      * acceptable upper generation bound, giving 1J = 1RF.
@@ -219,7 +224,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     /**
      * Calculates the number of degrees per tick that the attached rotor should
      * rotate at based on the current wind power.
-     *
      */
     public void updateRotationPerTick() {
         final float radius = 1.5f;
@@ -227,12 +231,18 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         final float referenceSpeed = 9.4f;
         final float referenceHeight = 10.0f;
 
-        double heightModifier = referenceSpeed
-                * Math.pow(Math.max(yCoord - 64, 0) / referenceHeight, 1.0 / 7.0);
-        double angularVelocity = heightModifier / Math.sqrt(radius * radius + 0.25 * width * width);
+        if(hasCrank()) {
+            currentRotorSpeed = energyPacket.getLifetime() > 0 ? 18.0f : 0.0f;
+        } else if(hasRotor()) {
+            double heightModifier = referenceSpeed
+                    * Math.pow(Math.max(yCoord - 64, 0) / referenceHeight, 1.0 / 7.0);
+            double angularVelocity = heightModifier / Math.sqrt(radius * radius + 0.25 * width * width);
 
-        currentRotorSpeed = (float) ((hasRotor() ? 1.0 : 0.0) * angularVelocity / (40.0 * Math.PI)
-                * 360.0 * getTunnelLength() / 10.0);
+            currentRotorSpeed = (float) ((hasRotor() ? 1.0 : 0.0) * angularVelocity / (40.0 * Math.PI)
+                    * 360.0 * getTunnelLength() / 10.0);
+        } else {
+            currentRotorSpeed = 0.0f;
+        }
     }
 
     /**
@@ -273,11 +283,16 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     private float getExtractableEnergyFromPacket(EnergyPacket pEnergyPacket) {
         float totalEfficiency = 1.0f;
-        if(!hasRotor()) {
-            totalEfficiency = 0.0f;
-        } else {
+        if(hasRotor()) {
             totalEfficiency *= ModConfiguration.getRotorEfficiency(rotorType);
             totalEfficiency *= efficiency;
+        } else if(hasCrank()) {
+            // Be slightly more forgiving with efficiency, so that the low
+            // tier machines generate a usable amount of RF/t but the high tier
+            // machines don't generate unrealistic amounts
+            totalEfficiency *= (efficiency + 0.9f) / 2.0f;
+        } else {
+            totalEfficiency = 0.0f;
         }
         return pEnergyPacket.getEnergyPerTick() * totalEfficiency;
     }

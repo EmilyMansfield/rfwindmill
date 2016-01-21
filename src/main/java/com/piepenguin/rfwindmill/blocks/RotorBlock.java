@@ -119,7 +119,10 @@ public class RotorBlock extends Block implements ITileEntityProvider {
             int parentZ = pZ + rotorDir.offsetZ;
             TileEntityWindmillBlock windmillEntity = (TileEntityWindmillBlock) pWorld.getTileEntity(parentX, parentY, parentZ);
             if(windmillEntity != null) {
-                windmillEntity.handcrank();
+                // Cannot crank if no rotor attached
+                if(windmillEntity.hasCrank()) {
+                    windmillEntity.handcrank();
+                }
             }
         }
         return true;
