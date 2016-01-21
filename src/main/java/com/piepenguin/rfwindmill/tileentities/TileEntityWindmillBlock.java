@@ -75,16 +75,17 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 energyPacket = getEnergyPacketFromHand();
                 extractFromEnergyPacket(energyPacket);
                 updateRotationPerTick();
-            }
-            // No energy left so attempt to generate a packet from the wind
-            else {
+            } else {
+                // No energy left so attempt to generate a packet from the wind
                 if(hasRotor()) {
                     // No point generating a new packet if it can't be used
                     energyPacket = getEnergyPacketFromWind();
                     extractFromEnergyPacket(energyPacket);
                     updateRotationPerTick();
                 } else if(hasCrank()) {
-                    updateRotationPerTick();
+                    // No energy and no queue, so crank should stop
+                    currentEnergyGeneration = 0.0f;
+                    currentRotorSpeed = 0.0f;
                     syncEnergy();
                     syncSpeed();
                 }
@@ -243,9 +244,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             double heightModifier = referenceSpeed
                     * Math.pow(Math.max(yCoord - 64, 0) / referenceHeight, 1.0 / 7.0);
             double angularVelocity = heightModifier / Math.sqrt(radius * radius + 0.25 * width * width);
+            double lengthMultiplier = getTunnelLength() / 10.0;
 
-            currentRotorSpeed = (float) ((hasRotor() ? 1.0 : 0.0) * angularVelocity / (40.0 * Math.PI)
-                    * 360.0 * getTunnelLength() / 10.0);
+            currentRotorSpeed = (float) ((lengthMultiplier > 0.0 ? lengthMultiplier : 0.0)
+                    * angularVelocity / (40.0 * Math.PI) * 360.0);
         } else {
             currentRotorSpeed = 0.0f;
         }
@@ -294,7 +296,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         if(hasRotor()) {
             totalEfficiency *= ModConfiguration.getRotorEfficiency(rotorType);
             totalEfficiency *= efficiency;
-        } else if(hasCrank()) {
+        } else if(hasCrank() && getCurrentRotorSpeed() > 0.01) {
             // Be slightly more forgiving with efficiency, so that the low
             // tier machines generate a usable amount of RF/t but the high tier
             // machines don't generate unrealistic amounts
