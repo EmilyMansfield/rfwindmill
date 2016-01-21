@@ -146,14 +146,11 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                     int dy = pY + fDirection.offsetY;
                     int dz = pZ + fDirection.offsetZ;
                     // Check that the tile entity for this block doesn't already have a rotor
-                    // and that a rotor can be placed at the offsset
+                    // and that a rotor can be placed at the offset
                     TileEntityWindmillBlock entity = (TileEntityWindmillBlock) pWorld.getTileEntity(pX, pY, pZ);
-                    if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection) && !entity.hasRotor()) {
+                    if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection) && !entity.hasAttachment()) {
                         // Attach the rotor to the windmill
                         RFWItem equippedRotor = (RFWItem) equippedItem.getItem();
-                        pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
-                        pWorld.setBlockMetadataWithNotify(dx, dy, dz, Util.directionToInt(fDirection), 2);
-                        TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock) pWorld.getTileEntity(dx, dy, dz);
                         // No arbitrary switch statements :(
                         int rotorType = -1;
                         if(equippedRotor == ModItems.rotor1) {
@@ -167,6 +164,9 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                         } else if(equippedRotor == ModItems.rotor5) {
                             rotorType = 4;
                         }
+                        pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
+                        pWorld.setBlockMetadataWithNotify(dx, dy, dz, (rotorType < 4 ? 0 : (1 << 2)) + Util.directionToInt(fDirection), 2);
+                        TileEntityRotorBlock rotorEntity = (TileEntityRotorBlock) pWorld.getTileEntity(dx, dy, dz);
                         // Tell entities the rotor type
                         rotorEntity.setType(rotorType);
                         entity.setRotor(rotorType, fDirection);
@@ -205,7 +205,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
         TileEntityWindmillBlock entity = (TileEntityWindmillBlock) pWorld.getTileEntity(pX, pY, pZ);
         Preconditions.checkNotNull(entity);
         // Remove the attached rotor, if there is one
-        if(entity.hasRotor()) {
+        if(entity.hasAttachment()) {
             ForgeDirection dir = entity.getRotorDir();
             RotorBlock rotor = (RotorBlock) pWorld.getBlock(
                     pX + dir.offsetX,

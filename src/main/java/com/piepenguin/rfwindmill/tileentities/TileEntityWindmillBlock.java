@@ -476,6 +476,14 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return rotorType >= 0 && rotorType < 4;
     }
 
+    public boolean hasCrank() {
+        return rotorType == 4;
+    }
+
+    public boolean hasAttachment() {
+        return hasRotor() || hasCrank();
+    }
+
     /**
      * Set the tier of the rotor connected to the corresponding
      * {@link com.piepenguin.rfwindmill.blocks.WindmillBlock}. -1 if no rotor is

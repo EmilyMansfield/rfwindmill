@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
@@ -27,7 +28,7 @@ import net.minecraftforge.common.util.ForgeDirection;
  * The lowest 2 bits of the metadata store the direction that the rotor is
  * facing and the highest 2 store the texture id.
  */
-public class RotorBlock extends BlockContainer {
+public class RotorBlock extends Block implements ITileEntityProvider {
 
     private IIcon[] icons = new IIcon[2];
 
@@ -52,7 +53,7 @@ public class RotorBlock extends BlockContainer {
     @Override
     public void registerBlockIcons(IIconRegister pIconRegister) {
         for(int i = 0; i < 2; ++i) {
-            icons[0] = pIconRegister.registerIcon(Constants.MODID + ":" + getName(i));
+            icons[i] = pIconRegister.registerIcon(Constants.MODID + ":" + getName(i));
         }
     }
 
@@ -135,7 +136,7 @@ public class RotorBlock extends BlockContainer {
      */
     public void dismantle(World pWorld, int pX, int pY, int pZ) {
         TileEntityRotorBlock entity = (TileEntityRotorBlock) pWorld.getTileEntity(pX, pY, pZ);
-        ItemStack itemStack = new ItemStack(entity.getRotorItem());
+        ItemStack itemStack = new ItemStack(entity.getRotorItem(), 1, entity.getBlockMetadata() >> 2);
         // Delete the block
         pWorld.setBlockToAir(pX, pY, pZ);
         // Drop the item
