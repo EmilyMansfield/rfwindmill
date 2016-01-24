@@ -150,9 +150,9 @@ public class RotorBlock extends Block implements ITileEntityProvider {
     }
 
     /**
-     * Checks the area around the specified position for a 3x3x1 plane of free
+     * Checks the area around the specified position for a square plane of free
      * blocks in the plane normal to the specified direction, which corresponds
-     * to the bounding box of the rotor when its rendered.
+     * to the bounding box of the rotor when it's rendered.
      *
      * @param pWorld  Minecraft {@link World}
      * @param pX      X coordinate where the block is trying to be placed
@@ -160,29 +160,34 @@ public class RotorBlock extends Block implements ITileEntityProvider {
      * @param pZ      Z coordinate where the block is trying to be placed
      * @param pPlayer Player trying to place the block
      * @param pDir    Direction the rotor should be facing in
+     * @param pDim    'Radius' of the square. 0 for 1x1, 1 for 3x3, etc.
      * @return {@code true} if the rotor can be placed, and {@code false}
      * otherwise
      */
-    public static boolean canPlace(World pWorld, int pX, int pY, int pZ, EntityPlayer pPlayer, ForgeDirection pDir) {
-        // Check if air is free in a 3x3x1 space in the same plane as the rotor
-        // This is hideous but I don't know enough Java to fix it :(
-        if(pWorld.isAirBlock(pX, pY + 1, pZ) && pWorld.isAirBlock(pX, pY, pZ) && pWorld.isAirBlock(pX, pY - 1, pZ)) {
-            if(pDir == ForgeDirection.NORTH || pDir == ForgeDirection.SOUTH) {
-                // Need east/west i.e. xy plane
-                if(pWorld.isAirBlock(pX - 1, pY + 1, pZ) && pWorld.isAirBlock(pX + 1, pY + 1, pZ) &&
-                        pWorld.isAirBlock(pX - 1, pY, pZ) && pWorld.isAirBlock(pX + 1, pY, pZ) &&
-                        pWorld.isAirBlock(pX - 1, pY - 1, pZ) && pWorld.isAirBlock(pX + 1, pY - 1, pZ)) {
-                    return true;
-                }
-            } else {
-                // Need north/south i.e. yz plane
-                if(pWorld.isAirBlock(pX, pY + 1, pZ - 1) && pWorld.isAirBlock(pX, pY + 1, pZ + 1) &&
-                        pWorld.isAirBlock(pX, pY, pZ - 1) && pWorld.isAirBlock(pX, pY, pZ + 1) &&
-                        pWorld.isAirBlock(pX, pY - 1, pZ - 1) && pWorld.isAirBlock(pX, pY - 1, pZ + 1)) {
-                    return true;
+    public static boolean canPlace(World pWorld, int pX, int pY, int pZ,
+                                   EntityPlayer pPlayer, ForgeDirection pDir,
+                                   int pDim) {
+        // Check if air is free in a square space in the same plane as the rotor
+        if(pDir == ForgeDirection.NORTH || pDir == ForgeDirection.SOUTH) {
+            // East/West so xy-plane
+            for(int dx = -pDim; dx <= pDim; ++dx) {
+                for(int dy = -pDim; dy <= pDim; ++dy) {
+                    if(!pWorld.isAirBlock(pX + dx, pY + dy, pZ)) {
+                        return false;
+                    }
                 }
             }
+            return true;
+        } else {
+            // North/South so yz-plane
+            for(int dz = -pDim; dz <= pDim; ++dz) {
+                for(int dy = -pDim; dy <= pDim; ++dy) {
+                    if(!pWorld.isAirBlock(pX, pY + dy, pZ + dz)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
-        return false;
     }
 }

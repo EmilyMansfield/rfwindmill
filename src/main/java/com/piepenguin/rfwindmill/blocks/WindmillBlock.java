@@ -149,7 +149,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                     // Check that the tile entity for this block doesn't already have a rotor
                     // and that a rotor can be placed at the offset
                     TileEntityWindmillBlock entity = (TileEntityWindmillBlock) pWorld.getTileEntity(pX, pY, pZ);
-                    if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection) && !entity.hasAttachment()) {
+                    if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection, 1) && !entity.hasAttachment()) {
                         // Attach the rotor to the windmill
                         RFWItem equippedRotor = (RFWItem) equippedItem.getItem();
                         // No arbitrary switch statements :(
