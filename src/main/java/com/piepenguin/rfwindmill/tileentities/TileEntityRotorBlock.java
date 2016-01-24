@@ -38,7 +38,8 @@ public class TileEntityRotorBlock extends TileEntity {
             if(entity != null) {
                 rotation += entity.getCurrentRotorSpeed();
             }
-            scale = 1.0f;
+            // Waterwheels are larger than turbines
+            scale = type < 5 ? 1.0f : 2.0f;
         }
     }
 

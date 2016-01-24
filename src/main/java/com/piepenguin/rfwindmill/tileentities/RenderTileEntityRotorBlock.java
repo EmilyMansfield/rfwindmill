@@ -66,7 +66,8 @@ public class RenderTileEntityRotorBlock extends TileEntitySpecialRenderer {
                 GL11.glRotatef(270.0f, 0, 1.0f, 0);
                 break;
         }
-        GL11.glScalef(scale, scale, scale);
+
+        GL11.glScalef(scale, scale, 1.0f);
         GL11.glRotatef(rotation, 0, 0, 1.0f);
         GL11.glPushMatrix();
         models[modelType].renderAll();

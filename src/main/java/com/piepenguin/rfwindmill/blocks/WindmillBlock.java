@@ -146,27 +146,30 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                     int dx = pX + fDirection.offsetX;
                     int dy = pY + fDirection.offsetY;
                     int dz = pZ + fDirection.offsetZ;
+                    // Determine the rotor type
+                    RFWItem equippedRotor = (RFWItem) equippedItem.getItem();
+                    // No arbitrary switch statements :(
+                    int rotorType = -1;
+                    if(equippedRotor == ModItems.rotor1) {
+                        rotorType = 0;
+                    } else if(equippedRotor == ModItems.rotor2) {
+                        rotorType = 1;
+                    } else if(equippedRotor == ModItems.rotor3) {
+                        rotorType = 2;
+                    } else if(equippedRotor == ModItems.rotor4) {
+                        rotorType = 3;
+                    } else if(equippedRotor == ModItems.rotor5) {
+                        rotorType = 4;
+                    } else if(equippedRotor == ModItems.wheel1) {
+                        rotorType = 5;
+                    }
                     // Check that the tile entity for this block doesn't already have a rotor
                     // and that a rotor can be placed at the offset
                     TileEntityWindmillBlock entity = (TileEntityWindmillBlock) pWorld.getTileEntity(pX, pY, pZ);
-                    if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection, 1) && !entity.hasAttachment()) {
+                    // Waterwheels need a 5x5 area, turbines need a 3x3
+                    // TODO: Make this configurable
+                    if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection, rotorType < 5 ? 1 : 2) && !entity.hasAttachment()) {
                         // Attach the rotor to the windmill
-                        RFWItem equippedRotor = (RFWItem) equippedItem.getItem();
-                        // No arbitrary switch statements :(
-                        int rotorType = -1;
-                        if(equippedRotor == ModItems.rotor1) {
-                            rotorType = 0;
-                        } else if(equippedRotor == ModItems.rotor2) {
-                            rotorType = 1;
-                        } else if(equippedRotor == ModItems.rotor3) {
-                            rotorType = 2;
-                        } else if(equippedRotor == ModItems.rotor4) {
-                            rotorType = 3;
-                        } else if(equippedRotor == ModItems.rotor5) {
-                            rotorType = 4;
-                        } else if(equippedRotor == ModItems.wheel1) {
-                            rotorType = 5;
-                        }
                         pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
                         // Calculate metadata depending on rotor type and facing
                         int meta = Util.directionToInt(fDirection);
