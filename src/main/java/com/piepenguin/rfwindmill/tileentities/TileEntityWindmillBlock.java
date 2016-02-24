@@ -7,6 +7,8 @@ import com.piepenguin.rfwindmill.lib.EnergyStorage;
 import com.piepenguin.rfwindmill.lib.ModConfiguration;
 import com.piepenguin.rfwindmill.lib.Util;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDynamicLiquid;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -14,6 +16,10 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+
+import java.util.BitSet;
 
 /**
  * Tile entity for the {@link com.piepenguin.rfwindmill.blocks.WindmillBlock}
@@ -42,6 +48,8 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private EnergyPacket energyPacket = new EnergyPacket();
     private float efficiency;
     private boolean queuedCrank = false; // Used to smooth cranking
+
+    private int wheelConfiguration = -1;
 
     public TileEntityWindmillBlock() {
         this(0, 0, 0);
@@ -88,6 +96,10 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                     currentRotorSpeed = 0.0f;
                     syncEnergy();
                     syncSpeed();
+                } else if(hasWheel()) {
+                    energyPacket = getEnergyPacketFromLiquid();
+                    extractFromEnergyPacket(energyPacket);
+                    updateRotationPerTick();
                 }
             }
             if(storage.getEnergyStored() > 0) {
@@ -248,6 +260,8 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
             currentRotorSpeed = (float) ((lengthMultiplier > 0.0 ? lengthMultiplier : 0.0)
                     * angularVelocity / (40.0 * Math.PI) * 360.0);
+        } else if(hasWheel()) {
+            currentRotorSpeed = 4.5f;
         } else {
             currentRotorSpeed = 0.0f;
         }
@@ -445,6 +459,147 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     }
 
     /**
+     * Get the flow speed of the liquid in a block
+     *
+     * @param pBlock Block to get speed for
+     * @return Speed of the liquid in ms^-1
+     */
+    private float getLiquidSpeed(Block pBlock) {
+        // TODO: Cache these values?
+        Fluid f = FluidRegistry.lookupFluidForBlock(pBlock);
+        // According to the wiki, flowing water pushes mobs at a speed of
+        // 1.39m/s and has a viscosity of 1000. Lava has a viscosity of 6000,
+        // so it seems reasonable to calculate the fluid speed as 1390/viscosity
+        float speed = 1390.0f / f.getViscosity();
+        return speed;
+    }
+
+    public class FluidFlow {
+        public BitSet pattern = new BitSet(5 * 5);
+        public float speed = 0;
+        public Fluid type = null;
+
+        // Get and set commands which use indexing consistent with that
+        // of a binary number defined from left to right, ie
+        // 0b00000_00010 <==> set(1, 3)
+        void set(int du, int dv) {
+            pattern.set(5 * (dv + 2) + (du + 2));
+        }
+
+        boolean get(int du, int dv) {
+            return pattern.get(5 * (dv + 2) + (du + 2));
+        }
+    }
+
+    /**
+     * Get the 5x5 flow pattern
+     *
+     * @param pXY
+     * @return
+     */
+    private FluidFlow getFlowPatternPlane(boolean pXY) {
+        FluidFlow flow = new FluidFlow();
+
+        // du and dv are plane coordinates
+        for(int du = -2; du <= 2; ++du) {
+            for(int dv = 2; dv >= -2; --dv) {
+                // Map plane coordinates to space coordinates depending on
+                // plane orientation. Note that dy := dv always, and that the
+                // dv loop goes from high to low. This means the search space
+                // is traversed from top to bottom and negative to positive.
+                int dx = (pXY ? du : 0) + rotorDir.offsetX;
+                int dy = dv + rotorDir.offsetY;
+                int dz = (pXY ? 0 : du) + rotorDir.offsetY;
+
+                Block b = worldObj.getBlock(xCoord + dx, yCoord + dy, zCoord + dz);
+                Fluid f = FluidRegistry.lookupFluidForBlock(b);
+                if(f != null) {
+                    if(flow.type != null) {
+                        if(f == flow.type) flow.set(du, dv);
+//                        else return null;
+                    } else {
+                        flow.type = f;
+                        flow.set(du, dv);
+                    }
+                }
+            }
+        }
+
+        return flow;
+    }
+
+    private EnergyPacket getEnergyPacketFromLiquid() {
+        // Basic idea is to XOR the flow with each of the sample flows and then
+        // check then number of true bits. cardinality(f ^ sample)
+        // is close to 0 if the flows agree, and large otherwise.
+        // For simplicity, let 'close to 0' mean < 3.
+        final BitSet[] sampleFlows = {
+                // Undershot
+                BitSet.valueOf(new long[]{0b00000_00000_00000_11111_11111}),
+                // Overshot right
+                BitSet.valueOf(new long[]{0b00001_00001_00001_00001_00001}),
+                // Overshot left
+                BitSet.valueOf(new long[]{0b10000_10000_10000_10000_10000}),
+                // Overshot carry right
+                BitSet.valueOf(new long[]{0b00010_00010_00010_11110_11110}),
+                // Overshot carry left
+                BitSet.valueOf(new long[]{0b01000_01000_01000_01111_01111})
+//                // Breastshot right
+//                BitSet.valueOf(new long[]{0b00000_00000_11000_01111_00000}),
+//                // Breastshot left
+//                BitSet.valueOf(new long[]{0b00000_00000_00011_11110_00000})
+        };
+        // Find the actual fluid flow
+        FluidFlow flow;
+        if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.SOUTH) {
+            flow = getFlowPatternPlane(true);
+        } else {
+            flow = getFlowPatternPlane(false);
+        }
+        if(flow == null) return new EnergyPacket(0, 0);
+
+        // Find a suitable sample and calculate energy. This could be done with
+        // a simple iterator and lambda combination, but Java7 is cripplingly
+        // unprepared for functional programming, so we'll do this the old
+        // fashioned procedural way.
+        // TODO: Rewrite entire mod in Scala. Or maybe just rewrite some in Kotlin.
+        for(int i = 0; i < sampleFlows.length; ++i) {
+            BitSet tmp = (BitSet) flow.pattern.clone();
+            tmp.xor(sampleFlows[i]); // No chaining, methods edit in place...
+            if(tmp.cardinality() < 3) {
+                wheelConfiguration = i;
+                // It's a match
+                switch(i) {
+                    case 0:
+                        // Undershot
+                        return new EnergyPacket(100, 20);
+                    case 1:
+                        // Overshot right
+                        return new EnergyPacket(200, 20);
+                    case 2:
+                        // Overshot left
+                        return new EnergyPacket(300, 20);
+                    case 3:
+                        // Overshot carry right
+                        return new EnergyPacket(400, 20);
+                    case 4:
+                        // Overshot carry left
+                        return new EnergyPacket(500, 20);
+                    case 5:
+                        // Breastshot right
+                        return new EnergyPacket(600, 20);
+                    case 6:
+                        // Breastshot left
+                        return new EnergyPacket(700, 20);
+                }
+            }
+        }
+        // Invalid configuration so don't produce any energy
+        wheelConfiguration = -1;
+        return new EnergyPacket(0, 0);
+    }
+
+    /**
      * Transfer energy to any blocks demanding energy that are connected to
      * this one.
      */
@@ -511,6 +666,24 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     public boolean hasAttachment() {
         return hasRotor() || hasCrank() || hasWheel();
+    }
+
+    public String getWheelConfiguration() {
+        switch(wheelConfiguration) {
+            default:
+            case -1:
+                return "";
+            case 0:
+                return "(Undershot)";
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                return "(Overshot)";
+            case 5:
+            case 6:
+                return "(Breastshot)";
+        }
     }
 
     /**
