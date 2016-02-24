@@ -20,6 +20,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidRegistry;
 
 /**
  * Rotor blocks are created when a {@link WindmillBlock} is right clicked with
@@ -166,13 +167,17 @@ public class RotorBlock extends Block implements ITileEntityProvider {
      */
     public static boolean canPlace(World pWorld, int pX, int pY, int pZ,
                                    EntityPlayer pPlayer, ForgeDirection pDir,
-                                   int pDim) {
+                                   int pDim, boolean ignoreWater) {
         // Check if air is free in a square space in the same plane as the rotor
         if(pDir == ForgeDirection.NORTH || pDir == ForgeDirection.SOUTH) {
             // East/West so xy-plane
             for(int dx = -pDim; dx <= pDim; ++dx) {
                 for(int dy = -pDim; dy <= pDim; ++dy) {
-                    if(!pWorld.isAirBlock(pX + dx, pY + dy, pZ)) {
+                    // Fail if block is not air, and, if ignoreWater is set,
+                    // also isn't water.
+                    if(!(pWorld.isAirBlock(pX + dx, pY + dy, pZ) ||
+                            (ignoreWater && FluidRegistry.lookupFluidForBlock(
+                                    pWorld.getBlock(pX + dx, pY + dy, pZ)) != null))) {
                         return false;
                     }
                 }
@@ -182,7 +187,9 @@ public class RotorBlock extends Block implements ITileEntityProvider {
             // North/South so yz-plane
             for(int dz = -pDim; dz <= pDim; ++dz) {
                 for(int dy = -pDim; dy <= pDim; ++dy) {
-                    if(!pWorld.isAirBlock(pX, pY + dy, pZ + dz)) {
+                    if(!(pWorld.isAirBlock(pX, pY + dy, pZ + dz) ||
+                            (ignoreWater && FluidRegistry.lookupFluidForBlock(
+                                    pWorld.getBlock(pX, pY + dy, pZ + dz)) != null))) {
                         return false;
                     }
                 }

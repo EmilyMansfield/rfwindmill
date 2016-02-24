@@ -541,9 +541,9 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 // Overshot left
                 BitSet.valueOf(new long[]{0b10000_10000_10000_10000_10000}),
                 // Overshot carry right
-                BitSet.valueOf(new long[]{0b00010_00010_00010_11110_11110}),
+                BitSet.valueOf(new long[]{0b00001_00001_00001_11111_11111}),
                 // Overshot carry left
-                BitSet.valueOf(new long[]{0b01000_01000_01000_01111_01111})
+                BitSet.valueOf(new long[]{0b10000_10000_10000_11111_11111})
 //                // Breastshot right
 //                BitSet.valueOf(new long[]{0b00000_00000_11000_01111_00000}),
 //                // Breastshot left
@@ -572,25 +572,25 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 switch(i) {
                     case 0:
                         // Undershot
-                        return new EnergyPacket(100, 20);
+                        return new EnergyPacket(100, windPacketLength);
                     case 1:
                         // Overshot right
-                        return new EnergyPacket(200, 20);
+                        return new EnergyPacket(200, windPacketLength);
                     case 2:
                         // Overshot left
-                        return new EnergyPacket(300, 20);
+                        return new EnergyPacket(300, windPacketLength);
                     case 3:
                         // Overshot carry right
-                        return new EnergyPacket(400, 20);
+                        return new EnergyPacket(400, windPacketLength);
                     case 4:
                         // Overshot carry left
-                        return new EnergyPacket(500, 20);
+                        return new EnergyPacket(500, windPacketLength);
                     case 5:
                         // Breastshot right
-                        return new EnergyPacket(600, 20);
+                        return new EnergyPacket(600, windPacketLength);
                     case 6:
                         // Breastshot left
-                        return new EnergyPacket(700, 20);
+                        return new EnergyPacket(700, windPacketLength);
                 }
             }
         }

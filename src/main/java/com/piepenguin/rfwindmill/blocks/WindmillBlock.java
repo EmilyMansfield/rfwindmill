@@ -168,7 +168,7 @@ public class WindmillBlock extends Block implements ITileEntityProvider {
                     TileEntityWindmillBlock entity = (TileEntityWindmillBlock) pWorld.getTileEntity(pX, pY, pZ);
                     // Waterwheels need a 5x5 area, turbines need a 3x3
                     // TODO: Make this configurable
-                    if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection, rotorType < 5 ? 1 : 2) && !entity.hasAttachment()) {
+                    if(RotorBlock.canPlace(pWorld, dx, dy, dz, pPlayer, fDirection, rotorType < 5 ? 1 : 2, rotorType > 4) && !entity.hasAttachment()) {
                         // Attach the rotor to the windmill
                         pWorld.setBlock(dx, dy, dz, ModBlocks.rotorBlock1);
                         // Calculate metadata depending on rotor type and facing
