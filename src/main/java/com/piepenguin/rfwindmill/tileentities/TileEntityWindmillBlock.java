@@ -261,7 +261,28 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             currentRotorSpeed = (float) ((lengthMultiplier > 0.0 ? lengthMultiplier : 0.0)
                     * angularVelocity / (40.0 * Math.PI) * 360.0);
         } else if(hasWheel()) {
-            currentRotorSpeed = 4.5f;
+            switch(wheelConfiguration) {
+                default:
+                case -1:
+                    currentRotorSpeed = 0.0f;
+                    break;
+                case 0:
+                    // Undershot
+                    // Optimal rotation speed is 9*V/D RPM
+                    // TODO: Change for different fluid speeds
+                    currentRotorSpeed = 2.448f; // Abracadabra
+                    break;
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                    // Overshot and Breastshot
+                    // Optimal rotation speed is 21/sqrt(D) RPM
+                    currentRotorSpeed = 2.8174f; // It's a kind of magic
+                    break;
+            }
         } else {
             currentRotorSpeed = 0.0f;
         }
@@ -315,6 +336,8 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             // tier machines generate a usable amount of RF/t but the high tier
             // machines don't generate unrealistic amounts
             totalEfficiency *= (efficiency + 0.9f) / 2.0f;
+        } else if(hasWheel()) {
+            totalEfficiency *= 0.5f;
         } else {
             totalEfficiency = 0.0f;
         }
@@ -458,22 +481,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return range;
     }
 
-    /**
-     * Get the flow speed of the liquid in a block
-     *
-     * @param pBlock Block to get speed for
-     * @return Speed of the liquid in ms^-1
-     */
-    private float getLiquidSpeed(Block pBlock) {
-        // TODO: Cache these values?
-        Fluid f = FluidRegistry.lookupFluidForBlock(pBlock);
-        // According to the wiki, flowing water pushes mobs at a speed of
-        // 1.39m/s and has a viscosity of 1000. Lava has a viscosity of 6000,
-        // so it seems reasonable to calculate the fluid speed as 1390/viscosity
-        float speed = 1390.0f / f.getViscosity();
-        return speed;
-    }
-
     public class FluidFlow {
         public BitSet pattern = new BitSet(5 * 5);
         public float speed = 0;
@@ -519,6 +526,11 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 //                        else return null;
                     } else {
                         flow.type = f;
+                        // According to the wiki, flowing water pushes mobs at
+                        // a speed of 1.39m/s and has a viscosity of 1000. Lava
+                        // has a viscosity of 6000, so it seems reasonable to
+                        // calculate the fluid speed as 1390/viscosity
+                        flow.speed = 1390.0f / f.getViscosity();
                         flow.set(du, dv);
                     }
                 }
@@ -535,19 +547,19 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         // For simplicity, let 'close to 0' mean < 3.
         final BitSet[] sampleFlows = {
                 // Undershot
-                BitSet.valueOf(new long[]{0b00000_00000_00000_11111_11111}),
+                BitSet.valueOf(new long[]{0b00000_00000_00000_00000_11111}),
                 // Overshot right
                 BitSet.valueOf(new long[]{0b00001_00001_00001_00001_00001}),
                 // Overshot left
                 BitSet.valueOf(new long[]{0b10000_10000_10000_10000_10000}),
                 // Overshot carry right
-                BitSet.valueOf(new long[]{0b00001_00001_00001_11111_11111}),
+                BitSet.valueOf(new long[]{0b00001_00001_00001_10000_11111}),
                 // Overshot carry left
-                BitSet.valueOf(new long[]{0b10000_10000_10000_11111_11111})
-//                // Breastshot right
-//                BitSet.valueOf(new long[]{0b00000_00000_11000_01111_00000}),
-//                // Breastshot left
-//                BitSet.valueOf(new long[]{0b00000_00000_00011_11110_00000})
+                BitSet.valueOf(new long[]{0b10000_10000_10000_10000_11111}),
+                // Breastshot right
+                BitSet.valueOf(new long[]{0b00000_00000_00001_00111_11111}),
+                // Breastshot left
+                BitSet.valueOf(new long[]{0b00000_00000_10000_11100_11111})
         };
         // Find the actual fluid flow
         FluidFlow flow;
@@ -572,25 +584,55 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 switch(i) {
                     case 0:
                         // Undershot
-                        return new EnergyPacket(100, windPacketLength);
+                        // Uses KE of water with low efficiency. KE is
+                        // 0.5mv^2 with m=Vv so E=0.5Vv^3
+                        // Efficiency is 70% (see Müller)
+                        return new EnergyPacket(
+                                0.7f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
+                                windPacketLength);
                     case 1:
                         // Overshot right
-                        return new EnergyPacket(200, windPacketLength);
+                        // Uses only falling water so low energy, but high
+                        // efficiency. Head is 5m. One block travels 18m in 5s
+                        // so flow rate is 3.6m^3/s. For a bucket capacity of V
+                        // total power is 5*3.6*V*9.8/20 RF/t.
+                        // Assume buckets hold a litre, for balance.
+                        // Efficiency for overshot is 85% (see Müller)
+                        return new EnergyPacket(
+                                0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength,
+                                windPacketLength);
                     case 2:
                         // Overshot left
-                        return new EnergyPacket(300, windPacketLength);
+                        return new EnergyPacket(
+                                0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength,
+                                windPacketLength);
                     case 3:
                         // Overshot carry right
-                        return new EnergyPacket(400, windPacketLength);
+                        // Uses falling water and and a small amount of KE
+                        return new EnergyPacket(
+                                0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength
+                                        + 0.1f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
+                                windPacketLength);
                     case 4:
                         // Overshot carry left
-                        return new EnergyPacket(500, windPacketLength);
+                        return new EnergyPacket(
+                                0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f
+                                        + 0.1f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
+                                windPacketLength);
                     case 5:
                         // Breastshot right
-                        return new EnergyPacket(600, windPacketLength);
+                        // Similar to overshot carry but with a smaller head
+                        // height, more KE, and slightly reduced efficiency
+                        return new EnergyPacket(
+                                0.80f * 3.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength
+                                        + 0.35f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
+                                windPacketLength);
                     case 6:
                         // Breastshot left
-                        return new EnergyPacket(700, windPacketLength);
+                        return new EnergyPacket(
+                                0.80f * 3.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength
+                                        + 0.35f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
+                                windPacketLength);
                 }
             }
         }
