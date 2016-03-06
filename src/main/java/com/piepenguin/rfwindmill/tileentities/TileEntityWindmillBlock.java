@@ -50,6 +50,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
     private boolean queuedCrank = false; // Used to smooth cranking
 
     private int wheelConfiguration = -1;
+    private float wheelSpeed = 0.0f;
 
     public TileEntityWindmillBlock() {
         this(0, 0, 0);
@@ -97,7 +98,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                     syncEnergy();
                     syncSpeed();
                 } else if(hasWheel()) {
-                    energyPacket = getEnergyPacketFromLiquid();
+                    energyPacket = getEnergyPacketFromLiquid(getFlow());
                     extractFromEnergyPacket(energyPacket);
                     updateRotationPerTick();
                 }
@@ -260,29 +261,11 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
             currentRotorSpeed = (float) ((lengthMultiplier > 0.0 ? lengthMultiplier : 0.0)
                     * angularVelocity / (40.0 * Math.PI) * 360.0);
-        } else if(hasWheel()) {
-            switch(wheelConfiguration) {
-                default:
-                case -1:
-                    currentRotorSpeed = 0.0f;
-                    break;
-                case 0:
-                    // Undershot
-                    // Optimal rotation speed is 9*V/D RPM
-                    // TODO: Change for different fluid speeds
-                    currentRotorSpeed = 2.448f; // Abracadabra
-                    break;
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                    // Overshot and Breastshot
-                    // Optimal rotation speed is 21/sqrt(D) RPM
-                    currentRotorSpeed = 2.8174f; // It's a kind of magic
-                    break;
-            }
+        }
+        if(hasWheel()) {
+            // wheelSpeed is calculated when calculating the energy packet
+            // because it depends on the fluid
+            currentRotorSpeed = wheelSpeed / 60.0f * 360.0f / 20.0f;
         } else {
             currentRotorSpeed = 0.0f;
         }
@@ -483,7 +466,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 
     public class FluidFlow {
         public BitSet pattern = new BitSet(5 * 5);
-        public float speed = 0;
+        public float speed = 0.0f;
         public Fluid type = null;
 
         // Get and set commands which use indexing consistent with that
@@ -540,7 +523,13 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         return flow;
     }
 
-    private EnergyPacket getEnergyPacketFromLiquid() {
+    private FluidFlow getFlow() {
+        return getFlowPatternPlane(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.SOUTH);
+    }
+
+    private EnergyPacket getEnergyPacketFromLiquid(FluidFlow flow) {
+        if(flow == null) return new EnergyPacket(0, 0);
+
         // Basic idea is to XOR the flow with each of the sample flows and then
         // check then number of true bits. cardinality(f ^ sample)
         // is close to 0 if the flows agree, and large otherwise.
@@ -561,14 +550,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 // Breastshot left
                 BitSet.valueOf(new long[]{0b00000_00000_10000_11100_11111})
         };
-        // Find the actual fluid flow
-        FluidFlow flow;
-        if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.SOUTH) {
-            flow = getFlowPatternPlane(true);
-        } else {
-            flow = getFlowPatternPlane(false);
-        }
-        if(flow == null) return new EnergyPacket(0, 0);
 
         // Find a suitable sample and calculate energy. This could be done with
         // a simple iterator and lambda combination, but Java7 is cripplingly
@@ -580,13 +561,16 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             tmp.xor(sampleFlows[i]); // No chaining, methods edit in place...
             if(tmp.cardinality() < 3) {
                 wheelConfiguration = i;
-                // It's a match
+                // For wheelSpeed
+                // Undershot uses 9.0f * speed / diameter
+                // Overshot uses 21.0f / sqrt(diameter) * speed;
                 switch(i) {
                     case 0:
                         // Undershot
                         // Uses KE of water with low efficiency. KE is
                         // 0.5mv^2 with m=Vv so E=0.5Vv^3
                         // Efficiency is 70% (see Müller)
+                        wheelSpeed = 1.8f * flow.speed;
                         return new EnergyPacket(
                                 0.7f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
@@ -598,23 +582,27 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                         // total power is 5*3.6*V*9.8/20 RF/t.
                         // Assume buckets hold a litre, for balance.
                         // Efficiency for overshot is 85% (see Müller)
+                        wheelSpeed = 0.39f * flow.speed;
                         return new EnergyPacket(
                                 0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength,
                                 windPacketLength);
                     case 2:
                         // Overshot left
+                        wheelSpeed = 0.39f * flow.speed;
                         return new EnergyPacket(
                                 0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength,
                                 windPacketLength);
                     case 3:
                         // Overshot carry right
                         // Uses falling water and and a small amount of KE
+                        wheelSpeed = 0.39f * flow.speed;
                         return new EnergyPacket(
                                 0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength
                                         + 0.1f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                     case 4:
                         // Overshot carry left
+                        wheelSpeed = 0.39f * flow.speed;
                         return new EnergyPacket(
                                 0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f
                                         + 0.1f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
@@ -623,12 +611,14 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                         // Breastshot right
                         // Similar to overshot carry but with a smaller head
                         // height, more KE, and slightly reduced efficiency
+                        wheelSpeed = 0.39f * flow.speed;
                         return new EnergyPacket(
                                 0.80f * 3.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength
                                         + 0.35f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                     case 6:
                         // Breastshot left
+                        wheelSpeed = 0.39f * flow.speed;
                         return new EnergyPacket(
                                 0.80f * 3.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength
                                         + 0.35f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
@@ -638,6 +628,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         }
         // Invalid configuration so don't produce any energy
         wheelConfiguration = -1;
+        wheelSpeed = 0.0f;
         return new EnergyPacket(0, 0);
     }
 
