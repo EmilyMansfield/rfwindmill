@@ -562,57 +562,66 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             if(tmp.cardinality() < 3) {
                 wheelConfiguration = i;
                 wheelSpeed = flow.speed;
+                // rv = density * volume of back
+                // Density does not seem to be set correctly, just naively
+                // assume that density =~ (viscosity + 1000) / 2
+                // This makes lava denser than water, but not so dense that
+                // using lava is far superior to water
+                // rho = 1.39 / (viscosity / 1390) = viscosity / 1000
+                float rho = 1.39f / flow.speed;
+                float rv = (rho + 1.0f) / 2.0f;
                 switch(i) {
                     case 0:
                         // Undershot
                         // Uses KE of water with low efficiency. KE is
-                        // 0.5mv^2 with m=Vv so E=0.5Vv^3
+                        // 0.5mv^2 with m=Vvd so E=0.5Vv^3d
                         // Efficiency is 70% (see Müller)
                         return new EnergyPacket(
-                                0.7f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
+                                0.7f * 0.5f * rv * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                     case 1:
                         // Overshot right
                         // Uses only falling water so low energy, but high
                         // efficiency. Head is 5m. One block travels 18m in 5s
                         // so flow rate is 3.6m^3/s. For a bucket capacity of V
-                        // total power is 5*3.6*V*9.8/20 RF/t.
+                        // with fluid density d
+                        // total power is 5*3.6*V*d*9.8/20 RF/t.
                         // Assume buckets hold a litre, for balance.
                         // Efficiency for overshot is 85% (see Müller)
                         return new EnergyPacket(
-                                0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength,
+                                0.85f * 5.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength,
                                 windPacketLength);
                     case 2:
                         // Overshot left
                         return new EnergyPacket(
-                                0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength,
+                                0.85f * 5.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength,
                                 windPacketLength);
                     case 3:
                         // Overshot carry right
                         // Uses falling water and and a small amount of KE
                         return new EnergyPacket(
-                                0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength
-                                        + 0.1f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
+                                0.85f * 5.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength
+                                        + 0.1f * 0.5f * rv * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                     case 4:
                         // Overshot carry left
                         return new EnergyPacket(
-                                0.85f * 5.0f * 3.6f * 1.0f * 9.8f / 20.0f
-                                        + 0.1f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
+                                0.85f * 5.0f * 3.6f * rv * 9.8f / 20.0f
+                                        + 0.1f * 0.5f * rv * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                     case 5:
                         // Breastshot right
                         // Similar to overshot carry but with a smaller head
                         // height, more KE, and slightly reduced efficiency
                         return new EnergyPacket(
-                                0.80f * 3.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength
-                                        + 0.35f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
+                                0.80f * 3.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength
+                                        + 0.35f * 0.5f * rv * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                     case 6:
                         // Breastshot left
                         return new EnergyPacket(
-                                0.80f * 3.0f * 3.6f * 1.0f * 9.8f / 20.0f * windPacketLength
-                                        + 0.35f * 0.5f * 1.0f * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
+                                0.80f * 3.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength
+                                        + 0.35f * 0.5f * rv * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                 }
             }
