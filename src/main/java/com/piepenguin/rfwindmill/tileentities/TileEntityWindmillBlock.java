@@ -561,7 +561,6 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
             tmp.xor(sampleFlows[i]); // No chaining, methods edit in place...
             if(tmp.cardinality() < 3) {
                 wheelConfiguration = i;
-                wheelSpeed = flow.speed;
                 // rv = density * volume of back
                 // Density does not seem to be set correctly, just naively
                 // assume that density =~ (viscosity + 1000) / 2
@@ -573,6 +572,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 switch(i) {
                     case 0:
                         // Undershot
+                        wheelSpeed = (wheelSpeed < 0 ? -1.0f : 1.0f) * flow.speed;
                         // Uses KE of water with low efficiency. KE is
                         // 0.5mv^2 with m=Vvd so E=0.5Vv^3d
                         // Efficiency is 70% (see Müller)
@@ -581,6 +581,11 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                                 windPacketLength);
                     case 1:
                         // Overshot right
+                        if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.EAST) {
+                            wheelSpeed = -flow.speed;
+                        } else {
+                            wheelSpeed = flow.speed;
+                        }
                         // Uses only falling water so low energy, but high
                         // efficiency. Head is 5m. One block travels 18m in 5s
                         // so flow rate is 3.6m^3/s. For a bucket capacity of V
@@ -593,11 +598,21 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                                 windPacketLength);
                     case 2:
                         // Overshot left
+                        if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.EAST) {
+                            wheelSpeed = flow.speed;
+                        } else {
+                            wheelSpeed = -flow.speed;
+                        }
                         return new EnergyPacket(
                                 0.85f * 5.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength,
                                 windPacketLength);
                     case 3:
                         // Overshot carry right
+                        if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.EAST) {
+                            wheelSpeed = -flow.speed;
+                        } else {
+                            wheelSpeed = flow.speed;
+                        }
                         // Uses falling water and and a small amount of KE
                         return new EnergyPacket(
                                 0.85f * 5.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength
@@ -605,12 +620,22 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                                 windPacketLength);
                     case 4:
                         // Overshot carry left
+                        if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.EAST) {
+                            wheelSpeed = flow.speed;
+                        } else {
+                            wheelSpeed = -flow.speed;
+                        }
                         return new EnergyPacket(
                                 0.85f * 5.0f * 3.6f * rv * 9.8f / 20.0f
                                         + 0.1f * 0.5f * rv * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                     case 5:
                         // Breastshot right
+                        if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.EAST) {
+                            wheelSpeed = -flow.speed;
+                        } else {
+                            wheelSpeed = flow.speed;
+                        }
                         // Similar to overshot carry but with a smaller head
                         // height, more KE, and slightly reduced efficiency
                         return new EnergyPacket(
@@ -619,6 +644,11 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                                 windPacketLength);
                     case 6:
                         // Breastshot left
+                        if(rotorDir == ForgeDirection.NORTH || rotorDir == ForgeDirection.EAST) {
+                            wheelSpeed = flow.speed;
+                        } else {
+                            wheelSpeed = -flow.speed;
+                        }
                         return new EnergyPacket(
                                 0.80f * 3.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength
                                         + 0.35f * 0.5f * rv * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
