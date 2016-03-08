@@ -468,6 +468,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
         public BitSet pattern = new BitSet(5 * 5);
         public float speed = 0.0f;
         public Fluid type = null;
+        public ForgeDirection direction = null;
 
         // Get and set commands which use indexing consistent with that
         // of a binary number defined from left to right, ie
@@ -489,10 +490,13 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
      */
     private FluidFlow getFlowPatternPlane(boolean pXY) {
         FluidFlow flow = new FluidFlow();
-
+        // Vector sum of fluid flow gradients along the u direction.
+        // Positive means flowing in direction of u.
+        int gradient = 0;
         // du and dv are plane coordinates
-        for(int du = -2; du <= 2; ++du) {
-            for(int dv = 2; dv >= -2; --dv) {
+        for(int dv = 2; dv >= -2; --dv) {
+            int depth = -1; // Depth of (u,v). 0 is empty, 8 is full block
+            for(int du = -2; du <= 2; ++du) {
                 // Map plane coordinates to space coordinates depending on
                 // plane orientation. Note that dy := dv always, and that the
                 // dv loop goes from high to low. This means the search space
@@ -504,8 +508,25 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 Block b = worldObj.getBlock(xCoord + dx, yCoord + dy, zCoord + dz);
                 Fluid f = FluidRegistry.lookupFluidForBlock(b);
                 if(f != null) {
+                    int fMeta = worldObj.getBlockMetadata(xCoord + dx, yCoord + dy, zCoord + dz);
+                    // fMeta >= 8 means falling block, which we don't care about
+                    if(fMeta < 8) {
+                        int fDepth = 8 - (fMeta & 7);
+                        // If first block, set the base depth on the row
+                        if(depth < 0) {
+                            depth = fDepth;
+                        } else {
+                            if(fDepth != depth) {
+                                // depth(u-1,v) - depth(u,v)
+                                gradient += depth - fDepth;
+                                depth = fDepth;
+                            }
+                        }
+                    }
                     if(flow.type != null) {
-                        if(f == flow.type) flow.set(du, dv);
+                        if(f == flow.type) {
+                            flow.set(du, dv);
+                        }
 //                        else return null;
                     } else {
                         flow.type = f;
@@ -517,6 +538,27 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                         flow.set(du, dv);
                     }
                 }
+            }
+        }
+        // Convert gradient to a fluid flow direction
+        // Positive gradient is moving in positive u direction
+        if(pXY) {
+            // xy-plane so u is x direction, i.e. East/West
+            if(gradient > 0) {
+                flow.direction = ForgeDirection.EAST;
+            } else if(gradient < 0) {
+                flow.direction = ForgeDirection.WEST;
+            } else {
+                flow.direction = null;
+            }
+        } else {
+            // yz-plane so u is z direction, i.e. South/North
+            if(gradient > 0) {
+                flow.direction = ForgeDirection.SOUTH;
+            } else if(gradient < 0) {
+                flow.direction = ForgeDirection.NORTH;
+            } else {
+                flow.direction = null;
             }
         }
 
@@ -572,7 +614,11 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 switch(i) {
                     case 0:
                         // Undershot
-                        wheelSpeed = (wheelSpeed < 0 ? -1.0f : 1.0f) * flow.speed;
+                        if(flow.direction == ForgeDirection.NORTH || flow.direction == ForgeDirection.EAST) {
+                            wheelSpeed = flow.speed;
+                        } else {
+                            wheelSpeed = -flow.speed;
+                        }
                         // Uses KE of water with low efficiency. KE is
                         // 0.5mv^2 with m=Vvd so E=0.5Vv^3d
                         // Efficiency is 70% (see Müller)
