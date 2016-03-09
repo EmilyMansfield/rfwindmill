@@ -503,7 +503,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 // is traversed from top to bottom and negative to positive.
                 int dx = (pXY ? du : 0) + rotorDir.offsetX;
                 int dy = dv + rotorDir.offsetY;
-                int dz = (pXY ? 0 : du) + rotorDir.offsetY;
+                int dz = (pXY ? 0 : du) + rotorDir.offsetZ;
 
                 Block b = worldObj.getBlock(xCoord + dx, yCoord + dy, zCoord + dz);
                 Fluid f = FluidRegistry.lookupFluidForBlock(b);
