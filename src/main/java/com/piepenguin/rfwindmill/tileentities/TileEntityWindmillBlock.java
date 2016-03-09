@@ -530,11 +530,8 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
 //                        else return null;
                     } else {
                         flow.type = f;
-                        // According to the wiki, flowing water pushes mobs at
-                        // a speed of 1.39m/s and has a viscosity of 1000. Lava
-                        // has a viscosity of 6000, so it seems reasonable to
-                        // calculate the fluid speed as 1390/viscosity
-                        flow.speed = 1390.0f / f.getViscosity();
+                        // Water flows at 3.6m/s and has viscosity of 1000
+                        flow.speed = 3600.0f / f.getViscosity();
                         flow.set(du, dv);
                     }
                 }
@@ -608,8 +605,8 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                 // assume that density =~ (viscosity + 1000) / 2
                 // This makes lava denser than water, but not so dense that
                 // using lava is far superior to water
-                // rho = 1.39 / (viscosity / 1390) = viscosity / 1000
-                float rho = 1.39f / flow.speed;
+                // rho = 3.6 / (viscosity / 3600) = viscosity / 1000
+                float rho = 3.6f / flow.speed;
                 float rv = (rho + 1.0f) / 2.0f;
                 switch(i) {
                     case 0:
@@ -640,7 +637,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                         // Assume buckets hold a litre, for balance.
                         // Efficiency for overshot is 85% (see Müller)
                         return new EnergyPacket(
-                                0.85f * 5.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength,
+                                0.85f * 5.0f * flow.speed * rv * 9.8f / 20.0f * windPacketLength,
                                 windPacketLength);
                     case 2:
                         // Overshot left
@@ -650,7 +647,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                             wheelSpeed = -flow.speed;
                         }
                         return new EnergyPacket(
-                                0.85f * 5.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength,
+                                0.85f * 5.0f * flow.speed * rv * 9.8f / 20.0f * windPacketLength,
                                 windPacketLength);
                     case 3:
                         // Overshot carry right
@@ -661,7 +658,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                         }
                         // Uses falling water and and a small amount of KE
                         return new EnergyPacket(
-                                0.85f * 5.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength
+                                0.85f * 5.0f * flow.speed * rv * 9.8f / 20.0f * windPacketLength
                                         + 0.1f * 0.5f * rv * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                     case 4:
@@ -672,7 +669,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                             wheelSpeed = -flow.speed;
                         }
                         return new EnergyPacket(
-                                0.85f * 5.0f * 3.6f * rv * 9.8f / 20.0f
+                                0.85f * 5.0f * flow.speed * rv * 9.8f / 20.0f * windPacketLength
                                         + 0.1f * 0.5f * rv * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                     case 5:
@@ -685,7 +682,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                         // Similar to overshot carry but with a smaller head
                         // height, more KE, and slightly reduced efficiency
                         return new EnergyPacket(
-                                0.80f * 3.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength
+                                0.80f * 3.0f * flow.speed * rv * 9.8f / 20.0f * windPacketLength
                                         + 0.35f * 0.5f * rv * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                     case 6:
@@ -696,7 +693,7 @@ public final class TileEntityWindmillBlock extends TileEntity implements IEnergy
                             wheelSpeed = -flow.speed;
                         }
                         return new EnergyPacket(
-                                0.80f * 3.0f * 3.6f * rv * 9.8f / 20.0f * windPacketLength
+                                0.80f * 3.0f * flow.speed * rv * 9.8f / 20.0f * windPacketLength
                                         + 0.35f * 0.5f * rv * (float) Math.pow(flow.speed, 3.0) * windPacketLength,
                                 windPacketLength);
                 }
